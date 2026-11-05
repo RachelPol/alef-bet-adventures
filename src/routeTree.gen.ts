@@ -16,6 +16,8 @@ import { Route as ListenRouteImport } from './routes/listen'
 import { Route as MemoryRouteImport } from './routes/memory'
 import { Route as PathRouteImport } from './routes/path'
 import { Route as ReadRouteImport } from './routes/read'
+import { Route as RoomRouteImport } from './routes/room'
+import { Route as StreetRouteImport } from './routes/street'
 import { Route as ApiPublicTtsRouteImport } from './routes/api/public/tts'
 
 const IndexRoute = IndexRouteImport.update({
@@ -53,6 +55,16 @@ const ReadRoute = ReadRouteImport.update({
   path: '/read',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RoomRoute = RoomRouteImport.update({
+  id: '/room',
+  path: '/room',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StreetRoute = StreetRouteImport.update({
+  id: '/street',
+  path: '/street',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicTtsRoute = ApiPublicTtsRouteImport.update({
   id: '/api/public/tts',
   path: '/api/public/tts',
@@ -67,6 +79,8 @@ export interface FileRoutesByFullPath {
   '/memory': typeof MemoryRoute
   '/path': typeof PathRoute
   '/read': typeof ReadRoute
+  '/room': typeof RoomRoute
+  '/street': typeof StreetRoute
   '/api/public/tts': typeof ApiPublicTtsRoute
 }
 export interface FileRoutesByTo {
@@ -77,6 +91,8 @@ export interface FileRoutesByTo {
   '/memory': typeof MemoryRoute
   '/path': typeof PathRoute
   '/read': typeof ReadRoute
+  '/room': typeof RoomRoute
+  '/street': typeof StreetRoute
   '/api/public/tts': typeof ApiPublicTtsRoute
 }
 export interface FileRoutesById {
@@ -88,6 +104,8 @@ export interface FileRoutesById {
   '/memory': typeof MemoryRoute
   '/path': typeof PathRoute
   '/read': typeof ReadRoute
+  '/room': typeof RoomRoute
+  '/street': typeof StreetRoute
   '/api/public/tts': typeof ApiPublicTtsRoute
 }
 export interface FileRouteTypes {
@@ -100,6 +118,8 @@ export interface FileRouteTypes {
     | '/memory'
     | '/path'
     | '/read'
+    | '/room'
+    | '/street'
     | '/api/public/tts'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -110,6 +130,8 @@ export interface FileRouteTypes {
     | '/memory'
     | '/path'
     | '/read'
+    | '/room'
+    | '/street'
     | '/api/public/tts'
   id:
     | '__root__'
@@ -120,6 +142,8 @@ export interface FileRouteTypes {
     | '/memory'
     | '/path'
     | '/read'
+    | '/room'
+    | '/street'
     | '/api/public/tts'
   fileRoutesById: FileRoutesById
 }
@@ -131,6 +155,8 @@ export interface RootRouteChildren {
   MemoryRoute: typeof MemoryRoute
   PathRoute: typeof PathRoute
   ReadRoute: typeof ReadRoute
+  RoomRoute: typeof RoomRoute
+  StreetRoute: typeof StreetRoute
   ApiPublicTtsRoute: typeof ApiPublicTtsRoute
 }
 
@@ -185,6 +211,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ReadRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/room': {
+      id: '/room'
+      path: '/room'
+      fullPath: '/room'
+      preLoaderRoute: typeof RoomRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/street': {
+      id: '/street'
+      path: '/street'
+      fullPath: '/street'
+      preLoaderRoute: typeof StreetRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/tts': {
       id: '/api/public/tts'
       path: '/api/public/tts'
@@ -203,6 +243,8 @@ const rootRouteChildren: RootRouteChildren = {
   MemoryRoute: MemoryRoute,
   PathRoute: PathRoute,
   ReadRoute: ReadRoute,
+  RoomRoute: RoomRoute,
+  StreetRoute: StreetRoute,
   ApiPublicTtsRoute: ApiPublicTtsRoute,
 }
 export const routeTree = rootRouteImport
