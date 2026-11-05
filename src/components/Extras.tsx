@@ -94,7 +94,7 @@ export function Celebration({ trigger }: { trigger: number }) {
       ))}
       <div className="hero-pop flex flex-col items-center">
         <span className="text-9xl">{data.hero}</span>
-        <span className="font-display text-5xl text-success drop-shadow">{data.cheer}</span>
+        <span className={`font-display text-success drop-shadow ${data.cheer.length > 14 ? "text-4xl" : "text-5xl"}`}>{data.cheer}</span>
       </div>
     </div>
   );
