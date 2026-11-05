@@ -40,39 +40,11 @@ function MemoryGame() {
   const [done, setDone] = useState<string[]>([]);
   const [busy, setBusy] = useState(false);
   const [moves, setMoves] = useState(0);
-  const [focus, setFocus] = useState(0);
   const [cel, celebrate] = useCelebrate();
   const { seconds, start: startTime, finish: finishTime } = useCompletionTime();
-  useEffect(() => { setCards(deal()); setFocus(0); startTime(); }, [startTime]);
+  useEffect(() => { setCards(deal()); startTime(); }, [startTime]);
 
   const won = cards.length > 0 && done.length === cards.length;
-
-  // Grid columns match the CSS breakpoints: 3 on mobile, 4 from sm up.
-  const gridCols = () => (typeof window !== "undefined" && window.innerWidth >= 640 ? 4 : 3);
-
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (won || cards.length === 0) return;
-      const c = gridCols();
-      let next: number | null = null;
-      if (e.key === "ArrowRight" && focus % c !== 0) next = focus - 1;
-      else if (e.key === "ArrowLeft" && focus % c !== c - 1) next = focus + 1;
-      else if (e.key === "ArrowUp" && focus - c >= 0) next = focus - c;
-      else if (e.key === "ArrowDown" && focus + c < cards.length) next = focus + c;
-      else if (e.key === "Enter" || e.key === " ") {
-        e.preventDefault();
-        const card = cards[focus];
-        if (card) flip(card);
-        return;
-      }
-      if (next !== null && next >= 0 && next < cards.length) {
-        e.preventDefault();
-        setFocus(next);
-      }
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  });
 
   const flip = (c: Card) => {
     if (busy || won || open.includes(c.id) || done.includes(c.id)) return;
@@ -102,7 +74,6 @@ function MemoryGame() {
     setDone([]);
     setMoves(0);
     setBusy(false);
-    setFocus(0);
     startTime();
   };
 
@@ -122,11 +93,11 @@ function MemoryGame() {
         </div>
       ) : (
         <div className="mt-8 grid grid-cols-3 gap-4 sm:grid-cols-4">
-          {cards.map((c, i) => {
+          {cards.map((c) => {
             const shown = open.includes(c.id) || done.includes(c.id);
             return (
               <Button variant="ghost" key={c.id} onClick={() => flip(c)} aria-label={shown ? c.text : "קלף הפוך"}
-                className={`flex h-32 items-center justify-center rounded-3xl px-2 font-display shadow-soft transition sm:h-40 ${shown ? (done.includes(c.id) ? "bg-success/30" : "bg-card") : "bg-primary text-primary-foreground hover:scale-105"} ${i === focus && !won ? "ring-4 ring-ring ring-offset-4 ring-offset-background" : ""} ${c.kind === "pic" ? "text-6xl" : "text-3xl sm:text-4xl"}`}>
+                className={`flex h-32 items-center justify-center rounded-3xl px-2 font-display shadow-soft transition sm:h-40 ${shown ? (done.includes(c.id) ? "bg-success/30" : "bg-card") : "bg-primary text-primary-foreground hover:scale-105"} ${c.kind === "pic" ? "text-6xl" : "text-3xl sm:text-4xl"}`}>
                 {shown ? c.text : "❓"}
               </Button>
             );

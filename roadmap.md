@@ -9,3 +9,4 @@
 - [x] Path game: difficulty and optional speed test selected before play
 - [x] Verify path flow and board readability on desktop and mobile
 - [x] Show elapsed time for completing 25 path words and all memory pairs
+- [ ] Path game: move the chick with the arrow keys as an alternative to clicking

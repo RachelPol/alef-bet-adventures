@@ -112,6 +112,29 @@ function PathGame() {
     setPhase("exiting");
     pending.current = setTimeout(() => setPhase("won"), 1000);
   };
+  // החיצים מזיזים את האפרוח לעבר הקלף הסמוך – חלופה ללחיצת עכבר
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      if (phase !== "playing") return;
+      let index: number | null = null;
+      if (event.key === "ArrowRight") {
+        if (position % columns === columns - 1) return;
+        index = position + 1;
+      } else if (event.key === "ArrowLeft") {
+        if (position % columns === 0) return;
+        index = position - 1;
+      } else if (event.key === "ArrowUp") {
+        index = position - columns;
+      } else if (event.key === "ArrowDown") {
+        index = position + columns;
+      }
+      if (index === null) return;
+      event.preventDefault();
+      if (index >= 0 && index < PATH_CELLS) hit(index);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  });
   const heroStyle = { "--hero-x": `${((position % columns + .5) / columns) * 100}%`, "--hero-y": `${((Math.floor(position / columns) + .5) / (PATH_CELLS / columns)) * 100}%` } as CSSProperties;
 
   return (
