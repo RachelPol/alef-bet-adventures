@@ -9,6 +9,8 @@ export const Route = createFileRoute("/letters")({
       { name: "description", content: "כל אותיות האלף בית עם שמע ומילה לדוגמה" },
       { property: "og:title", content: "כל האותיות – אָלֶף בֵּית" },
       { property: "og:description", content: "כל אותיות האלף בית עם שמע ומילה לדוגמה" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Letters,

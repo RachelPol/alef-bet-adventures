@@ -13,7 +13,8 @@ export function nextPathMove(current: number, columns: number, previous: Directi
   if (current + columns < PATH_CELLS) choices.push({ index: current + columns, direction: "down" });
   if (col > 0) choices.push({ index: current - 1, direction: "left" });
   if (col < columns - 1 && current + 1 < PATH_CELLS) choices.push({ index: current + 1, direction: "right" });
-  const varied = choices.filter((choice) => choice.direction !== previous);
+  const opposite: Record<Direction, Direction> = { up: "down", down: "up", left: "right", right: "left" };
+  const varied = choices.filter((choice) => choice.direction !== previous && (previous === null || choice.direction !== opposite[previous]));
   const pool = varied.length ? varied : choices;
   return pool[Math.min(pool.length - 1, Math.floor(random() * pool.length))] ?? { index: current, direction: "up" };
 }
