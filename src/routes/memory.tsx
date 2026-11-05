@@ -40,11 +40,39 @@ function MemoryGame() {
   const [done, setDone] = useState<string[]>([]);
   const [busy, setBusy] = useState(false);
   const [moves, setMoves] = useState(0);
+  const [focus, setFocus] = useState(0);
   const [cel, celebrate] = useCelebrate();
   const { seconds, start: startTime, finish: finishTime } = useCompletionTime();
-  useEffect(() => { setCards(deal()); startTime(); }, [startTime]);
+  useEffect(() => { setCards(deal()); setFocus(0); startTime(); }, [startTime]);
 
   const won = cards.length > 0 && done.length === cards.length;
+
+  // Grid columns match the CSS breakpoints: 3 on mobile, 4 from sm up.
+  const gridCols = () => (typeof window !== "undefined" && window.innerWidth >= 640 ? 4 : 3);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (won || cards.length === 0) return;
+      const c = gridCols();
+      let next: number | null = null;
+      if (e.key === "ArrowRight" && focus % c !== 0) next = focus - 1;
+      else if (e.key === "ArrowLeft" && focus % c !== c - 1) next = focus + 1;
+      else if (e.key === "ArrowUp" && focus - c >= 0) next = focus - c;
+      else if (e.key === "ArrowDown" && focus + c < cards.length) next = focus + c;
+      else if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        const card = cards[focus];
+        if (card) flip(card);
+        return;
+      }
+      if (next !== null && next >= 0 && next < cards.length) {
+        e.preventDefault();
+        setFocus(next);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  });
 
   const flip = (c: Card) => {
     if (busy || won || open.includes(c.id) || done.includes(c.id)) return;
