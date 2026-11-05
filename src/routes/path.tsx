@@ -19,7 +19,7 @@ export const Route = createFileRoute("/path")({
 });
 
 const STEPS = 10;
-const BOARD = 9;
+const BOARD = 12;
 const HEROES = ["🐢", "🐰", "🐌", "🦔"];
 
 function make(level: Level) {
@@ -74,7 +74,7 @@ function PathGame() {
   };
 
   return (
-    <Shell title="שְׁבִיל הַמִּלִּים" score={score}>
+    <Shell title="שְׁבִיל הַמִּלִּים" score={score} wide>
       <LevelPicker level={level} onChange={setLevel} />
       <div className="mt-4"><SpeedBar speed={speed} unit={level.unit} /></div>
 
@@ -103,10 +103,10 @@ function PathGame() {
               🔊 מָה שָׁמַעְתָּ?
             </button>
           </div>
-          <div className="mt-8 grid grid-cols-3 gap-4">
+          <div className="mt-8 grid grid-cols-3 gap-5 sm:grid-cols-4">
             {r.cards.map((l) => (
               <button key={l.text} onClick={() => hit(l)}
-                className={`rounded-2xl bg-card px-3 py-6 font-display shadow-soft transition hover:-translate-y-1 hover:shadow-pop ${l.text.replace(/[֑-ׇ]/g, "").length > 5 ? "text-2xl" : "text-4xl"}`}>
+                className={`rounded-3xl bg-card px-4 py-10 font-display shadow-soft transition hover:-translate-y-1 hover:shadow-pop ${l.text.replace(/[֑-ׇ]/g, "").length > 5 ? "text-3xl" : "text-5xl"}`}>
                 {l.text}
               </button>
             ))}

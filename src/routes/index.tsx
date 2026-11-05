@@ -17,6 +17,7 @@ const MODES = [
   { to: "/read", emoji: "🗣️", title: "קְרָא בְּקוֹל", desc: "הילד קורא והמבוגר מאשר", tone: "bg-secondary text-secondary-foreground" },
   { to: "/game", emoji: "🎈", title: "פּוֹצְצִים בַּלּוֹנִים", desc: "משחק: מצא את האות ששמעת", tone: "bg-accent text-accent-foreground" },
   { to: "/path", emoji: "🐢", title: "שְׁבִיל הַמִּלִּים", desc: "מוצאים את המילה ומתקדמים לגביע", tone: "bg-success text-success-foreground" },
+  { to: "/memory", emoji: "🧠", title: "מִשְׂחַק זִכָּרוֹן", desc: "מוצאים זוג: מילה ותמונה", tone: "bg-primary text-primary-foreground" },
   { to: "/letters", emoji: "📖", title: "כָּל הָאוֹתִיּוֹת", desc: "לוחצים על אות ושומעים", tone: "bg-card text-card-foreground" },
 ] as const;
 
