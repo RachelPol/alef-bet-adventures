@@ -1,61 +1,67 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
 import { Feedback, Shell } from "@/components/Shell";
-import { LETTERS, pick, speak, type Letter } from "@/lib/letters";
+import { Celebration, LevelPicker, SpeedBar, SpeedResult } from "@/components/Extras";
+import { pick, speak } from "@/lib/letters";
+import { textSize, type Item, type Level } from "@/lib/levels";
+import { useCelebrate, useLevel, useSpeedTest } from "@/lib/hooks";
 
 export const Route = createFileRoute("/listen")({
   head: () => ({
     meta: [
       { title: "שמע ובחר – אָלֶף בֵּית" },
-      { name: "description", content: "שומעים אות ובוחרים את האות הנכונה" },
+      { name: "description", content: "שומעים ובוחרים את האות, ההברה או המילה הנכונה" },
       { property: "og:title", content: "שמע ובחר – אָלֶף בֵּית" },
-      { property: "og:description", content: "שומעים אות ובוחרים את האות הנכונה" },
+      { property: "og:description", content: "שומעים ובוחרים את האות, ההברה או המילה הנכונה" },
     ],
   }),
   component: Listen,
 });
 
-function newRound() {
-  const pair = pick(LETTERS, 2);
+function newRound(level: Level) {
+  const pair = pick(level.items, 2);
   return { pair, target: pair[Math.floor(Math.random() * 2)]! };
 }
 
 function Listen() {
-  const [round, setRound] = useState<{ pair: Letter[]; target: Letter } | null>(null);
+  const [level, setLevel] = useLevel();
+  const [round, setRound] = useState<{ pair: Item[]; target: Item } | null>(null);
   const [fb, setFb] = useState<"ok" | "bad" | null>(null);
   const [score, setScore] = useState(0);
+  const [cel, celebrate] = useCelebrate();
+  const speed = useSpeedTest();
 
-  useEffect(() => setRound(newRound()), []);
+  useEffect(() => { setRound(newRound(level)); setFb(null); }, [level]);
 
   const choose = useCallback(
-    (l: Letter) => {
+    (l: Item) => {
       if (!round || fb === "ok") return;
       if (l === round.target) {
         setFb("ok");
         setScore((s) => s + 1);
-        speak("כל הכבוד");
+        celebrate();
+        if (speed.active) speed.record();
         setTimeout(() => {
-          const r = newRound();
+          const r = newRound(level);
           setRound(r);
           setFb(null);
-          setTimeout(() => speak(r.target.name), 300);
-        }, 1300);
+          setTimeout(() => speak(r.target.say), 200);
+        }, speed.active ? 600 : 1300);
       } else {
         setFb("bad");
-        speak(round.target.name);
+        speak(round.target.say);
       }
     },
-    [round, fb],
+    [round, fb, level, speed, celebrate],
   );
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (!round) return;
-      // In RTL the first item is on the right
       if (e.key === "ArrowRight") choose(round.pair[0]!);
       else if (e.key === "ArrowLeft") choose(round.pair[1]!);
       else {
-        const hit = round.pair.find((l) => l.char === e.key);
+        const hit = round.pair.find((l) => l.text === e.key);
         if (hit) choose(hit);
       }
     };
@@ -63,24 +69,30 @@ function Listen() {
     return () => window.removeEventListener("keydown", onKey);
   }, [round, choose]);
 
-  if (!round) return <Shell title="שְׁמַע וּבְחַר">{null}</Shell>;
-
   return (
     <Shell title="שְׁמַע וּבְחַר" score={score}>
-      <div className="text-center">
-        <button onClick={() => speak(round.target.name)} className="rounded-full bg-primary px-10 py-5 font-display text-3xl text-primary-foreground shadow-pop transition hover:scale-105 active:scale-95">
-          🔊 הַקְשֵׁב
-        </button>
-        <p className="mt-3 text-muted-foreground">לחצו על האות, או על החץ ימינה / שמאלה במקלדת</p>
-      </div>
-      <div className="mt-10 grid grid-cols-2 gap-6">
-        {round.pair.map((l) => (
-          <button key={l.char} onClick={() => choose(l)} className="letter-tile aspect-square text-[9rem]">
-            {l.char}
-          </button>
-        ))}
-      </div>
-      <div className="mt-6"><Feedback state={fb} /></div>
+      <LevelPicker level={level} onChange={setLevel} />
+      <div className="mt-4"><SpeedBar speed={speed} unit={level.unit} /></div>
+      {round && (
+        <>
+          <div className="mt-6 text-center">
+            <button onClick={() => speak(round.target.say)} className="rounded-full bg-primary px-10 py-5 font-display text-3xl text-primary-foreground shadow-pop transition hover:scale-105 active:scale-95">
+              🔊 הַקְשֵׁב
+            </button>
+            <p className="mt-3 text-muted-foreground">לחצו על התשובה, או על החץ ימינה / שמאלה במקלדת</p>
+          </div>
+          <div className="mt-8 grid grid-cols-2 gap-6">
+            {round.pair.map((l) => (
+              <button key={l.text} onClick={() => choose(l)} className={`letter-tile flex aspect-square items-center justify-center p-4 ${textSize(l.text)}`}>
+                {l.text}
+              </button>
+            ))}
+          </div>
+        </>
+      )}
+      <div className="mt-6"><Feedback state={fb === "bad" ? "bad" : null} /></div>
+      <Celebration trigger={cel} />
+      <SpeedResult speed={speed} unit={level.unit} />
     </Shell>
   );
 }
