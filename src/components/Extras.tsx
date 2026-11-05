@@ -59,7 +59,13 @@ export function SpeedResult({ speed, unit }: { speed: Speed; unit: string }) {
   );
 }
 
-const CHEERS = ["כָּל הַכָּבוֹד!", "מְעֻלֶּה!", "אַלּוּף!", "יוֹפִי!", "וָאוּ!", "מַדְהִים!", "גָּאוֹן!"];
+const CHEERS = [
+  "כָּל הַכָּבוֹד!", "מְעֻלֶּה!", "אַלּוּף!", "יוֹפִי!", "וָאוּ!", "מַדְהִים!", "גָּאוֹן!",
+  "אַתָּה מִתְקַדֵּם נִפְלָא!", "אֵיזֶה כֹּחַ רָצוֹן!", "אֵיךְ אַתָּה קוֹרֵא יָפֶה!",
+  "אֵין עָלֶיךָ!", "אַתָּה כּוֹכָב!", "בֶּאֱמֶת מַפְתִּיעַ!", "אֲנִי גַּאָה בְּךָ!",
+  "הוֹלֵךְ לְךָ מְצֻיָּן!", "אַתָּה תַּלְמִיד חָרוּץ!", "מְדַיֵּק בְּדִיּוּק!",
+  "כָּכָה מְמַשְׁכִים!", "אַתָּה עוֹשֶׂה אֶת זֶה בְּגָדוֹל!", "נֶהֱדָר מִבֵּין יָפֶה!",
+];
 const HEROES = ["🦁", "🐶", "🐱", "🐵", "🦄", "🐸", "🐼", "🐰", "🦊", "🐥"];
 const BITS = ["⭐", "🎉", "✨", "🌟", "🎈", "💖", "🍭", "🌈"];
 
@@ -68,11 +74,11 @@ export function Celebration({ trigger }: { trigger: number }) {
   useEffect(() => {
     if (!trigger) return;
     setShow(true);
-    const t = setTimeout(() => setShow(false), 1300);
+    const t = setTimeout(() => setShow(false), 2600);
     return () => clearTimeout(t);
   }, [trigger]);
   const data = useMemo(() => ({
-    cheer: CHEERS[trigger % CHEERS.length],
+    cheer: CHEERS[Math.floor(Math.random() * CHEERS.length)] ?? CHEERS[0]!,
     hero: HEROES[Math.floor(Math.random() * HEROES.length)],
     bits: Array.from({ length: 16 }, (_, i) => ({
       e: BITS[i % BITS.length],
@@ -88,7 +94,7 @@ export function Celebration({ trigger }: { trigger: number }) {
       ))}
       <div className="hero-pop flex flex-col items-center">
         <span className="text-9xl">{data.hero}</span>
-        <span className="font-display text-5xl text-success drop-shadow">{data.cheer}</span>
+        <span className={`font-display text-success drop-shadow ${data.cheer.length > 14 ? "text-4xl" : "text-5xl"}`}>{data.cheer}</span>
       </div>
     </div>
   );
