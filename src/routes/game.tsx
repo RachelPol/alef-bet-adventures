@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Feedback, Shell } from "@/components/Shell";
 import { Celebration, LevelPicker, SpeedBar, SpeedResult } from "@/components/Extras";
 import { pick, shuffle, speak } from "@/lib/letters";
-import { type Item, type Level } from "@/lib/levels";
+import { draw, type Item, type Level } from "@/lib/levels";
 import { useCelebrate, useLevel, useSpeedTest } from "@/lib/hooks";
 
 export const Route = createFileRoute("/game")({
@@ -21,7 +21,7 @@ export const Route = createFileRoute("/game")({
 const COLORS = ["bg-primary text-primary-foreground", "bg-secondary text-secondary-foreground", "bg-accent text-accent-foreground", "bg-success text-success-foreground"];
 
 function make(level: Level) {
-  const target = pick(level.items, 1)[0]!;
+  const target = draw(level);
   return { target, balloons: shuffle([target, ...pick(level.items, 5, [target])]) };
 }
 

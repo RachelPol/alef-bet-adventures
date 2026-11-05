@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Feedback, Shell } from "@/components/Shell";
 import { Celebration, LevelPicker, SpeedBar, SpeedResult } from "@/components/Extras";
 import { speak } from "@/lib/letters";
-import { textSize, type Item } from "@/lib/levels";
+import { draw, textSize, type Item } from "@/lib/levels";
 import { useCelebrate, useLevel, useSpeedTest } from "@/lib/hooks";
 
 export const Route = createFileRoute("/read")({
@@ -28,11 +28,7 @@ function Read() {
 
   const next = () => {
     setFb(null);
-    setItem((prev) => {
-      let n = prev;
-      while (n === prev) n = level.items[Math.floor(Math.random() * level.items.length)]!;
-      return n;
-    });
+    setItem(draw(level));
   };
   useEffect(next, [level]);
 
