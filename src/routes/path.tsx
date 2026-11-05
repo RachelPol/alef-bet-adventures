@@ -84,7 +84,7 @@ function PathGame() {
   // מיקום הדמות באחוזים על הלוח
   const heroPos = () => {
     if (won || step >= STEPS) return { x: -12, y: 50 }; // יצאה משמאל
-    if (step < 0) return { x: 112, y: (0.5 / ROWS) * 100 }; // מחוץ ללוח, מימין
+    if (step < 0) return { x: 106, y: (0.5 / ROWS) * 100 }; // בפתח הלוח, מימין
     const { row, col } = pathPos(step);
     return { x: ((col + 0.5) / COLS) * 100, y: ((row + 0.5) / ROWS) * 100 };
   };
