@@ -8,3 +8,5 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Keep word-path movement, answer threshold and card-refresh rules in a pure browser-safe module with unit tests so board geometry and progression stay independently verifiable.

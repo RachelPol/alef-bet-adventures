@@ -208,3 +208,16 @@
   animation: float 3s ease-in-out infinite;
   transition: opacity 0.4s, scale 0.4s;
 }
+
+.path-chick {
+  left: var(--hero-x);
+  top: var(--hero-y);
+  transform: translate(-50%, -105%);
+  transition: left 700ms ease-in-out, top 700ms ease-in-out;
+}
+.path-chick-exiting { left: -8%; }
+.path-gate { top: var(--hero-y); transform: translateY(-50%); }
+.path-word { overflow-wrap: anywhere; }
+@media (prefers-reduced-motion: reduce) {
+  .path-chick { transition-duration: 0ms; }
+}
