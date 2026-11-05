@@ -78,7 +78,7 @@ export function Celebration({ trigger }: { trigger: number }) {
     return () => clearTimeout(t);
   }, [trigger]);
   const data = useMemo(() => ({
-    cheer: CHEERS[Math.floor(Math.random() * CHEERS.length)],
+    cheer: CHEERS[Math.floor(Math.random() * CHEERS.length)] ?? CHEERS[0]!,
     hero: HEROES[Math.floor(Math.random() * HEROES.length)],
     bits: Array.from({ length: 16 }, (_, i) => ({
       e: BITS[i % BITS.length],
