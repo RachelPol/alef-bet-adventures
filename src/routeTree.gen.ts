@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as GameRouteImport } from './routes/game'
 import { Route as LettersRouteImport } from './routes/letters'
 import { Route as ListenRouteImport } from './routes/listen'
+import { Route as MemoryRouteImport } from './routes/memory'
 import { Route as PathRouteImport } from './routes/path'
 import { Route as ReadRouteImport } from './routes/read'
 import { Route as ApiPublicTtsRouteImport } from './routes/api/public/tts'
@@ -37,6 +38,11 @@ const ListenRoute = ListenRouteImport.update({
   path: '/listen',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MemoryRoute = MemoryRouteImport.update({
+  id: '/memory',
+  path: '/memory',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PathRoute = PathRouteImport.update({
   id: '/path',
   path: '/path',
@@ -58,6 +64,7 @@ export interface FileRoutesByFullPath {
   '/game': typeof GameRoute
   '/letters': typeof LettersRoute
   '/listen': typeof ListenRoute
+  '/memory': typeof MemoryRoute
   '/path': typeof PathRoute
   '/read': typeof ReadRoute
   '/api/public/tts': typeof ApiPublicTtsRoute
@@ -67,6 +74,7 @@ export interface FileRoutesByTo {
   '/game': typeof GameRoute
   '/letters': typeof LettersRoute
   '/listen': typeof ListenRoute
+  '/memory': typeof MemoryRoute
   '/path': typeof PathRoute
   '/read': typeof ReadRoute
   '/api/public/tts': typeof ApiPublicTtsRoute
@@ -77,6 +85,7 @@ export interface FileRoutesById {
   '/game': typeof GameRoute
   '/letters': typeof LettersRoute
   '/listen': typeof ListenRoute
+  '/memory': typeof MemoryRoute
   '/path': typeof PathRoute
   '/read': typeof ReadRoute
   '/api/public/tts': typeof ApiPublicTtsRoute
@@ -88,6 +97,7 @@ export interface FileRouteTypes {
     | '/game'
     | '/letters'
     | '/listen'
+    | '/memory'
     | '/path'
     | '/read'
     | '/api/public/tts'
@@ -97,6 +107,7 @@ export interface FileRouteTypes {
     | '/game'
     | '/letters'
     | '/listen'
+    | '/memory'
     | '/path'
     | '/read'
     | '/api/public/tts'
@@ -106,6 +117,7 @@ export interface FileRouteTypes {
     | '/game'
     | '/letters'
     | '/listen'
+    | '/memory'
     | '/path'
     | '/read'
     | '/api/public/tts'
@@ -116,6 +128,7 @@ export interface RootRouteChildren {
   GameRoute: typeof GameRoute
   LettersRoute: typeof LettersRoute
   ListenRoute: typeof ListenRoute
+  MemoryRoute: typeof MemoryRoute
   PathRoute: typeof PathRoute
   ReadRoute: typeof ReadRoute
   ApiPublicTtsRoute: typeof ApiPublicTtsRoute
@@ -151,6 +164,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ListenRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/memory': {
+      id: '/memory'
+      path: '/memory'
+      fullPath: '/memory'
+      preLoaderRoute: typeof MemoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/path': {
       id: '/path'
       path: '/path'
@@ -180,6 +200,7 @@ const rootRouteChildren: RootRouteChildren = {
   GameRoute: GameRoute,
   LettersRoute: LettersRoute,
   ListenRoute: ListenRoute,
+  MemoryRoute: MemoryRoute,
   PathRoute: PathRoute,
   ReadRoute: ReadRoute,
   ApiPublicTtsRoute: ApiPublicTtsRoute,
