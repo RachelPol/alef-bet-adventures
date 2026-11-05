@@ -18,7 +18,7 @@ export const Route = createFileRoute("/game")({
 const COLORS = ["bg-primary text-primary-foreground", "bg-secondary text-secondary-foreground", "bg-accent text-accent-foreground", "bg-success text-success-foreground"];
 
 function make() {
-  const target = pick(LETTERS, 1)[0];
+  const target = pick(LETTERS, 1)[0]!;
   return { target, balloons: shuffle([target, ...pick(LETTERS, 5, [target])]) };
 }
 

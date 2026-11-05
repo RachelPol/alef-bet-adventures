@@ -23,7 +23,7 @@ function Read() {
 
   const next = () => {
     setFb(null);
-    setItem(LETTERS[Math.floor(Math.random() * LETTERS.length)]);
+    setItem(LETTERS[Math.floor(Math.random() * LETTERS.length)]!);
   };
   useEffect(next, []);
   if (!item) return <Shell title="קְרָא בְּקוֹל">{null}</Shell>;

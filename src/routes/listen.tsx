@@ -17,7 +17,7 @@ export const Route = createFileRoute("/listen")({
 
 function newRound() {
   const pair = pick(LETTERS, 2);
-  return { pair, target: pair[Math.floor(Math.random() * 2)] };
+  return { pair, target: pair[Math.floor(Math.random() * 2)]! };
 }
 
 function Listen() {
@@ -52,8 +52,8 @@ function Listen() {
     const onKey = (e: KeyboardEvent) => {
       if (!round) return;
       // In RTL the first item is on the right
-      if (e.key === "ArrowRight") choose(round.pair[0]);
-      else if (e.key === "ArrowLeft") choose(round.pair[1]);
+      if (e.key === "ArrowRight") choose(round.pair[0]!);
+      else if (e.key === "ArrowLeft") choose(round.pair[1]!);
       else {
         const hit = round.pair.find((l) => l.char === e.key);
         if (hit) choose(hit);
