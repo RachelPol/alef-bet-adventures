@@ -31,8 +31,11 @@ export function textSize(t: string) {
 export function pickPair(level: Level): Item[] {
   if (level.id === "letters" && Math.random() < 0.5) {
     const [a, b] = CONFUSABLE[Math.floor(Math.random() * CONFUSABLE.length)]!;
-    const items = [a, b].map((c) => level.items.find((i) => i.text === c)!);
-    return Math.random() < 0.5 ? items : items.reverse();
+    const items = [a, b].map((c) => level.items.find((i) => i.text === c));
+    if (items[0] && items[1]) {
+      const pair = items as Item[];
+      return Math.random() < 0.5 ? pair : pair.reverse();
+    }
   }
   const a = draw(level);
   let b = draw(level);
