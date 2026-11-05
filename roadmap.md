@@ -8,3 +8,4 @@
 - [ ] Path game: varied up/down/left/right movement and an exit gate after 25 answers
 - [ ] Path game: difficulty and optional speed test selected before play
 - [ ] Verify path flow and board readability on desktop and mobile
+- [ ] Show elapsed time for completing 25 path words and all memory pairs
