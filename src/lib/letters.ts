@@ -25,8 +25,18 @@ export const LETTERS: Letter[] = [
   { char: "ת", name: "תָּו", word: "תַּפּוּחַ", emoji: "🍎" },
 ];
 
+let current: HTMLAudioElement | null = null;
+
 export function speak(text: string) {
-  if (typeof window === "undefined" || !window.speechSynthesis) return;
+  if (typeof window === "undefined") return;
+  current?.pause();
+  const audio = new Audio(`/api/public/tts?q=${encodeURIComponent(text)}`);
+  current = audio;
+  audio.play().catch(() => speakBrowser(text));
+}
+
+function speakBrowser(text: string) {
+  if (!window.speechSynthesis) return;
   window.speechSynthesis.cancel();
   const u = new SpeechSynthesisUtterance(text);
   u.lang = "he-IL";
