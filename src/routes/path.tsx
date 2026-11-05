@@ -115,14 +115,14 @@ function PathGame() {
             <div className="grid grid-cols-5 gap-4">
               {cards.map((l, i) => (
                 <button key={i} onClick={() => hit(l)}
-                  className={`flex h-28 items-center justify-center rounded-3xl bg-card px-2 font-display shadow-soft transition hover:-translate-y-1 hover:shadow-pop sm:h-36 ${l.text.replace(/[֑-ׇ]/g, "").length > 5 ? "text-2xl" : "text-4xl"}`}>
+                  className={`flex h-28 items-center justify-center rounded-3xl bg-card px-2 font-display shadow-soft transition hover:-translate-y-1 hover:shadow-pop sm:h-36 ${l.text.replace(/[֑-ׇ]/g, "").length > 5 ? "text-3xl" : "text-5xl sm:text-6xl"}`}>
                   {l.text}
                 </button>
               ))}
             </div>
             {/* הדמות מהלכת על הקלפים */}
             <div className="pointer-events-none absolute z-10 text-6xl transition-all duration-700 ease-in-out sm:text-7xl"
-              style={{ left: `${hp.x}%`, top: `${hp.y}%`, transform: "translate(-50%, -85%)" }}>
+              style={{ left: `${hp.x}%`, top: `${hp.y}%`, transform: "translate(-50%, -115%)" }}>
               {hero}
             </div>
           </div>
