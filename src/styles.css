@@ -221,3 +221,25 @@
 @media (prefers-reduced-motion: reduce) {
   .path-chick { transition-duration: 0ms; }
 }
+
+:root {
+  --sky: oklch(0.86 0.08 230);
+  --sky-deep: oklch(0.7 0.12 250);
+  --pavement: oklch(0.78 0.02 80);
+  --floor: oklch(0.72 0.08 60);
+  --glass: oklch(1 0 0 / 0.55);
+}
+@theme inline {
+  --color-sky: var(--sky);
+  --color-sky-deep: var(--sky-deep);
+  --color-pavement: var(--pavement);
+  --color-floor: var(--floor);
+  --color-glass: var(--glass);
+}
+.street-sky { background: linear-gradient(180deg, var(--sky-deep), var(--sky) 70%); }
+.shop-front { transition: transform 300ms cubic-bezier(.2,1.6,.4,1); }
+.shop-front:hover { transform: translateY(-10px) rotate(-1deg); }
+.awning { background: repeating-linear-gradient(90deg, currentColor 0 22px, var(--card) 22px 44px); }
+.floor-boards { background: repeating-linear-gradient(90deg, var(--floor) 0 60px, color-mix(in oklch, var(--floor) 85%, black) 60px 62px); }
+@keyframes cloud { from { transform: translateX(-20vw); } to { transform: translateX(110vw); } }
+.cloud { animation: cloud 40s linear infinite; }

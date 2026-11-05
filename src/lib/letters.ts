@@ -2,8 +2,8 @@ export type Letter = { char: string; name: string; word: string; emoji: string }
 
 export const LETTERS: Letter[] = [
   { char: "א", name: "אָלֶף", word: "אַרְיֵה", emoji: "🦁" },
-  { char: "בּ", name: "בֵּית עִם דָּגֵשׁ", word: "בַּיִת", emoji: "🏠" },
-  { char: "ב", name: "וֵית, בְּלִי דָּגֵשׁ", word: "כּוֹבַע", emoji: "🎩" },
+  { char: "בּ", name: "בֵּית", word: "בַּיִת", emoji: "🏠" },
+  { char: "ב", name: "וֵית", word: "כּוֹבַע", emoji: "🎩" },
   { char: "ג", name: "גִּימֶל", word: "גָּמָל", emoji: "🐪" },
   { char: "ד", name: "דָּלֶת", word: "דָּג", emoji: "🐟" },
   { char: "ה", name: "הֵא", word: "הַר", emoji: "⛰️" },
@@ -12,22 +12,22 @@ export const LETTERS: Letter[] = [
   { char: "ח", name: "חֵית", word: "חָתוּל", emoji: "🐱" },
   { char: "ט", name: "טֵית", word: "טַוָּס", emoji: "🦚" },
   { char: "י", name: "יוֹד", word: "יָד", emoji: "✋" },
-  { char: "כּ", name: "כַּף עִם דָּגֵשׁ", word: "כַּדּוּר", emoji: "⚽" },
-  { char: "כ", name: "חַף, בְּלִי דָּגֵשׁ", word: "דְּרָכִים", emoji: "🛣️" },
+  { char: "כּ", name: "כַּף", word: "כַּדּוּר", emoji: "⚽" },
+  { char: "כ", name: "חָף", word: "דְּרָכִים", emoji: "🛣️" },
   { char: "ל", name: "לָמֶד", word: "לֵב", emoji: "❤️" },
   { char: "מ", name: "מֵם", word: "מַיִם", emoji: "💧" },
   { char: "נ", name: "נוּן", word: "נֵר", emoji: "🕯️" },
   { char: "ס", name: "סָמֶךְ", word: "סוּס", emoji: "🐴" },
   { char: "ע", name: "עַיִן", word: "עֵץ", emoji: "🌳" },
-  { char: "פּ", name: "פֵּא עִם דָּגֵשׁ", word: "פִּיל", emoji: "🐘" },
-  { char: "פ", name: "פֵא רָפָה, בְּלִי דָּגֵשׁ", word: "סוּפָה", emoji: "🌪️" },
+  { char: "פּ", name: "פֵּא", word: "פִּיל", emoji: "🐘" },
+  { char: "פ", name: "פֵא", word: "סוּפָה", emoji: "🌪️" },
   { char: "צ", name: "צָדִי", word: "צָב", emoji: "🐢" },
   { char: "ק", name: "קוֹף", word: "קוֹף", emoji: "🐒" },
   { char: "ר", name: "רֵישׁ", word: "רַכֶּבֶת", emoji: "🚂" },
-  { char: "שׁ", name: "שִׁין, נְקֻדָּה בְּיָמִין", word: "שֶׁמֶשׁ", emoji: "☀️" },
-  { char: "שׂ", name: "שִׂין, נְקֻדָּה בִּשְׂמֹאל", word: "שָׂעִיר", emoji: "🐐" },
-  { char: "תּ", name: "תָּו עִם דָּגֵשׁ", word: "תַּפּוּחַ", emoji: "🍎" },
-  { char: "ת", name: "תָּו בְּלִי דָּגֵשׁ", word: "בַּיִת", emoji: "🏡" },
+  { char: "שׁ", name: "שִׁין", word: "שֶׁמֶשׁ", emoji: "☀️" },
+  { char: "שׂ", name: "שִׂין", word: "שָׂעִיר", emoji: "🐐" },
+  { char: "תּ", name: "תָּו", word: "תַּפּוּחַ", emoji: "🍎" },
+  { char: "ת", name: "תָו", word: "בַּיִת", emoji: "🏡" },
 ];
 
 let current: HTMLAudioElement | null = null;
@@ -66,6 +66,6 @@ export function shuffle<T>(arr: T[]): T[] {
 
 // Pairs that look alike and children often confuse
 export const CONFUSABLE: [string, string][] = [
-  ["שׁ", "שׂ"], ["בּ", "ב"], ["כּ", "כ"], ["פּ", "פ"], ["תּ", "ת"],
+  ["שׁ", "שׂ"], ["בּ", "ב"], ["כּ", "כ"], ["פּ", "פ"],
   ["ב", "כ"], ["ד", "ר"], ["ה", "ח"], ["ו", "ז"], ["ס", "ם"],
 ];

@@ -10,3 +10,6 @@
 - [x] Verify path flow and board readability on desktop and mobile
 - [x] Show elapsed time for completing 25 path words and all memory pairs
 - [ ] Path game: move the chick with the arrow keys as an alternative to clicking
+- [x] Letter names by sound only (no "with/without dagesh")
+- [x] Global points across all activities + points summary on finish
+- [x] Personal room + shop street (furniture, toys, music, paint, decor); drag items
