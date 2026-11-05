@@ -1,10 +1,11 @@
 import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 
-export function Shell({ title, score, children }: { title: string; score?: number; children: ReactNode }) {
+export function Shell({ title, score, wide, children }: { title: string; score?: number; wide?: boolean; children: ReactNode }) {
+  const width = wide ? "max-w-6xl" : "max-w-3xl";
   return (
     <div className="min-h-screen bg-background px-4 py-6">
-      <header className="mx-auto flex max-w-3xl items-center justify-between">
+      <header className={`mx-auto flex ${width} items-center justify-between`}>
         <Link to="/" className="rounded-full bg-card px-5 py-2 text-lg font-bold text-foreground shadow-soft">
           🏠 בית
         </Link>
@@ -15,7 +16,7 @@ export function Shell({ title, score, children }: { title: string; score?: numbe
           <span />
         )}
       </header>
-      <main className="mx-auto mt-8 max-w-3xl">{children}</main>
+      <main className={`mx-auto mt-8 ${width}`}>{children}</main>
     </div>
   );
 }
