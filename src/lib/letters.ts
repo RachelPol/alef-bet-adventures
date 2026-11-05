@@ -66,6 +66,6 @@ export function shuffle<T>(arr: T[]): T[] {
 
 // Pairs that look alike and children often confuse
 export const CONFUSABLE: [string, string][] = [
-  ["שׁ", "שׂ"], ["בּ", "ב"], ["כּ", "כ"], ["פּ", "פ"], ["תּ", "ת"],
+  ["שׁ", "שׂ"], ["בּ", "ב"], ["כּ", "כ"], ["פּ", "פ"],
   ["ב", "כ"], ["ד", "ר"], ["ה", "ח"], ["ו", "ז"], ["ס", "ם"],
 ];
