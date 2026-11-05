@@ -13,6 +13,8 @@ export const Route = createFileRoute("/listen")({
       { name: "description", content: "שומעים ובוחרים את האות, ההברה או המילה הנכונה" },
       { property: "og:title", content: "שמע ובחר – אָלֶף בֵּית" },
       { property: "og:description", content: "שומעים ובוחרים את האות, ההברה או המילה הנכונה" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Listen,

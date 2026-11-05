@@ -7,6 +7,8 @@ export const Route = createFileRoute("/")({
       { name: "description", content: "אפליקציה לילדים ללימוד אותיות וקריאה בעברית" },
       { property: "og:title", content: "אָלֶף בֵּית – לומדים לקרוא" },
       { property: "og:description", content: "לומדים אותיות, מקשיבים, קוראים ומשחקים" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Index,

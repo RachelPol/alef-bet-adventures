@@ -4,6 +4,8 @@ import { Shell } from "@/components/Shell";
 import { Celebration } from "@/components/Extras";
 import { LETTERS, pick, shuffle, speak } from "@/lib/letters";
 import { useCelebrate } from "@/lib/hooks";
+import { Button } from "@/components/ui/button";
+import { completionTimeLabel, useCompletionTime } from "@/lib/completion-time";
 
 export const Route = createFileRoute("/memory")({
   head: () => ({
@@ -12,6 +14,8 @@ export const Route = createFileRoute("/memory")({
       { name: "description", content: "משחק זיכרון: מצאו זוג של מילה ותמונה" },
       { property: "og:title", content: "מִשְׂחַק זִכָּרוֹן – אָלֶף בֵּית" },
       { property: "og:description", content: "משחק זיכרון: מצאו זוג של מילה ותמונה" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: MemoryGame,
@@ -37,7 +41,8 @@ function MemoryGame() {
   const [busy, setBusy] = useState(false);
   const [moves, setMoves] = useState(0);
   const [cel, celebrate] = useCelebrate();
-  useEffect(() => { setCards(deal()); }, []);
+  const { seconds, start: startTime, finish: finishTime } = useCompletionTime();
+  useEffect(() => { setCards(deal()); startTime(); }, [startTime]);
 
   const won = cards.length > 0 && done.length === cards.length;
 
@@ -47,12 +52,16 @@ function MemoryGame() {
     setOpen(now);
     if (now.length < 2) return;
     setMoves((m) => m + 1);
-    const [a, b] = now.map((id) => cards.find((x) => x.id === id)!) as [Card, Card];
+    const [a, b] = now.map((id) => cards.find((x) => x.id === id));
+    if (!a || !b) return;
     if (a.pair === b.pair) {
       setDone((d) => [...d, a.id, b.id]);
       setOpen([]);
       celebrate();
-      if (done.length + 2 === cards.length) speak("כָּל הַכָּבוֹד! מָצָאתָ אֶת כָּל הַזּוּגוֹת!");
+      if (done.length + 2 === cards.length) {
+        finishTime();
+        speak("כָּל הַכָּבוֹד! מָצָאתָ אֶת כָּל הַזּוּגוֹת!");
+      }
     } else {
       setBusy(true);
       setTimeout(() => { setOpen([]); setBusy(false); }, 1100);
@@ -64,6 +73,8 @@ function MemoryGame() {
     setOpen([]);
     setDone([]);
     setMoves(0);
+    setBusy(false);
+    startTime();
   };
 
   return (
@@ -75,19 +86,20 @@ function MemoryGame() {
           <div className="text-8xl animate-bounce">🏆</div>
           <p className="mt-4 font-display text-5xl text-primary">מָצָאתָ אֶת כָּל הַזּוּגוֹת!</p>
           <p className="mt-2 text-2xl">בְּ {moves} נִסְיוֹנוֹת</p>
-          <button onClick={restart} className="mt-6 rounded-full bg-primary px-8 py-4 font-display text-2xl text-primary-foreground shadow-pop">
+          {seconds !== null && <p className="mt-3 text-xl" aria-label="זמן סיום">⏱️ מָצָאתָ אֶת כָּל הַזּוּגוֹת בְּ־{completionTimeLabel(seconds)}</p>}
+          <Button onClick={restart} className="mt-6 h-auto rounded-full bg-primary px-8 py-4 font-display text-2xl text-primary-foreground shadow-pop">
             🔁 מִשְׂחָק חָדָשׁ
-          </button>
+          </Button>
         </div>
       ) : (
         <div className="mt-8 grid grid-cols-3 gap-4 sm:grid-cols-4">
           {cards.map((c) => {
             const shown = open.includes(c.id) || done.includes(c.id);
             return (
-              <button key={c.id} onClick={() => flip(c)}
+              <Button variant="ghost" key={c.id} onClick={() => flip(c)} aria-label={shown ? c.text : "קלף הפוך"}
                 className={`flex h-32 items-center justify-center rounded-3xl px-2 font-display shadow-soft transition sm:h-40 ${shown ? (done.includes(c.id) ? "bg-success/30" : "bg-card") : "bg-primary text-primary-foreground hover:scale-105"} ${c.kind === "pic" ? "text-6xl" : "text-3xl sm:text-4xl"}`}>
                 {shown ? c.text : "❓"}
-              </button>
+              </Button>
             );
           })}
         </div>

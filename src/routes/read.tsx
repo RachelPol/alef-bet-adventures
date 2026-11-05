@@ -13,6 +13,8 @@ export const Route = createFileRoute("/read")({
       { name: "description", content: "הילד קורא בקול והמבוגר שלידו מאשר" },
       { property: "og:title", content: "קרא בקול – אָלֶף בֵּית" },
       { property: "og:description", content: "הילד קורא בקול והמבוגר שלידו מאשר" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Read,

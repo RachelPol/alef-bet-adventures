@@ -13,6 +13,8 @@ export const Route = createFileRoute("/game")({
       { name: "description", content: "משחק: פוצצו את הבלון עם מה ששמעתם" },
       { property: "og:title", content: "פוצצים בלונים – אָלֶף בֵּית" },
       { property: "og:description", content: "משחק: פוצצו את הבלון עם מה ששמעתם" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Game,
