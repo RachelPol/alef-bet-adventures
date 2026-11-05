@@ -2,8 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
 import { Feedback, Shell } from "@/components/Shell";
 import { Celebration, LevelPicker, SpeedBar, SpeedResult } from "@/components/Extras";
-import { pick, speak } from "@/lib/letters";
-import { textSize, type Item, type Level } from "@/lib/levels";
+import { speak } from "@/lib/letters";
+import { pickPair, textSize, type Item, type Level } from "@/lib/levels";
 import { useCelebrate, useLevel, useSpeedTest } from "@/lib/hooks";
 
 export const Route = createFileRoute("/listen")({
@@ -19,7 +19,7 @@ export const Route = createFileRoute("/listen")({
 });
 
 function newRound(level: Level) {
-  const pair = pick(level.items, 2);
+  const pair = pickPair(level);
   return { pair, target: pair[Math.floor(Math.random() * 2)]! };
 }
 

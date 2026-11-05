@@ -1,4 +1,4 @@
-import { LETTERS } from "./letters";
+import { CONFUSABLE, LETTERS } from "./letters";
 
 export type Item = { text: string; say: string };
 export type Level = { id: string; label: string; unit: string; items: Item[] };
@@ -6,7 +6,7 @@ export type Level = { id: string; label: string; unit: string; items: Item[] };
 const w = (s: string): Item[] => s.split(" ").map((t) => ({ text: t, say: t }));
 
 const VOWELS = ["ָ", "ַ", "ֵ", "ִ", "ֹ", "ֻ"];
-const SYL_LETTERS = ["בּ", "ג", "ד", "ה", "ל", "מ", "נ", "ס", "פּ", "ר", "שׁ", "ת", "כּ", "ק", "ט", "ז"];
+const SYL_LETTERS = ["בּ", "ב", "ג", "ד", "ה", "ל", "מ", "נ", "ס", "פּ", "פ", "ר", "שׁ", "שׂ", "תּ", "כּ", "כ", "ק", "ט", "ז"];
 const SYLLABLES: Item[] = SYL_LETTERS.flatMap((l) => VOWELS.map((v) => ({ text: l + v, say: l + v })));
 
 export const LEVELS: Level[] = [
@@ -26,4 +26,13 @@ export function textSize(t: string) {
   if (n <= 4) return "text-7xl";
   if (n <= 6) return "text-6xl";
   return "text-5xl";
+}
+
+export function pickPair(level: Level): Item[] {
+  if (level.id === "letters" && Math.random() < 0.5) {
+    const [a, b] = CONFUSABLE[Math.floor(Math.random() * CONFUSABLE.length)]!;
+    const items = [a, b].map((c) => level.items.find((i) => i.text === c)!);
+    return Math.random() < 0.5 ? items : items.reverse();
+  }
+  return [...level.items].sort(() => Math.random() - 0.5).slice(0, 2);
 }
