@@ -14,6 +14,7 @@ describe("Word path rules", () => {
       { index: 6, direction: "left" }, { index: 8, direction: "right" },
     ]);
     expect(nextPathMove(7, 5, "left", () => .5).direction).not.toBe("left");
+    expect(nextPathMove(7, 5, "left", () => .99).direction).not.toBe("right");
   });
   it("keeps every move adjacent and inside desktop and mobile boards", () => {
     for (const columns of [3, 5]) for (let cell = 0; cell < 15; cell++) for (const random of [0, .3, .6, .99]) {

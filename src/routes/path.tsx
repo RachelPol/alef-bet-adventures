@@ -134,7 +134,7 @@ function PathGame() {
           <div className="text-8xl animate-bounce">🏆</div>
           <p className="mt-4 font-display text-5xl text-primary">חָצִיתָ אֶת כָּל הַלּוּחַ!</p>
           <p className="mt-2 text-2xl">עָנִיתָ נָכוֹן {PATH_GOAL} פְּעָמִים!</p>
-          {completion.seconds !== null && <p className="mt-3 text-xl" aria-label="זמן סיום">⏱️ קָרָאתָ 25 מִלִּים בְּ־{completionTimeLabel(completion.seconds)}</p>}
+          {completion.seconds !== null && <p className="mt-3 text-xl" aria-label="זמן סיום">⏱️ קָרָאתָ 25 {level.unit} בְּ־{completionTimeLabel(completion.seconds)}</p>}
           {speed.active && <div className="mt-4"><SpeedBar speed={speed} unit={level.unit} /></div>}
           <Button onClick={start} className="mt-6 h-auto px-8 py-4 font-display text-2xl"><RotateCcw /> מִשְׂחָק חָדָשׁ</Button>
           <Button variant="ghost" onClick={settings} className="mt-4 ms-3"><Settings2 /> בְּחִירַת מִשְׂחָק</Button>
@@ -144,7 +144,7 @@ function PathGame() {
           <div className="flex flex-wrap items-center justify-between gap-3">
             <Button variant="ghost" size="icon" onClick={settings} title="בְּחִירַת מִשְׂחָק" aria-label="בְּחִירַת מִשְׂחָק"><Settings2 /></Button>
             {phase === "gate" ? <Button onClick={exit} className="h-auto px-6 py-3 text-xl"><DoorOpen /> הַשַּׁעַר נִפְתַּח! יוֹצְאִים!</Button> : <Button disabled={phase === "exiting"} onClick={() => target && speak(target.say)} className="h-auto px-6 py-3 font-display text-2xl"><Volume2 /> מָה שָׁמַעְתָּ?</Button>}
-            <span className="text-lg font-bold" aria-label="התקדמות לשער">🐥 {score} / {PATH_GOAL} 🚪</span>
+            <span className="text-lg font-bold" dir="ltr" aria-label="התקדמות לשער">🐥 {score} / {PATH_GOAL} 🚪</span>
           </div>
           {speed.active && <div className="mt-3"><SpeedBar speed={speed} unit={level.unit} /></div>}
           <div className="path-board relative mt-5 overflow-hidden" dir="ltr" style={heroStyle}>

@@ -5,7 +5,11 @@ export function elapsedSeconds(start: number, end: number) {
 }
 
 export function completionTimeLabel(seconds: number) {
-  return `${Math.floor(seconds / 60)} דַּקּוֹת ו־${seconds % 60} שְׁנִיּוֹת`;
+  const minutes = Math.floor(seconds / 60);
+  const remainder = seconds % 60;
+  if (minutes === 0) return `${remainder} שְׁנִיּוֹת`;
+  const minuteLabel = minutes === 1 ? "דַּקָּה אַחַת" : `${minutes} דַּקּוֹת`;
+  return remainder === 0 ? minuteLabel : `${minuteLabel} ו־${remainder} שְׁנִיּוֹת`;
 }
 
 export function useCompletionTime() {
