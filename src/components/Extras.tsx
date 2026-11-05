@@ -41,7 +41,7 @@ export function SpeedBar({ speed, unit }: { speed: Speed; unit: string }) {
   );
 }
 
-export function SpeedResult({ speed, unit }: { speed: Speed; unit: string }) {
+export function SpeedResult({ speed, unit, onRestart }: { speed: Speed; unit: string; onRestart?: () => void }) {
   if (speed.result === null) return null;
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/40 p-4 animate-in fade-in">
@@ -51,7 +51,7 @@ export function SpeedResult({ speed, unit }: { speed: Speed; unit: string }) {
         <p className="font-display text-7xl text-primary">{speed.result}</p>
         <p className="text-2xl font-bold">{unit}</p>
         <div className="mt-6 flex justify-center gap-3">
-          <button onClick={speed.start} className="rounded-full bg-secondary px-5 py-2 font-bold text-secondary-foreground">שׁוּב</button>
+          <button onClick={onRestart ?? speed.start} className="rounded-full bg-secondary px-5 py-2 font-bold text-secondary-foreground">שׁוּב</button>
           <button onClick={speed.close} className="rounded-full bg-primary px-5 py-2 font-bold text-primary-foreground">סְגִירָה</button>
         </div>
       </div>

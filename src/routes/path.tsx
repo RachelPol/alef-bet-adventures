@@ -8,6 +8,7 @@ import { pick, speak } from "@/lib/letters";
 import { LEVELS, type Item } from "@/lib/levels";
 import { useCelebrate, useLevel, useSpeedTest } from "@/lib/hooks";
 import { gateIsOpen, nextPathMove, PATH_CELLS, PATH_GOAL, replaceDepartedCard, type Direction } from "@/lib/path-game";
+import { completionTimeLabel, useCompletionTime } from "@/lib/completion-time";
 
 export const Route = createFileRoute("/path")({
   head: () => ({
@@ -36,6 +37,7 @@ function PathGame() {
   const [score, setScore] = useState(0);
   const [cel, celebrate] = useCelebrate();
   const speed = useSpeedTest();
+  const completion = useCompletionTime();
   const pending = useRef<ReturnType<typeof setTimeout> | null>(null);
   const locked = useRef(false);
   useEffect(() => {
@@ -57,6 +59,7 @@ function PathGame() {
     setScore(0);
     setFb(null);
     setPhase("playing");
+    completion.start();
     speed.close();
     if (timed) speed.start(); else speed.stop();
     const target = board[move.index];
@@ -81,6 +84,7 @@ function PathGame() {
       celebrate();
       if (speed.active) speed.record();
       if (gateIsOpen(count)) {
+        completion.finish();
         setPhase("gate");
         setTargetIndex(null);
         setFb(null);
@@ -130,6 +134,7 @@ function PathGame() {
           <div className="text-8xl animate-bounce">🏆</div>
           <p className="mt-4 font-display text-5xl text-primary">חָצִיתָ אֶת כָּל הַלּוּחַ!</p>
           <p className="mt-2 text-2xl">עָנִיתָ נָכוֹן {PATH_GOAL} פְּעָמִים!</p>
+          {completion.seconds !== null && <p className="mt-3 text-xl" aria-label="זמן סיום">⏱️ קָרָאתָ 25 מִלִּים בְּ־{completionTimeLabel(completion.seconds)}</p>}
           {speed.active && <div className="mt-4"><SpeedBar speed={speed} unit={level.unit} /></div>}
           <Button onClick={start} className="mt-6 h-auto px-8 py-4 font-display text-2xl"><RotateCcw /> מִשְׂחָק חָדָשׁ</Button>
           <Button variant="ghost" onClick={settings} className="mt-4 ms-3"><Settings2 /> בְּחִירַת מִשְׂחָק</Button>
@@ -159,7 +164,7 @@ function PathGame() {
       )}
       {phase !== "setup" && <div className="mt-3"><Feedback state={fb === "bad" ? "bad" : null} /></div>}
       <Celebration trigger={cel} />
-      <SpeedResult speed={speed} unit={level.unit} />
+      <SpeedResult speed={speed} unit={level.unit} onRestart={start} />
     </Shell>
   );
 }
