@@ -37,7 +37,11 @@ export function speak(text: string) {
   current?.pause();
   const audio = new Audio(`/api/public/tts?q=${encodeURIComponent(text)}`);
   current = audio;
-  audio.play().catch(() => speakBrowser(text));
+  window.speechSynthesis?.cancel();
+  audio.play().catch((e) => {
+    // An interrupted (replaced) sound must not fall back and speak the old word
+    if (current === audio && e?.name !== "AbortError") speakBrowser(text);
+  });
 }
 
 function speakBrowser(text: string) {
