@@ -102,6 +102,7 @@ function MemoryGame() {
     setDone([]);
     setMoves(0);
     setBusy(false);
+    setFocus(0);
     startTime();
   };
 
@@ -121,11 +122,11 @@ function MemoryGame() {
         </div>
       ) : (
         <div className="mt-8 grid grid-cols-3 gap-4 sm:grid-cols-4">
-          {cards.map((c) => {
+          {cards.map((c, i) => {
             const shown = open.includes(c.id) || done.includes(c.id);
             return (
               <Button variant="ghost" key={c.id} onClick={() => flip(c)} aria-label={shown ? c.text : "קלף הפוך"}
-                className={`flex h-32 items-center justify-center rounded-3xl px-2 font-display shadow-soft transition sm:h-40 ${shown ? (done.includes(c.id) ? "bg-success/30" : "bg-card") : "bg-primary text-primary-foreground hover:scale-105"} ${c.kind === "pic" ? "text-6xl" : "text-3xl sm:text-4xl"}`}>
+                className={`flex h-32 items-center justify-center rounded-3xl px-2 font-display shadow-soft transition sm:h-40 ${shown ? (done.includes(c.id) ? "bg-success/30" : "bg-card") : "bg-primary text-primary-foreground hover:scale-105"} ${i === focus && !won ? "ring-4 ring-ring ring-offset-4 ring-offset-background" : ""} ${c.kind === "pic" ? "text-6xl" : "text-3xl sm:text-4xl"}`}>
                 {shown ? c.text : "❓"}
               </Button>
             );
