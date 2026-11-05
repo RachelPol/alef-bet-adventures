@@ -48,7 +48,7 @@ function MemoryGame() {
     if (c.kind === "word") speak(c.text);
     if (now.length < 2) return;
     setMoves((m) => m + 1);
-    const [a, b] = now.map((id) => cards.find((x) => x.id === id)!);
+    const [a, b] = now.map((id) => cards.find((x) => x.id === id)!) as [Card, Card];
     if (a.pair === b.pair) {
       setDone((d) => [...d, a.id, b.id]);
       setOpen([]);
