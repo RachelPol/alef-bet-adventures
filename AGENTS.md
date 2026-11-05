@@ -11,3 +11,4 @@
 
 - Keep word-path movement, answer threshold and card-refresh rules in a pure browser-safe module with unit tests so board geometry and progression stay independently verifiable.
 - Share a start/finish completion clock across games and freeze the duration on the final correct answer so exit animations do not inflate reading time.
+- Activity points are banked centrally by Shell from score increases into the localStorage wallet (src/lib/wallet.ts, unit-tested), so every game earns points without per-game code.
