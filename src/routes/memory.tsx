@@ -45,7 +45,6 @@ function MemoryGame() {
     if (busy || won || open.includes(c.id) || done.includes(c.id)) return;
     const now = [...open, c.id];
     setOpen(now);
-    if (c.kind === "word") speak(c.text);
     if (now.length < 2) return;
     setMoves((m) => m + 1);
     const [a, b] = now.map((id) => cards.find((x) => x.id === id)!) as [Card, Card];
