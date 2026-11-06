@@ -4,3 +4,7 @@ export function readingMatch(expected: string, transcript: string): boolean {
   const target = clean(expected);
   return target.length > 0 && target === clean(transcript);
 }
+
+export function shouldApproveReading(expected: string, transcript: string, completed: boolean, failed: boolean, active: boolean): boolean {
+  return completed && !failed && active && readingMatch(expected, transcript);
+}
