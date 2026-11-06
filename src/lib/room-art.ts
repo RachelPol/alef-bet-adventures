@@ -1,0 +1,18 @@
+import bed from "@/assets/items/bed.png";
+import chair from "@/assets/items/chair.png";
+import sofa from "@/assets/items/sofa.png";
+import lamp from "@/assets/items/lamp.png";
+import bear from "@/assets/items/bear.png";
+import ball from "@/assets/items/ball.png";
+import car from "@/assets/items/car.png";
+import robot from "@/assets/items/robot.png";
+import guitar from "@/assets/items/guitar.png";
+import drum from "@/assets/items/drum.png";
+import piano from "@/assets/items/piano.png";
+import violin from "@/assets/items/violin.png";
+import plant from "@/assets/items/plant.png";
+import fish from "@/assets/items/fish.png";
+import picture from "@/assets/items/picture.png";
+import clock from "@/assets/items/clock.png";
+export const ITEM_ART: Record<string, string> = { bed, chair, sofa, lamp, bear, ball, car, robot, guitar, drum, piano, violin, plant, fish, picture, clock };
+export const ITEM_SIZE: Record<string, number> = { bed: 240, chair: 150, sofa: 270, lamp: 85, piano: 220, fish: 170, picture: 140, clock: 85, bear: 85, ball: 65, car: 90, robot: 90, plant: 120, guitar: 80, violin: 70, drum: 90 };

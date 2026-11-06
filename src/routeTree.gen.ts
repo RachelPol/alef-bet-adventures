@@ -20,6 +20,7 @@ import { Route as ReadRouteImport } from './routes/read'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RoomRouteImport } from './routes/room'
 import { Route as StreetRouteImport } from './routes/street'
+import { Route as ApiCloudSplatRouteImport } from './routes/api/cloud.$'
 import { Route as ApiPublicTtsRouteImport } from './routes/api/public/tts'
 
 const IndexRoute = IndexRouteImport.update({
@@ -77,6 +78,11 @@ const StreetRoute = StreetRouteImport.update({
   path: '/street',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiCloudSplatRoute = ApiCloudSplatRouteImport.update({
+  id: '/api/cloud/$',
+  path: '/api/cloud/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicTtsRoute = ApiPublicTtsRouteImport.update({
   id: '/api/public/tts',
   path: '/api/public/tts',
@@ -95,6 +101,7 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/room': typeof RoomRoute
   '/street': typeof StreetRoute
+  '/api/cloud/$': typeof ApiCloudSplatRoute
   '/api/public/tts': typeof ApiPublicTtsRoute
 }
 export interface FileRoutesByTo {
@@ -109,6 +116,7 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/room': typeof RoomRoute
   '/street': typeof StreetRoute
+  '/api/cloud/$': typeof ApiCloudSplatRoute
   '/api/public/tts': typeof ApiPublicTtsRoute
 }
 export interface FileRoutesById {
@@ -124,6 +132,7 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/room': typeof RoomRoute
   '/street': typeof StreetRoute
+  '/api/cloud/$': typeof ApiCloudSplatRoute
   '/api/public/tts': typeof ApiPublicTtsRoute
 }
 export interface FileRouteTypes {
@@ -140,6 +149,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/room'
     | '/street'
+    | '/api/cloud/$'
     | '/api/public/tts'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -154,6 +164,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/room'
     | '/street'
+    | '/api/cloud/$'
     | '/api/public/tts'
   id:
     | '__root__'
@@ -168,6 +179,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/room'
     | '/street'
+    | '/api/cloud/$'
     | '/api/public/tts'
   fileRoutesById: FileRoutesById
 }
@@ -183,6 +195,7 @@ export interface RootRouteChildren {
   ResetPasswordRoute: typeof ResetPasswordRoute
   RoomRoute: typeof RoomRoute
   StreetRoute: typeof StreetRoute
+  ApiCloudSplatRoute: typeof ApiCloudSplatRoute
   ApiPublicTtsRoute: typeof ApiPublicTtsRoute
 }
 
@@ -265,6 +278,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StreetRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/cloud/$': {
+      id: '/api/cloud/$'
+      path: '/api/cloud/$'
+      fullPath: '/api/cloud/$'
+      preLoaderRoute: typeof ApiCloudSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/tts': {
       id: '/api/public/tts'
       path: '/api/public/tts'
@@ -287,6 +307,7 @@ const rootRouteChildren: RootRouteChildren = {
   ResetPasswordRoute: ResetPasswordRoute,
   RoomRoute: RoomRoute,
   StreetRoute: StreetRoute,
+  ApiCloudSplatRoute: ApiCloudSplatRoute,
   ApiPublicTtsRoute: ApiPublicTtsRoute,
 }
 export const routeTree = rootRouteImport
