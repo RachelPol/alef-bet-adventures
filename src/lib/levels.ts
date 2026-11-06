@@ -7,7 +7,7 @@ export type Level = { id: string; label: string; unit: string; items: Item[] };
 const w = (s: string): Item[] => s.split(" ").map((t) => ({ text: t, say: t }));
 
 const VOWELS = ["ָ", "ַ", "ֵ", "ִ", "ֹ", "ֻ"];
-const SYL_LETTERS = ["בּ", "ב", "ג", "ד", "ה", "ל", "מ", "נ", "ס", "פּ", "פ", "ר", "שׁ", "שׂ", "תּ", "כּ", "כ", "ק", "ט", "ז"];
+const SYL_LETTERS = ["בּ", "ב", "ג", "ד", "ה", "ל", "מ", "נ", "ס", "פּ", "פ", "ר", "שׁ", "שׂ", "תּ", "ת", "כּ", "כ", "ק", "ט", "ז"];
 const SYLLABLES: Item[] = SYL_LETTERS.flatMap((l) => VOWELS.map((v) => ({ text: l + v, say: l + v })));
 
 export const LEVELS: Level[] = [

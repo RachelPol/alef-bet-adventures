@@ -23,3 +23,4 @@
 - Parent recovery requires the separate server-held parent code and a validated authenticated child session; credit points atomically with a wallet version increment and audit row, never authorize by hidden keys alone.
 - The dormant microphone trial modules are not mounted by the reading route; preserve their complete WAV/authenticated SSE boundary and durable AI access blocks if explicitly reactivated.
 - Reading pronunciation is saved in the authenticated child's profile through account settings and loaded into the common speech client; dialect and tav rules stay browser-safe and tested, and the server selects dialect-specific instructions without changing display text.
+- Resolve isolated pointed syllables into explicit consonant-plus-vowel sounds before TTS, separate from whole-word guidance, to avoid model guesses about letter names and dialect vowels.
