@@ -2,7 +2,7 @@ import { GameSetup } from "@/components/GameSetup";
 import { Button } from "@/components/ui/button";
 import { Settings2 } from "lucide-react";
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Feedback, Shell } from "@/components/Shell";
 import { Celebration, SpeedBar, SpeedResult } from "@/components/Extras";
 import { pick, shuffle, speak } from "@/lib/letters";
@@ -38,10 +38,12 @@ function Game() {
   const [score, setScore] = useState(0);
   const [cel, celebrate] = useCelebrate();
   const speed = useSpeedTest();
+  const pending = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => () => { if (pending.current) clearTimeout(pending.current); }, []);
   const [playing, setPlaying] = useState(false);
   const [timed, setTimed] = useState(false);
-  const start = () => { setPlaying(true); setFb(null); speed.close(); if (timed) speed.start(); else speed.stop(); };
-  const settings = () => { setPlaying(false); speed.stop(); speed.close(); };
+  const start = () => { if (pending.current) clearTimeout(pending.current); setPlaying(true); setFb(null); speed.close(); if (timed) speed.start(); else speed.stop(); };
+  const settings = () => { if (pending.current) clearTimeout(pending.current); setPlaying(false); speed.stop(); speed.close(); };
   const blocked = !playing || speed.result !== null || (timed && !speed.active);
 
   useEffect(() => { setR(make(level)); setFb(null); }, [level]);
@@ -51,7 +53,7 @@ function Game() {
     if (l === r.target) {
       setPopped(l.text); setFb("ok"); setScore((s) => s + 1); celebrate();
       if (speed.active) speed.record();
-      setTimeout(() => { const n = make(level); setR(n); setPopped(null); setFb(null); speak(n.target.say); }, speed.active ? 600 : 1200);
+      pending.current = setTimeout(() => { const n = make(level); setR(n); setPopped(null); setFb(null); speak(n.target.say); }, speed.active ? 600 : 1200);
     } else { setFb("bad"); speak(r.target.say); }
   };
 
@@ -64,12 +66,12 @@ function Game() {
       {r && (
         <>
           <div className="mt-6 text-center">
-            <Button variant="ghost" onClick={() => speak(r.target.say)} className="rounded-full bg-primary px-10 py-5 font-display text-3xl text-primary-foreground shadow-pop">🔊 מָה שָׁמַעְתָּ?</Button>
+            <Button variant="ghost" onClick={() => speak(r.target.say)} className="h-auto rounded-full bg-primary px-10 py-5 font-display text-3xl text-primary-foreground shadow-pop">🔊 מָה שָׁמַעְתָּ?</Button>
           </div>
           <div className="mt-10 grid grid-cols-2 gap-6 sm:grid-cols-3">
             {r.balloons.map((l, i) => (
-              <Button variant="ghost" key={l.text} onClick={() => hit(l)} style={{ animationDelay: `${i * 0.3}s` }}
-                className={`balloon mx-auto flex h-36 min-w-32 items-center justify-center px-5 font-display ${l.text.length > 4 ? "text-3xl" : "text-5xl"} ${COLORS[i % 4]} ${popped === l.text ? "scale-150 opacity-0" : ""}`}>
+              <Button disabled={blocked} variant="ghost" key={l.text} onClick={() => hit(l)} style={{ animationDelay: `${i * 0.3}s` }}
+                className={`balloon mx-auto flex h-36 w-full min-w-0 whitespace-normal break-words items-center justify-center px-5 font-display ${l.text.length > 4 ? "text-3xl" : "text-5xl"} ${COLORS[i % 4]} ${popped === l.text ? "scale-150 opacity-0" : ""}`}>
                 {l.text}
               </Button>
             ))}

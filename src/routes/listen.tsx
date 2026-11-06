@@ -2,7 +2,7 @@ import { GameSetup } from "@/components/GameSetup";
 import { Button } from "@/components/ui/button";
 import { Settings2 } from "lucide-react";
 import { createFileRoute } from "@tanstack/react-router";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Feedback, Shell } from "@/components/Shell";
 import { Celebration, SpeedBar, SpeedResult } from "@/components/Extras";
 import { speak } from "@/lib/letters";
@@ -37,10 +37,12 @@ function Listen() {
   const [score, setScore] = useState(0);
   const [cel, celebrate] = useCelebrate();
   const speed = useSpeedTest();
+  const pending = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => () => { if (pending.current) clearTimeout(pending.current); }, []);
   const [playing, setPlaying] = useState(false);
   const [timed, setTimed] = useState(false);
-  const start = () => { setPlaying(true); setFb(null); speed.close(); if (timed) speed.start(); else speed.stop(); };
-  const settings = () => { setPlaying(false); speed.stop(); speed.close(); };
+  const start = () => { if (pending.current) clearTimeout(pending.current); setPlaying(true); setFb(null); speed.close(); if (timed) speed.start(); else speed.stop(); };
+  const settings = () => { if (pending.current) clearTimeout(pending.current); setPlaying(false); speed.stop(); speed.close(); };
   const blocked = !playing || speed.result !== null || (timed && !speed.active);
 
 
@@ -54,7 +56,7 @@ function Listen() {
         setScore((s) => s + 1);
         celebrate();
         if (speed.active) speed.record();
-        setTimeout(() => {
+        pending.current = setTimeout(() => {
           const r = newRound(level);
           setRound(r);
           setFb(null);
@@ -91,7 +93,7 @@ function Listen() {
       {round && (
         <>
           <div className="mt-6 text-center">
-            <Button variant="ghost" onClick={() => speak(round.target.say)} className="rounded-full bg-primary px-10 py-5 font-display text-3xl text-primary-foreground shadow-pop transition hover:scale-105 active:scale-95">
+            <Button variant="ghost" onClick={() => speak(round.target.say)} className="h-auto rounded-full bg-primary px-10 py-5 font-display text-3xl text-primary-foreground shadow-pop transition hover:scale-105 active:scale-95">
               🔊 הַקְשֵׁב
             </Button>
             <p className="mt-3 text-muted-foreground">לחצו על התשובה, או על החץ ימינה / שמאלה במקלדת</p>

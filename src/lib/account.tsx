@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from "react";
 import type { User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { connectWallet } from "./wallet";
@@ -10,16 +10,22 @@ export function AccountProvider({ children }: { children: ReactNode }) {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [avatar, setAvatar] = useState<string | null>(null);
   const [ready, setReady] = useState(false);
+  const revision = useRef(0);
   const refresh = async () => {
+    const run = ++revision.current;
     const { data } = await supabase.auth.getUser();
+    if (run !== revision.current) return;
     const current = data.user;
     setReady(false); setUser(current); setProfile(null); setAvatar(null);
     await connectWallet(current?.id ?? null);
+    if (run !== revision.current) return;
     if (current) {
       const { data: p } = await supabase.from("profiles").select("name,avatar_path").eq("id", current.id).single();
+      if (run !== revision.current) return;
       setProfile(p);
       if (p?.avatar_path) {
         const { data: image } = await supabase.storage.from("child-avatars").createSignedUrl(p.avatar_path, 3600);
+        if (run !== revision.current) return;
         setAvatar(image?.signedUrl ?? null);
       }
     }
