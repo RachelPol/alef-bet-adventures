@@ -1,4 +1,5 @@
 # Roadmap
+- [ ] Reinforce all Ashkenazi kamatz as o, not patach a, and verify account dialect delivery
 - [ ] Replace conflicting parent shortcut and explain forgotten-parent-code options without weakening authorization
 - [ ] Enlarge small close/navigation hit targets without shrinking play space
 - [ ] Research and improve Litvish pronunciation and familiar letter names; verify rules and disclose auditory limits
