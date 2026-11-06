@@ -1,5 +1,5 @@
 import israeliYasher from "@/assets/praise/israeli-yasher.wav.asset.json";
-import israeliSuccess from "@/assets/praise/israli-success.wav.asset.json";
+import israeliSuccess from "@/assets/praise/israeli-success.wav.asset.json";
 import israeliBravo from "@/assets/praise/israeli-bravo.wav.asset.json";
 import litvishYasher from "@/assets/praise/litvish-yasher.wav.asset.json";
 import litvishSuccess from "@/assets/praise/litvish-success.wav.asset.json";

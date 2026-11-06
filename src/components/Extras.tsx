@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { LEVELS, type Level } from "@/lib/levels";
 import { Button } from "@/components/ui/button";
 import { TEST_SECONDS, type useSpeedTest } from "@/lib/hooks";
+import { progressMilestone } from "@/lib/encouragement";
+import { playEncouragement, preloadEncouragement, stopEncouragement, successSound } from "@/lib/encouragement-audio";
 
 export function LevelPicker({ level, onChange }: { level: Level; onChange: (id: string) => void }) {
   return (
@@ -36,6 +38,7 @@ export function SpeedBar({ speed, unit }: { speed: Speed; unit: string }) {
 }
 
 export function SpeedResult({ speed, unit, onRestart }: { speed: Speed; unit: string; onRestart?: () => void }) {
+  useEffect(() => { if (speed.result !== null) playEncouragement(); }, [speed.result]);
   if (speed.result === null) return null;
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/40 p-4 animate-in fade-in">
@@ -58,17 +61,22 @@ const CHEERS = [
   "אַתָּה מִתְקַדֵּם נִפְלָא!", "אֵיזֶה כֹּחַ רָצוֹן!", "אֵיךְ אַתָּה קוֹרֵא יָפֶה!",
   "אֵין עָלֶיךָ!", "אַתָּה כּוֹכָב!", "בֶּאֱמֶת מַפְתִּיעַ!", "אֲנִי גַּאָה בְּךָ!",
   "הוֹלֵךְ לְךָ מְצֻיָּן!", "אַתָּה תַּלְמִיד חָרוּץ!", "מְדַיֵּק בְּדִיּוּק!",
-  "כָּכָה מְמַשְׁכִים!", "אַתָּה עוֹשֶׂה אֶת זֶה בְּגָדוֹל!", "נֶהֱדָר מִבֵּין יָפֶה!",
+  "כָּכָה מַמְשִׁיכִים!", "אַתָּה עוֹשֶׂה אֶת זֶה בְּגָדוֹל!", "יִישַׁר כֹּחַ!", "עֲלֵה וְהַצְלַח!",
 ];
-export function Celebration({ trigger }: { trigger: number }) {
+export function Celebration({ trigger, count = trigger, interval = 5, voiced = false, complete = false }: { trigger: number; count?: number; interval?: number; voiced?: boolean; complete?: boolean }) {
   const [show, setShow] = useState(false);
+  const [cheer, setCheer] = useState("");
+  useEffect(() => { preloadEncouragement(); return stopEncouragement; }, []);
   useEffect(() => {
     if (!trigger) return;
+    const milestone = progressMilestone(count, interval);
+    successSound(milestone || complete);
+    const phrase = (complete || (milestone && voiced)) ? playEncouragement() : CHEERS[Math.floor(Math.random() * CHEERS.length)] ?? "יִישַׁר כֹּחַ!";
+    setCheer(milestone && !complete ? `${count} הַצְלָחוֹת! ${phrase}` : phrase);
     setShow(true);
-    const timer = setTimeout(() => setShow(false), 2600);
+    const timer = setTimeout(() => setShow(false), milestone || complete ? 4500 : 2600);
     return () => clearTimeout(timer);
-  }, [trigger]);
-  const cheer = CHEERS[trigger % CHEERS.length] ?? "כָּל הַכָּבוֹד!";
+  }, [trigger, count, interval, voiced, complete]);
   const motion = ["elidushi-flip", "elidushi-jump", "elidushi-five"][trigger % 3];
   const animal = ["🐰", "🐢", "🦁", "🐼", "🦊", "🐥", "🐬"][trigger % 7] ?? "🐰";
   return <div className="companion-stage" aria-label="חגיגת הצלחה">

@@ -1,6 +1,7 @@
 import { streamSpeech } from "./stream-speech";
 import { toast } from "sonner";
 import { shuffled } from "./random";
+import { stopEncouragement } from "./encouragement-audio";
 export type Letter = { char: string; name: string; word: string; emoji: string };
 
 export const LETTERS: Letter[] = [
@@ -37,6 +38,7 @@ let current: AbortController | null = null;
 
 export function speak(text: string) {
   if (typeof window === "undefined") return;
+  stopEncouragement();
   current?.abort();
   const controller = new AbortController();
   current = controller;
