@@ -1,10 +1,10 @@
 # Roadmap
-- [ ] Account sign-in, required name, optional photo, account-owned points and room
-- [ ] Home points display
-- [ ] Pre-game settings across activities and memory levels
-- [ ] Human Hebrew speech and kamatz katan pronunciation
-- [ ] Yoni varied non-overlapping celebrations and basic Hebrew font
-- [ ] Use uploaded Elidushi character instead of Yoni
+- [x] Account sign-in, required name, optional photo, account-owned points and room
+- [x] Home points display
+- [x] Pre-game settings across activities and memory levels
+- [x] Natural Hebrew speech delivery and explicit kamatz katan pronunciation mappings (auditory quality requires user listening)
+- [x] Elidushi varied non-overlapping celebrations and basic Hebrew font
+- [x] Use uploaded Elidushi character instead of Yoni
 - [x] Difficulty levels, 1-minute speed test, success animations
 - [x] Distinguish שׁ/שׂ and dagesh/rafe in ב, כ, פ, ת
 - [x] Bigger word lists + no repeats
@@ -15,7 +15,7 @@
 - [x] Path game: difficulty and optional speed test selected before play
 - [x] Verify path flow and board readability on desktop and mobile
 - [x] Show elapsed time for completing 25 path words and all memory pairs
-- [ ] Path game: move the chick with the arrow keys as an alternative to clicking
+- [x] Path game: move the chick with the arrow keys as an alternative to clicking
 - [x] Letter names by sound only (no "with/without dagesh")
 - [x] Global points across all activities + points summary on finish
 - [x] Personal room + shop street (furniture, toys, music, paint, decor); drag items
