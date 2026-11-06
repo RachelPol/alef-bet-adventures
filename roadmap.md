@@ -1,4 +1,8 @@
 # Roadmap
+- [ ] Fix signup session failure in preview and verify returning entry
+- [ ] Replace Elidushi with varied emoji celebrations
+- [ ] Immersive room and animated shopping street with purchases and draggable real-looking items
+- [ ] Hidden parent point recovery with a separate parent code
 - [x] Child-name and three-digit personal-code sign-in, optional email, no password field; verified wrong-code rejection and points after returning entry
 - [x] Account sign-in, required name, optional photo, account-owned points and room
 - [x] Home points display
