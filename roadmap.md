@@ -1,5 +1,5 @@
 # Roadmap
-- [ ] Child-name and three-digit personal-code sign-in, optional email, no password field; preserve account points and room
+- [x] Child-name and three-digit personal-code sign-in, optional email, no password field; verified wrong-code rejection and points after returning entry
 - [x] Account sign-in, required name, optional photo, account-owned points and room
 - [x] Home points display
 - [x] Pre-game settings across activities and memory levels
