@@ -26,4 +26,4 @@
 - Resolve isolated pointed syllables into explicit consonant-plus-vowel sounds before TTS, separate from whole-word guidance, to avoid model guesses about letter names and dialect vowels.
 - Resolve traditional letter names through a browser-safe dialect lexicon; apply Israeli pronunciation respellings only to Israeli requests so Litvish kamatz is never changed into cholam.
 - Street buildings use accessible HTML hit regions aligned to fixed-ratio local bitmap scenes; extend the street horizontally rather than distorting its canvas to viewport height.
-- Parent recovery uses a deliberate repeated-key sequence outside editable fields; opening the dialog never replaces server-side parent-code authorization.
+- Parent recovery opens from the room balance through a public convenience gate; revealing the form never replaces server-side parent-code authorization.
