@@ -1,4 +1,5 @@
 # Roadmap
+- [ ] Trial microphone reading with consent, transcript comparison and manual parent scoring; verify actual speech and recording lifecycle
 - [x] Immediate next-target speech after correct answers in all listening games, preserving silent independent reading/memory; interaction verified
 - [x] Path next-word speech during celebration; shared unbiased shuffle and six word-picture memory pairs verified
 - [x] Current Shell safely handles missing profile names; malformed profile response tested without crash
