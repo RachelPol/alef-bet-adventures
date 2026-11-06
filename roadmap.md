@@ -1,4 +1,6 @@
 # Roadmap
+- [ ] Investigate Itamar wallet persistence and prevent queued saves being lost on account changes
+- [ ] Device-local returning-account picker with three-digit PIN only; verify saved wallet readback
 - [x] Optional Lithuanian pronunciation selection persists; dialect tests and tav audio response verified, auditory fidelity needs user feedback
 - [x] Room item positions already persist after drag and reload; verified saved coordinates and parent recovery shortcut
 - [x] Expand to 111 products across eight shops including books, sports and creative supplies; purchase and room readback verified
