@@ -1,4 +1,5 @@
 # Roadmap
+- [ ] Correct Litvish isolated syllables, shin-patach screenshot, and dagesh/rafe; test all syllable targets and live audio response
 - [x] Move reading pronunciation to account settings and persist per child; saved selection survives reload, removed from game setup
 - [x] Explain that pronunciation is selected on the pre-game entry screen
 - [x] Investigate Itamar wallet persistence and prevent queued saves being lost on account changes; existing account has 28 points and 3 items, historical missing totals unknown
