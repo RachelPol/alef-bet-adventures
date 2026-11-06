@@ -1,4 +1,5 @@
 # Roadmap
+- [ ] Replace conflicting parent shortcut and explain forgotten-parent-code options without weakening authorization
 - [ ] Enlarge small close/navigation hit targets without shrinking play space
 - [ ] Research and improve Litvish pronunciation and familiar letter names; verify rules and disclose auditory limits
 - [ ] Expand every shop including bunk bed and open toy cabinet with local artwork
