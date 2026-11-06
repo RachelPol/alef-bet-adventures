@@ -98,16 +98,19 @@ export type Database = {
           avatar_path: string | null
           id: string
           name: string
+          reading_dialect: string
         }
         Insert: {
           avatar_path?: string | null
           id: string
           name?: string
+          reading_dialect?: string
         }
         Update: {
           avatar_path?: string | null
           id?: string
           name?: string
+          reading_dialect?: string
         }
         Relationships: []
       }

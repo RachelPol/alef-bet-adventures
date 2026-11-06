@@ -1,0 +1,1 @@
+ALTER TABLE public.profiles ADD COLUMN reading_dialect text NOT NULL DEFAULT 'israeli' CHECK (reading_dialect IN ('israeli', 'litvish'));
