@@ -29,6 +29,7 @@ function Read() {
   const [item, setItem] = useState<Item | null>(null);
   const [fb, setFb] = useState<"ok" | "bad" | null>(null);
   const [score, setScore] = useState(0);
+  const [micConsent, setMicConsent] = useState(false);
   const [cel, celebrate] = useCelebrate();
   const speed = useSpeedTest();
   const pending = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -73,7 +74,7 @@ function Read() {
         <Button variant="ghost" onClick={() => item && speak(item.say)} className="h-auto rounded-2xl bg-card px-8 py-4 text-2xl font-bold text-foreground shadow-soft">🔊 אֵיךְ קוֹרְאִים?</Button>
       </div>
       <div className="mt-6"><Feedback state={fb} /></div>
-      {item && <ReadingTrial key={`${level.id}-${item.text}`} text={item.text} disabled={blocked || fb === "ok"} />}
+      {item && <ReadingTrial key={`${level.id}-${item.text}`} text={item.text} disabled={blocked || fb === "ok"} consent={micConsent} onConsent={setMicConsent} onCorrect={ok} />}
       </>}
       <SpeedResult speed={speed} unit={level.unit} onRestart={start} />
     </Shell>
