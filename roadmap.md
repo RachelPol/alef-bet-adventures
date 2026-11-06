@@ -1,7 +1,7 @@
 # Roadmap
-- [ ] Immediate next-target speech after correct answers in all listening games, preserving silent independent reading/memory
-- [ ] Path next-word speech during celebration; verify random dealing across games and picture-only memory pairs
-- [ ] Verify current Shell safely handles missing profile names
+- [x] Immediate next-target speech after correct answers in all listening games, preserving silent independent reading/memory; interaction verified
+- [x] Path next-word speech during celebration; shared unbiased shuffle and six word-picture memory pairs verified
+- [x] Current Shell safely handles missing profile names; malformed profile response tested without crash
 - [x] Increase speech pace while preserving emphasis on כל in כל הכבוד; stream verified, listening quality needs user feedback
 - [x] Restore all games after profile-read regression and verify activity entry
 - [x] Fix signup session failure with same-origin bridge; verified signup with direct Cloud requests blocked and returning entry
