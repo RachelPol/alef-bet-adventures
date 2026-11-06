@@ -91,15 +91,16 @@ function PathGame() {
       } else {
         const board = replaceDepartedCard(cards, position, level);
         const move = nextPathMove(index, columns, direction);
+        const next = board[move.index];
+        // Begin fetching/playing the next word while the celebration is visible.
+        if (next) speak(next.say);
         pending.current = setTimeout(() => {
           setCards(board);
           setDirection(move.direction);
           setTargetIndex(move.index);
           setFb(null);
           locked.current = false;
-          const next = board[move.index];
-          if (next) speak(next.say);
-        }, speed.active ? 600 : 2600);
+        }, speed.active ? 600 : 700);
       }
     } else {
       setFb("bad");

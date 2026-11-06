@@ -1,4 +1,5 @@
 import { CONFUSABLE, LETTERS } from "./letters";
+import { shuffled } from "./random";
 
 export type Item = { text: string; say: string };
 export type Level = { id: string; label: string; unit: string; items: Item[] };
@@ -30,7 +31,8 @@ export function textSize(t: string) {
 
 export function pickPair(level: Level): Item[] {
   if (level.id === "letters" && Math.random() < 0.5) {
-    const [a, b] = CONFUSABLE[Math.floor(Math.random() * CONFUSABLE.length)]!;
+    const selected = CONFUSABLE[Math.floor(Math.random() * CONFUSABLE.length)];
+    const [a, b] = selected ?? ["א", "ג"];
     const items = [a, b].map((c) => level.items.find((i) => i.text === c));
     if (items[0] && items[1]) {
       const pair = items as Item[];
@@ -45,14 +47,18 @@ export function pickPair(level: Level): Item[] {
 
 // Shuffled deck per level: every item appears once before any repeats.
 const decks = new Map<string, Item[]>();
-let lastDrawn: Item | null = null;
+const previous = new Map<string, Item>();
 export function draw(level: Level): Item {
   let deck = decks.get(level.id);
   if (!deck || deck.length === 0) {
-    deck = [...level.items].sort(() => Math.random() - 0.5);
-    if (deck[deck.length - 1] === lastDrawn && deck.length > 1) deck.unshift(deck.pop()!);
+    deck = shuffled(level.items);
+    if (deck[deck.length - 1] === previous.get(level.id) && deck.length > 1) {
+      const last = deck.pop(); if (last) deck.unshift(last);
+    }
     decks.set(level.id, deck);
   }
-  lastDrawn = deck.pop()!;
-  return lastDrawn;
+  const item = deck.pop();
+  if (!item) throw new Error("הרמה אינה כוללת מילים");
+  previous.set(level.id, item);
+  return item;
 }
