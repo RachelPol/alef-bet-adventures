@@ -14,6 +14,27 @@ export type Database = {
   }
   public: {
     Tables: {
+      ai_feature_blocks: {
+        Row: {
+          created_at: string
+          feature: string
+          message: string
+          status: number
+        }
+        Insert: {
+          created_at?: string
+          feature: string
+          message: string
+          status: number
+        }
+        Update: {
+          created_at?: string
+          feature?: string
+          message?: string
+          status?: number
+        }
+        Relationships: []
+      }
       child_logins: {
         Row: {
           contact_email: string | null
