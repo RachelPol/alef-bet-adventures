@@ -1,4 +1,6 @@
 # Roadmap
+- [x] Expand to 111 products across eight shops including books, sports and creative supplies; purchase and room readback verified
+- [x] Repair street people with full transparent local sprites; motion and external-network-blocked rendering verified (actual Etrog policy needs user-side check)
 - [x] Remove unsuccessful microphone trial from reading activity; retain manual parent approval
 - [x] Immediate next-target speech after correct answers in all listening games, preserving silent independent reading/memory; interaction verified
 - [x] Path next-word speech during celebration; shared unbiased shuffle and six word-picture memory pairs verified

@@ -9,6 +9,7 @@ import { ITEM_ART } from "@/lib/room-art";
 import { Home, Coins, ShoppingBag, ArrowLeft, ArrowRight, Check } from "lucide-react";
 const WorldScene = lazy(() => import("@/components/WorldScene"));
 const STREET_SHOPS: ShopId[] = ["toys", "furniture", "music", "paint", "plants"];
+const SHOP_ORDER = [...STREET_SHOPS, "books", "sports", "crafts"] as const;
 export const Route = createFileRoute("/street")({
   head: () => ({
     meta: [
@@ -41,7 +42,7 @@ function Street() {
      <h3 className="mt-3 text-xl font-bold">{item.name}</h3><p className="my-2 flex items-center justify-center gap-1 text-lg"><Coins className="size-4" />{item.price} נקודות</p>
      <Button className="h-11 w-full gap-2 text-lg" disabled={!afford} onClick={()=>purchase(item.id)} aria-label={`קניית ${item.name} ב-${item.price} נקודות`}>{bought===item.id?<Check />:<ShoppingBag className="size-4" />}{afford?'קנייה':`חסרות ${item.price-wallet.points}`}</Button>
    </article>;})}</div>
-   <div className="flex flex-wrap justify-between gap-2"><Button variant="outline" onClick={()=>{const index=STREET_SHOPS.indexOf(shop??'toys');setShop(STREET_SHOPS[(index+1)%STREET_SHOPS.length]??'toys');setBought(null);}}><ArrowLeft />לחנות הבאה</Button><Button asChild><Link to="/room"><Home />לחדר שלי</Link></Button><Button variant="ghost" onClick={()=>setShop(null)}>לרחוב<ArrowRight /></Button></div>
+   <div className="flex flex-wrap justify-between gap-2"><Button variant="outline" onClick={()=>{const index=SHOP_ORDER.indexOf(shop??'toys');setShop(SHOP_ORDER[(index+1)%SHOP_ORDER.length]??'toys');setBought(null);}}><ArrowLeft />לחנות הבאה</Button><Button asChild><Link to="/room"><Home />לחדר שלי</Link></Button><Button variant="ghost" onClick={()=>setShop(null)}>לרחוב<ArrowRight /></Button></div>
   </DialogContent></Dialog>
  </main>;
 }

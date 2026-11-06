@@ -52,13 +52,15 @@ export default function WorldScene({ kind, wallet, onMove }: { kind: "room" | "s
       else {
         const urls = [redCar, blueCar, family, walkers]; const textures = await Promise.all(urls.map(url => Assets.load(url)));
         if (disposed || !app) return;
-        const actors: { sprite: Sprite; speed: number }[] = [];
+        const actors: { sprite: Sprite; speed: number; ground: number; phase: number }[] = [];
         textures.forEach((texture, i) => {
-          const actor = new Sprite(texture); actor.anchor.set(.5, 1); actor.width = i < 2 ? 240 : 125; actor.height = actor.width * texture.height / texture.width;
-          actor.position.set([280,1050,500,1250][i] ?? 0, i < 2 ? (i === 0 ? 880 : 995) : 778); layer.addChild(actor); actors.push({ sprite: actor, speed: [95,-120,22,-18][i] ?? 0 });
+          const actor = new Sprite(texture); actor.anchor.set(.5, 1); actor.width = i < 2 ? 240 : 150; actor.height = actor.width * texture.height / texture.width;
+          const ground = i < 2 ? (i === 0 ? 880 : 995) : 778;
+          actor.position.set([280,1050,500,1250][i] ?? 0, ground); actor.zIndex = ground; layer.addChild(actor); actors.push({ sprite: actor, speed: [95,-120,22,-18][i] ?? 0, ground, phase: i });
         });
         const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-        app.ticker.add(ticker => { if (reduced) return; const dt = Math.min(ticker.deltaMS / 1000, .05); actors.forEach(({ sprite, speed }) => { sprite.x += speed * dt; if (sprite.x > 1680) sprite.x = -140; if (sprite.x < -140) sprite.x = 1680; }); });
+        let elapsed = 0;
+        app.ticker.add(ticker => { if (reduced) return; const dt = Math.min(ticker.deltaMS / 1000, .05); elapsed += dt; actors.forEach(({ sprite, speed, ground, phase }, i) => { sprite.x += speed * dt; if (i >= 2) { sprite.y = ground - Math.abs(Math.sin(elapsed * 5 + phase)) * 3; sprite.rotation = Math.sin(elapsed * 5 + phase) * .015; } if (sprite.x > 1680) sprite.x = -140; if (sprite.x < -140) sprite.x = 1680; }); });
         element.setAttribute("data-scene-ready", "true");
       }
       if (app && !disposed) scene.current = { app, rebuild };
