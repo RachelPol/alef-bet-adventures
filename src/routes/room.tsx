@@ -24,7 +24,7 @@ export const Route = createFileRoute("/room")({
 function Room() {
  const [wallet, update] = useWallet(); const { user, ready, profile } = useAccount();
  if (!ready) return <p className="p-8 text-center">טוענים…</p>;
- if (!user || !profile?.name.trim()) return <div className="p-12 text-center"><Button asChild><Link to="/auth">כְּנִיסָה לַחֶשְׁבּוֹן</Link></Button></div>;
+ if (!user || !profile?.name?.trim()) return <div className="p-12 text-center"><Button asChild><Link to="/auth">כְּנִיסָה לַחֶשְׁבּוֹן</Link></Button></div>;
  return <main className="world-page">
    <header className="world-header">
      <Button asChild variant="outline" className="h-12"><Link to="/"><Home />בית</Link></Button>

@@ -10,7 +10,7 @@ async function forward(request: Request, path: string) {
   const origin = request.headers.get("Origin");
   if (origin && origin !== source.origin) return new Response(null, { status: 403 });
   const headers = new Headers();
-  for (const name of ["authorization", "content-type", "prefer", "range", "x-client-info", "x-supabase-api-version", "x-upsert"]) {
+  for (const name of ["authorization", "accept", "accept-profile", "content-profile", "content-type", "prefer", "range", "x-client-info", "x-supabase-api-version", "x-upsert"]) {
     const value = request.headers.get(name); if (value) headers.set(name, value);
   }
   headers.set("apikey", key);

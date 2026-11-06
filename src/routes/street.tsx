@@ -28,7 +28,7 @@ function Street() {
  const current=SHOPS.find(s=>s.id===shop); const { user,ready,profile }=useAccount();
  const purchase=(id:string)=>{ const item=CATALOG.find(i=>i.id===id); if (!item) return; const ok=update(w=>buy(w,item,crypto.randomUUID())); if(ok){setBought(id);toast.success(item.shop==='paint' ? 'הקירות נצבעו!' : `${item.name} מחכה לך בחדר!`);}else toast.error('אין מספיק נקודות לפריט הזה'); };
  if(!ready)return <p className="p-8 text-center">טוענים…</p>;
- if(!user||!profile?.name.trim())return <div className="p-12 text-center"><Button asChild><Link to="/auth">כְּנִיסָה לַחֶשְׁבּוֹן</Link></Button></div>;
+ if(!user||!profile?.name?.trim())return <div className="p-12 text-center"><Button asChild><Link to="/auth">כְּנִיסָה לַחֶשְׁבּוֹן</Link></Button></div>;
  return <main className="world-page">
   <header className="world-header"><Button asChild variant="outline" className="h-12"><Link to="/room"><Home />לחדר שלי</Link></Button><div className="text-center"><p className="text-sm text-muted-foreground">מסע הקניות של {profile.name}</p><h1 className="text-3xl font-bold">רְחוֹב הַחֲנֻיּוֹת</h1></div><span className="world-balance"><Coins />{wallet.points}</span></header>
   <div className="street-scroll" dir="ltr"><section className="world-street" aria-label="רחוב החנויות"><ClientOnly><Suspense fallback={<div className="world-loading">מכינים את הרחוב…</div>}><WorldScene kind="street" wallet={wallet} /></Suspense></ClientOnly>
