@@ -64,6 +64,38 @@ export type Database = {
           },
         ]
       }
+      child_parent_credentials: {
+        Row: {
+          code_hash: string
+          code_salt: string
+          failed_attempts: number
+          locked_until: string | null
+          user_id: string
+        }
+        Insert: {
+          code_hash: string
+          code_salt: string
+          failed_attempts?: number
+          locked_until?: string | null
+          user_id: string
+        }
+        Update: {
+          code_hash?: string
+          code_salt?: string
+          failed_attempts?: number
+          locked_until?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "child_parent_credentials_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       parent_point_credits: {
         Row: {
           created_at: string
