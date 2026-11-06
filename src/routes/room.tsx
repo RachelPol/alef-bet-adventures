@@ -44,7 +44,7 @@ function Room() {
    {placed && <section className="room-tools" aria-label="עריכת הפריט">
      <strong>{itemName}</strong>
      <Button variant="outline" size="icon" title="סיבוב שמאלה" aria-label="סיבוב שמאלה" onClick={() => update(w => transformItem(w, placed.uid, { rotation: transform.rotation - 15 }))}><RotateCcw /></Button>
-     <input aria-label="זווית סיבוב" type="range" min="0" max="360" step="1" value={transform.rotation} onChange={e => { const rotation = Number(e.target.value); update(w => transformItem(w, placed.uid, { rotation })); }} />
+     <input key={`${placed.uid}-${transform.rotation}`} aria-label="זווית סיבוב" type="range" min="0" max="360" step="1" defaultValue={transform.rotation} onPointerUp={e => { const rotation = Number(e.currentTarget.value); update(w => transformItem(w, placed.uid, { rotation })); }} onKeyUp={e => { const rotation = Number(e.currentTarget.value); update(w => transformItem(w, placed.uid, { rotation })); }} />
      <Button variant="outline" size="icon" title="סיבוב ימינה" aria-label="סיבוב ימינה" onClick={() => update(w => transformItem(w, placed.uid, { rotation: transform.rotation + 15 }))}><RotateCw /></Button>
      <Button variant="outline" size="icon" title="הקטנה" aria-label="הקטנה" disabled={transform.scale <= .4} onClick={() => update(w => transformItem(w, placed.uid, { scale: transform.scale - .1 }))}><Minus /></Button>
      <span className="room-scale">{Math.round(transform.scale * 100)}%</span>
