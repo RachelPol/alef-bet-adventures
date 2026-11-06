@@ -1,4 +1,6 @@
 # Roadmap
+- [ ] Path next-word speech during celebration; verify random dealing across games and picture-only memory pairs
+- [ ] Verify current Shell safely handles missing profile names
 - [x] Increase speech pace while preserving emphasis on כל in כל הכבוד; stream verified, listening quality needs user feedback
 - [x] Restore all games after profile-read regression and verify activity entry
 - [x] Fix signup session failure with same-origin bridge; verified signup with direct Cloud requests blocked and returning entry
