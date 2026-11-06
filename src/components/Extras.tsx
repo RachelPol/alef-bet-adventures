@@ -1,5 +1,7 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { LEVELS, type Level } from "@/lib/levels";
+import elidushi from "@/assets/elidushi.png.asset.json";
+import { Button } from "@/components/ui/button";
 import { TEST_SECONDS, type useSpeedTest } from "@/lib/hooks";
 
 export function LevelPicker({ level, onChange }: { level: Level; onChange: (id: string) => void }) {
@@ -18,21 +20,14 @@ export function LevelPicker({ level, onChange }: { level: Level; onChange: (id: 
 type Speed = ReturnType<typeof useSpeedTest>;
 
 export function SpeedBar({ speed, unit }: { speed: Speed; unit: string }) {
-  if (!speed.active)
-    return (
-      <div className="text-center">
-        <button onClick={speed.start} className="rounded-full bg-secondary px-6 py-2 text-lg font-bold text-secondary-foreground shadow-soft hover:scale-105 transition">
-          ⏱️ בְּדִיקַת מְהִירוּת – דַּקָּה אַחַת
-        </button>
-      </div>
-    );
+  if (!speed.active) return null;
   const pct = (speed.left / TEST_SECONDS) * 100;
   return (
     <div className="rounded-2xl bg-card p-3 shadow-soft">
       <div className="mb-2 flex items-center justify-between font-bold">
         <span>⏱️ {Math.ceil(speed.left)} שְׁנִיּוֹת</span>
         <span className="text-primary">{speed.count} {unit}</span>
-        <button onClick={speed.stop} className="text-sm text-muted-foreground underline">עֲצִירָה</button>
+        <Button variant="ghost" onClick={speed.stop} className="text-sm text-muted-foreground underline">עֲצִירָה</Button>
       </div>
       <div className="h-4 overflow-hidden rounded-full bg-muted">
         <div className="h-full rounded-full bg-gradient-to-l from-success to-accent transition-[width] duration-100" style={{ width: `${pct}%` }} />
@@ -66,36 +61,18 @@ const CHEERS = [
   "הוֹלֵךְ לְךָ מְצֻיָּן!", "אַתָּה תַּלְמִיד חָרוּץ!", "מְדַיֵּק בְּדִיּוּק!",
   "כָּכָה מְמַשְׁכִים!", "אַתָּה עוֹשֶׂה אֶת זֶה בְּגָדוֹל!", "נֶהֱדָר מִבֵּין יָפֶה!",
 ];
-const HEROES = ["🦁", "🐶", "🐱", "🐵", "🦄", "🐸", "🐼", "🐰", "🦊", "🐥"];
-const BITS = ["⭐", "🎉", "✨", "🌟", "🎈", "💖", "🍭", "🌈"];
-
 export function Celebration({ trigger }: { trigger: number }) {
   const [show, setShow] = useState(false);
   useEffect(() => {
     if (!trigger) return;
     setShow(true);
-    const t = setTimeout(() => setShow(false), 2600);
-    return () => clearTimeout(t);
+    const timer = setTimeout(() => setShow(false), 2600);
+    return () => clearTimeout(timer);
   }, [trigger]);
-  const data = useMemo(() => ({
-    cheer: CHEERS[Math.floor(Math.random() * CHEERS.length)] ?? CHEERS[0]!,
-    hero: HEROES[Math.floor(Math.random() * HEROES.length)],
-    bits: Array.from({ length: 16 }, (_, i) => ({
-      e: BITS[i % BITS.length],
-      x: Math.cos((i / 16) * Math.PI * 2) * (140 + Math.random() * 120),
-      y: Math.sin((i / 16) * Math.PI * 2) * (140 + Math.random() * 120),
-    })),
-  }), [trigger]);
-  if (!show) return null;
-  return (
-    <div key={trigger} className="pointer-events-none fixed inset-0 z-40 flex items-center justify-center">
-      {data.bits.map((b, i) => (
-        <span key={i} className="burst absolute text-4xl" style={{ "--x": `${b.x}px`, "--y": `${b.y}px` } as React.CSSProperties}>{b.e}</span>
-      ))}
-      <div className="hero-pop flex flex-col items-center">
-        <span className="text-9xl">{data.hero}</span>
-        <span className={`font-display text-success drop-shadow ${data.cheer.length > 14 ? "text-4xl" : "text-5xl"}`}>{data.cheer}</span>
-      </div>
-    </div>
-  );
+  const cheer = CHEERS[trigger % CHEERS.length] ?? "כָּל הַכָּבוֹד!";
+  const motion = ["elidushi-flip", "elidushi-jump", "elidushi-five"][trigger % 3];
+  return <div className="companion-stage" aria-label="אלידושי מלווה אותך">
+    <img key={trigger} src={elidushi.url} alt="אלידושי" className={`companion-figure ${show ? motion : ""}`} />
+    <p className="companion-cheer" aria-live="polite">{show ? cheer : ""}</p>
+  </div>;
 }

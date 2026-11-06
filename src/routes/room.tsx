@@ -1,6 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useRef, useState } from "react";
 import { CATALOG, move, useWallet } from "@/lib/wallet";
+import { useAccount } from "@/lib/account";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/room")({
   head: () => ({
@@ -20,6 +22,7 @@ function Room() {
   const [w, update] = useWallet();
   const box = useRef<HTMLDivElement>(null);
   const [drag, setDrag] = useState<string | null>(null);
+  const { user, ready, profile } = useAccount();
 
   const onMove = (e: React.PointerEvent) => {
     if (!drag || !box.current) return;
@@ -29,6 +32,8 @@ function Room() {
     update((cur) => move(cur, drag, x, y));
   };
 
+  if (!ready) return <p className="p-8 text-center">טוענים…</p>;
+  if (!user || !profile?.name.trim()) return <div className="p-12 text-center"><Button asChild><Link to="/auth">כְּנִיסָה לַחֶשְׁבּוֹן</Link></Button></div>;
   return (
     <div className="min-h-screen bg-background px-4 py-6">
       <header className="mx-auto flex max-w-5xl items-center justify-between">

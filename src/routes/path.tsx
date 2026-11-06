@@ -139,6 +139,7 @@ function PathGame() {
 
   return (
     <Shell title="שְׁבִיל הַמִּלִּים" score={score} wide>
+      <Celebration trigger={cel} />
       {phase === "setup" ? (
         <section className="mx-auto max-w-2xl py-6 text-center">
           <div className="mb-5 text-7xl">🐥</div>
@@ -186,7 +187,6 @@ function PathGame() {
         </>
       )}
       {phase !== "setup" && <div className="mt-3"><Feedback state={fb === "bad" ? "bad" : null} /></div>}
-      <Celebration trigger={cel} />
       <SpeedResult speed={speed} unit={level.unit} onRestart={start} />
     </Shell>
   );

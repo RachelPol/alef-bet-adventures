@@ -2,6 +2,8 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
 import { CATALOG, SHOPS, buy, useWallet, type ShopId } from "@/lib/wallet";
+import { useAccount } from "@/lib/account";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/street")({
   head: () => ({
@@ -22,14 +24,18 @@ function Street() {
   const [shop, setShop] = useState<ShopId | null>(null);
   const [bought, setBought] = useState<string | null>(null);
   const current = SHOPS.find((s) => s.id === shop);
+  const { user, ready, profile } = useAccount();
 
   const purchase = (id: string) => {
-    const item = CATALOG.find((i) => i.id === id)!;
+    const item = CATALOG.find((i) => i.id === id);
+    if (!item) return;
     const ok = update((cur) => buy(cur, item, `${id}-${Date.now()}`));
     if (ok) { setBought(id); setTimeout(() => setBought(null), 900); toast.success(`קָנִיתָ ${item.name}! הוּא מְחַכֶּה בַּחֶדֶר 🏡`); }
     else toast.error(`חָסְרוֹת ${item.price - w.points} נְקֻדּוֹת – מַמְשִׁיכִים לִקְרֹא! 📖`);
   };
 
+  if (!ready) return <p className="p-8 text-center">טוענים…</p>;
+  if (!user || !profile?.name.trim()) return <div className="p-12 text-center"><Button asChild><Link to="/auth">כְּנִיסָה לַחֶשְׁבּוֹן</Link></Button></div>;
   return (
     <div className="street-sky relative min-h-screen overflow-hidden">
       <div className="cloud pointer-events-none absolute top-10 text-7xl opacity-80">☁️</div>

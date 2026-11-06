@@ -11,7 +11,9 @@ export function useLevel(): [Level, (id: string) => void] {
     setId(v);
     localStorage.setItem("level", v);
   };
-  return [LEVELS.find((l) => l.id === id)!, set];
+  const level = LEVELS.find((l) => l.id === id) ?? LEVELS[0];
+  if (!level) throw new Error("No reading levels configured");
+  return [level, set];
 }
 
 export const TEST_SECONDS = 60;

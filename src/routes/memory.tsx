@@ -1,9 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Shell } from "@/components/Shell";
-import { Celebration } from "@/components/Extras";
-import { LETTERS, pick, shuffle, speak } from "@/lib/letters";
-import { useCelebrate } from "@/lib/hooks";
+import { Celebration, SpeedBar, SpeedResult } from "@/components/Extras";
+import { speak } from "@/lib/letters";
+import { useCelebrate, useLevel, useSpeedTest } from "@/lib/hooks";
+import { GameSetup } from "@/components/GameSetup";
+import { dealMemory, type MemoryCard as Card } from "@/lib/memory-game";
+import { Settings2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { completionTimeLabel, useCompletionTime } from "@/lib/completion-time";
 
@@ -21,20 +24,12 @@ export const Route = createFileRoute("/memory")({
   component: MemoryGame,
 });
 
-const PAIRS = 6;
-
-type Card = { id: string; pair: string; kind: "word" | "pic"; text: string };
-
-function deal(): Card[] {
-  const words = pick(LETTERS, PAIRS);
-  const cards: Card[] = words.flatMap((l) => [
-    { id: l.char + "w", pair: l.char, kind: "word" as const, text: l.word },
-    { id: l.char + "p", pair: l.char, kind: "pic" as const, text: l.emoji },
-  ]);
-  return shuffle(cards);
-}
-
 function MemoryGame() {
+  const [level, setLevel] = useLevel();
+  const [playing, setPlaying] = useState(false);
+  const [timed, setTimed] = useState(false);
+  const speed = useSpeedTest();
+  const [score, setScore] = useState(0);
   const [cards, setCards] = useState<Card[]>([]);
   const [open, setOpen] = useState<string[]>([]);
   const [done, setDone] = useState<string[]>([]);
@@ -42,12 +37,11 @@ function MemoryGame() {
   const [moves, setMoves] = useState(0);
   const [cel, celebrate] = useCelebrate();
   const { seconds, start: startTime, finish: finishTime } = useCompletionTime();
-  useEffect(() => { setCards(deal()); startTime(); }, [startTime]);
 
   const won = cards.length > 0 && done.length === cards.length;
 
   const flip = (c: Card) => {
-    if (busy || won || open.includes(c.id) || done.includes(c.id)) return;
+    if (!playing || (timed && !speed.active) || speed.result !== null || busy || won || open.includes(c.id) || done.includes(c.id)) return;
     const now = [...open, c.id];
     setOpen(now);
     if (now.length < 2) return;
@@ -58,8 +52,11 @@ function MemoryGame() {
       setDone((d) => [...d, a.id, b.id]);
       setOpen([]);
       celebrate();
+      setScore(s => s + 1);
+      if (speed.active) speed.record();
       if (done.length + 2 === cards.length) {
         finishTime();
+        if (!timed) speed.stop();
         speak("כָּל הַכָּבוֹד! מָצָאתָ אֶת כָּל הַזּוּגוֹת!");
       }
     } else {
@@ -69,17 +66,22 @@ function MemoryGame() {
   };
 
   const restart = () => {
-    setCards(deal());
+    setCards(dealMemory(level));
+    setPlaying(true);
     setOpen([]);
     setDone([]);
     setMoves(0);
     setBusy(false);
     startTime();
+    speed.close(); if (timed) speed.start(); else speed.stop();
   };
 
   return (
-    <Shell title="מִשְׂחַק זִכָּרוֹן" score={done.length / 2} wide>
-      <p className="text-center text-xl text-muted-foreground">מָצֵא זוּג: מִלָּה וְתַמּוּנָה 🖼️</p>
+    <Shell title="מִשְׂחַק זִכָּרוֹן" score={score} wide>
+      <Celebration trigger={cel} />
+      {!playing ? <GameSetup level={level} onLevel={setLevel} timed={timed} onTimed={setTimed} onStart={restart} /> : <>
+      <Button variant="ghost" size="icon" title="בחירת משחק" aria-label="בחירת משחק" onClick={() => { setPlaying(false); speed.stop(); speed.close(); }}><Settings2 /></Button>
+      <SpeedBar speed={speed} unit="זוּגוֹת" />
 
       {won ? (
         <div className="mt-10 text-center animate-in zoom-in">
@@ -87,7 +89,7 @@ function MemoryGame() {
           <p className="mt-4 font-display text-5xl text-primary">מָצָאתָ אֶת כָּל הַזּוּגוֹת!</p>
           <p className="mt-2 text-2xl">בְּ {moves} נִסְיוֹנוֹת</p>
           {seconds !== null && <p className="mt-3 text-xl" aria-label="זמן סיום">⏱️ מָצָאתָ אֶת כָּל הַזּוּגוֹת בְּ־{completionTimeLabel(seconds)}</p>}
-          <Button onClick={restart} className="mt-6 h-auto rounded-full bg-primary px-8 py-4 font-display text-2xl text-primary-foreground shadow-pop">
+          <Button onClick={() => timed && speed.active ? (setCards(dealMemory(level)), setDone([]), setOpen([]), setMoves(0), startTime()) : restart()} className="mt-6 h-auto rounded-full bg-primary px-8 py-4 font-display text-2xl text-primary-foreground shadow-pop">
             🔁 מִשְׂחָק חָדָשׁ
           </Button>
         </div>
@@ -97,14 +99,15 @@ function MemoryGame() {
             const shown = open.includes(c.id) || done.includes(c.id);
             return (
               <Button variant="ghost" key={c.id} onClick={() => flip(c)} aria-label={shown ? c.text : "קלף הפוך"}
-                className={`flex h-32 items-center justify-center rounded-3xl px-2 font-display shadow-soft transition sm:h-40 ${shown ? (done.includes(c.id) ? "bg-success/30" : "bg-card") : "bg-primary text-primary-foreground hover:scale-105"} ${c.kind === "pic" ? "text-6xl" : "text-3xl sm:text-4xl"}`}>
+                className={`flex h-32 min-w-0 items-center justify-center whitespace-normal break-words rounded-3xl px-2 font-display shadow-soft transition sm:h-40 ${shown ? (done.includes(c.id) ? "bg-success/30" : "bg-card") : "bg-primary text-primary-foreground hover:scale-105"} ${c.kind === "pic" ? "text-6xl" : "text-2xl sm:text-4xl"}`}>
                 {shown ? c.text : "❓"}
               </Button>
             );
           })}
         </div>
       )}
-      <Celebration trigger={cel} />
+      </>}
+      <SpeedResult speed={speed} unit="זוּגוֹת" onRestart={restart} />
     </Shell>
   );
 }

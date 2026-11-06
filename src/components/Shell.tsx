@@ -1,10 +1,13 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { addPoints, updateWallet, useWallet } from "@/lib/wallet";
+import { useAccount } from "@/lib/account";
+import { Button } from "@/components/ui/button";
 
 export function Shell({ title, score, wide, children }: { title: string; score?: number; wide?: boolean; children: ReactNode }) {
   const width = wide ? "max-w-6xl" : "max-w-3xl";
   const [wallet] = useWallet();
+  const { user, profile, ready } = useAccount();
   const last = useRef(score ?? 0);
   const [earned, setEarned] = useState(0);
   const [summary, setSummary] = useState(false);
@@ -15,7 +18,7 @@ export function Shell({ title, score, wide, children }: { title: string; score?:
     const s = score ?? 0;
     const delta = s - last.current;
     last.current = s;
-    if (delta > 0) { updateWallet((w) => addPoints(w, delta)); setEarned((e) => e + delta); }
+    if (delta > 0 && updateWallet((w) => addPoints(w, delta))) setEarned((e) => e + delta);
   }, [score]);
 
   const leave = () => (earned > 0 ? setSummary(true) : navigate({ to: "/" }));
@@ -30,7 +33,9 @@ export function Shell({ title, score, wide, children }: { title: string; score?:
           <Link to="/room" className="rounded-full bg-card px-4 py-2 text-lg font-bold text-foreground shadow-soft">🪙 {wallet.points}</Link>
         </div>
       </header>
-      <main className={`mx-auto mt-8 ${width}`}>{children}</main>
+      <main className={`mx-auto mt-5 ${width}`}>
+        {!ready ? <p className="text-center text-xl">טוענים…</p> : !user || !profile?.name.trim() ? <div className="py-12 text-center"><Button asChild className="h-auto px-6 py-4 text-2xl"><Link to="/auth">{user ? "הַשְׁלָמַת שֵׁם הַיֶּלֶד" : "כְּנִיסָה לַחֶשְׁבּוֹן"}</Link></Button></div> : children}
+      </main>
       {summary && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/40 p-4 backdrop-blur-sm">
           <div className="w-full max-w-sm rounded-3xl bg-card p-8 text-center shadow-pop animate-in zoom-in">
