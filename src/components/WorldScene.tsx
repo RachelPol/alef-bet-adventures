@@ -27,7 +27,7 @@ export default function WorldScene({ kind, wallet, onMove }: { kind: "room" | "s
       async function rebuild() {
         if (!app || disposed || kind !== "room") return;
         const current = state.current;
-        const textures = await Promise.all(current.owned.map(p => ITEM_ART[p.itemId] ? Assets.load(ITEM_ART[p.itemId]) : Promise.resolve(null)));
+        const textures = await Promise.all(current.owned.map(p => { const url = ITEM_ART[p.itemId]; return url ? Assets.load(url) : Promise.resolve(null); }));
         if (disposed) return;
         layer.removeChildren().forEach(c => c.destroy());
         if (current.wall) {

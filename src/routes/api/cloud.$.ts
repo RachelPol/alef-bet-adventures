@@ -19,7 +19,7 @@ async function forward(request: Request, path: string) {
   if (bearer?.includes("sb_secret_") || bearer === `Bearer ${key}`) headers.delete("authorization");
   try {
     const response = await fetch(`${url.replace(/\/$/, "")}/${path}${source.search}`, {
-      method: request.method, headers, body: ["GET", "HEAD"].includes(request.method) ? undefined : await request.arrayBuffer(), redirect: "manual",
+      method: request.method, headers, body: ["GET", "HEAD"].includes(request.method) ? null : await request.arrayBuffer(), redirect: "manual",
     });
     const output = new Headers({ "Cache-Control": "no-store" });
     for (const name of ["content-type", "content-range", "range-unit", "preference-applied"]) {
