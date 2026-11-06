@@ -21,6 +21,7 @@ import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RoomRouteImport } from './routes/room'
 import { Route as StreetRouteImport } from './routes/street'
 import { Route as ApiCloudSplatRouteImport } from './routes/api/cloud.$'
+import { Route as ApiPublicReadingTrialRouteImport } from './routes/api/public/reading-trial'
 import { Route as ApiPublicTtsRouteImport } from './routes/api/public/tts'
 
 const IndexRoute = IndexRouteImport.update({
@@ -83,6 +84,11 @@ const ApiCloudSplatRoute = ApiCloudSplatRouteImport.update({
   path: '/api/cloud/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicReadingTrialRoute = ApiPublicReadingTrialRouteImport.update({
+  id: '/api/public/reading-trial',
+  path: '/api/public/reading-trial',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicTtsRoute = ApiPublicTtsRouteImport.update({
   id: '/api/public/tts',
   path: '/api/public/tts',
@@ -102,6 +108,7 @@ export interface FileRoutesByFullPath {
   '/room': typeof RoomRoute
   '/street': typeof StreetRoute
   '/api/cloud/$': typeof ApiCloudSplatRoute
+  '/api/public/reading-trial': typeof ApiPublicReadingTrialRoute
   '/api/public/tts': typeof ApiPublicTtsRoute
 }
 export interface FileRoutesByTo {
@@ -117,6 +124,7 @@ export interface FileRoutesByTo {
   '/room': typeof RoomRoute
   '/street': typeof StreetRoute
   '/api/cloud/$': typeof ApiCloudSplatRoute
+  '/api/public/reading-trial': typeof ApiPublicReadingTrialRoute
   '/api/public/tts': typeof ApiPublicTtsRoute
 }
 export interface FileRoutesById {
@@ -133,6 +141,7 @@ export interface FileRoutesById {
   '/room': typeof RoomRoute
   '/street': typeof StreetRoute
   '/api/cloud/$': typeof ApiCloudSplatRoute
+  '/api/public/reading-trial': typeof ApiPublicReadingTrialRoute
   '/api/public/tts': typeof ApiPublicTtsRoute
 }
 export interface FileRouteTypes {
@@ -150,6 +159,7 @@ export interface FileRouteTypes {
     | '/room'
     | '/street'
     | '/api/cloud/$'
+    | '/api/public/reading-trial'
     | '/api/public/tts'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -165,6 +175,7 @@ export interface FileRouteTypes {
     | '/room'
     | '/street'
     | '/api/cloud/$'
+    | '/api/public/reading-trial'
     | '/api/public/tts'
   id:
     | '__root__'
@@ -180,6 +191,7 @@ export interface FileRouteTypes {
     | '/room'
     | '/street'
     | '/api/cloud/$'
+    | '/api/public/reading-trial'
     | '/api/public/tts'
   fileRoutesById: FileRoutesById
 }
@@ -196,6 +208,7 @@ export interface RootRouteChildren {
   RoomRoute: typeof RoomRoute
   StreetRoute: typeof StreetRoute
   ApiCloudSplatRoute: typeof ApiCloudSplatRoute
+  ApiPublicReadingTrialRoute: typeof ApiPublicReadingTrialRoute
   ApiPublicTtsRoute: typeof ApiPublicTtsRoute
 }
 
@@ -285,6 +298,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiCloudSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/reading-trial': {
+      id: '/api/public/reading-trial'
+      path: '/api/public/reading-trial'
+      fullPath: '/api/public/reading-trial'
+      preLoaderRoute: typeof ApiPublicReadingTrialRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/tts': {
       id: '/api/public/tts'
       path: '/api/public/tts'
@@ -308,6 +328,7 @@ const rootRouteChildren: RootRouteChildren = {
   RoomRoute: RoomRoute,
   StreetRoute: StreetRoute,
   ApiCloudSplatRoute: ApiCloudSplatRoute,
+  ApiPublicReadingTrialRoute: ApiPublicReadingTrialRoute,
   ApiPublicTtsRoute: ApiPublicTtsRoute,
 }
 export const routeTree = rootRouteImport
