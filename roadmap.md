@@ -1,4 +1,8 @@
 # Roadmap
+- [x] Move reading pronunciation to account settings and persist per child; saved selection survives reload, removed from game setup
+- [x] Explain that pronunciation is selected on the pre-game entry screen
+- [x] Investigate Itamar wallet persistence and prevent queued saves being lost on account changes; existing account has 28 points and 3 items, historical missing totals unknown
+- [x] Device-local returning-account picker with three-digit PIN only; 10 earned points, purchase, returning readback and wrong PIN verified
 - [x] Optional Lithuanian pronunciation selection persists; dialect tests and tav audio response verified, auditory fidelity needs user feedback
 - [x] Room item positions already persist after drag and reload; verified saved coordinates and parent recovery shortcut
 - [x] Expand to 111 products across eight shops including books, sports and creative supplies; purchase and room readback verified
