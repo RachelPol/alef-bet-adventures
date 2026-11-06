@@ -11,9 +11,9 @@ export const PRAISE = [
 /** Weighted random clip, never the same clip twice in a row. */
 export function praiseIndex(previous: number, random = Math.random): number {
   const options = PRAISE.map((_, index) => index).filter(index => index !== previous);
-  const total = options.reduce((sum, i) => sum + PRAISE[i].weight, 0);
+  const total = options.reduce((sum, i) => sum + (PRAISE[i]?.weight ?? 0), 0);
   let r = random() * total;
-  for (const i of options) { r -= PRAISE[i].weight; if (r < 0) return i; }
+  for (const i of options) { r -= PRAISE[i]?.weight ?? 0; if (r < 0) return i; }
   return options[options.length - 1] ?? 0;
 }
 export function progressMilestone(count: number, interval = 5) {
