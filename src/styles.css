@@ -277,11 +277,11 @@
 .street-building:hover .street-building-sign { border-color:var(--primary); }
 .street-travel { display:flex; justify-content:center; gap:24px; padding:12px; direction:ltr; }
 .street-travel svg { width:26px; height:26px; }
-.shop-dialog { width:calc(100% - 24px); max-width:960px; max-height:90dvh; overflow-y:auto; border-radius:8px; }
+.shop-dialog { width:calc(100% - 24px); max-width:960px; max-height:90dvh; overflow:hidden; border-radius:8px; grid-template-rows:auto minmax(0,1fr) auto; }
 .shop-dialog > div:first-child { padding-right:60px; text-align:start; }
 .dialog-dismiss svg { width:28px; height:28px; }
 [role="dialog"] > div:first-child { padding-right:60px; }
-.shop-products { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; }
+.shop-products { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; overflow-y:auto; max-height:calc(90dvh - 220px); }
 .shop-product { border:1px solid var(--border); border-radius:8px; background:var(--card); padding:16px; text-align:center; }
 .shop-item-image { height:160px; padding:8px; display:flex; align-items:center; justify-content:center; }
 .paint-pink { background:var(--paint-pink); }.paint-blue { background:var(--paint-blue); }.paint-green { background:var(--paint-green); }.paint-yellow { background:var(--paint-yellow); }.paint-purple { background:var(--paint-purple); }
