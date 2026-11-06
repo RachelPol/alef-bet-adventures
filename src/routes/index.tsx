@@ -1,4 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useWallet } from "@/lib/wallet";
+import { useAccount } from "@/lib/account";
+import { Button } from "@/components/ui/button";
+import elidushi from "@/assets/elidushi.png.asset.json";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -25,10 +29,17 @@ const MODES = [
 ] as const;
 
 function Index() {
+  const [wallet] = useWallet();
+  const { user, profile, avatar } = useAccount();
   return (
     <div className="min-h-screen bg-background px-4 py-10">
       <div className="mx-auto max-w-3xl text-center">
+        <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+          <Button asChild variant="outline" className="h-auto py-2 text-xl"><Link to="/auth">{avatar && <img src={avatar} alt="" className="size-8 rounded-full object-cover" />}{user ? profile?.name || "השלמת פרטי החשבון" : "כְּנִיסָה / חֶשְׁבּוֹן חָדָשׁ"}</Link></Button>
+          <Button asChild variant="secondary" className="h-auto py-2 text-xl"><Link to="/room" aria-label="הנקודות שלי">🪙 {wallet.points} נְקֻדּוֹת</Link></Button>
+        </div>
         <h1 className="font-display text-6xl text-primary md:text-7xl">אָלֶף בֵּית</h1>
+        <img src={elidushi.url} alt="אלידושי" className="mx-auto mt-4 h-32 object-contain" />
         <p className="mt-3 text-xl text-muted-foreground">לוֹמְדִים לִקְרֹא – אוֹת אַחַר אוֹת</p>
         <div className="mt-10 grid gap-5 sm:grid-cols-2">
           {MODES.map((m) => (

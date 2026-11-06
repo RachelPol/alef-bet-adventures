@@ -1,4 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 export type ShopId = "furniture" | "toys" | "music" | "paint" | "plants";
 export type ShopItem = { id: string; name: string; emoji: string; price: number; shop: ShopId; color?: string };
@@ -66,16 +68,50 @@ export function move(w: Wallet, uid: string, x: number, y: number): Wallet {
 
 const KEY = "wallet";
 const EVT = "wallet-change";
+let owner: string | null = null;
+let snapshot: Wallet = EMPTY;
+let loaded = false;
+let queue = Promise.resolve();
+const notify = () => window.dispatchEvent(new Event(EVT));
+
+export async function connectWallet(userId: string | null) {
+  if (owner === userId && loaded) return;
+  owner = userId; loaded = false; snapshot = EMPTY; notify();
+  if (!userId) { loaded = true; notify(); return; }
+  const { data, error } = await supabase.from("wallets").select("points,owned,wall").eq("user_id", userId).single();
+  if (owner !== userId) return;
+  if (error) { toast.error("לא הצלחנו לטעון את הנקודות; נסו שוב"); return; }
+  snapshot = { points: data.points, owned: data.owned as Placed[], wall: data.wall };
+  loaded = true; notify();
+}
 
 function load(): Wallet {
-  try { return { ...EMPTY, ...JSON.parse(localStorage.getItem(KEY) ?? "{}") }; } catch { return EMPTY; }
+  return snapshot;
 }
 
 export function updateWallet(f: (w: Wallet) => Wallet | null): boolean {
+  if (!owner || !loaded) return false;
   const next = f(load());
   if (!next) return false;
-  localStorage.setItem(KEY, JSON.stringify(next));
-  window.dispatchEvent(new Event(EVT));
+  snapshot = next; notify();
+  const userId = owner;
+  queue = queue.then(async () => {
+    if (owner !== userId) return;
+    for (let attempt = 0; attempt < 4; attempt++) {
+      const { data, error } = await supabase.from("wallets").select("points,owned,wall,version").eq("user_id", userId).single();
+      if (error || owner !== userId) throw new Error("wallet read failed");
+      const remote = f({ points: data.points, owned: data.owned as Placed[], wall: data.wall });
+      if (!remote) throw new Error("wallet purchase unavailable");
+      const { data: saved, error: saveError } = await supabase.from("wallets").update({ ...remote, version: data.version + 1 }).eq("user_id", userId).eq("version", data.version).select("user_id");
+      if (saveError) throw saveError;
+      if (saved?.length) return;
+    }
+    throw new Error("wallet conflict");
+  }).catch(async () => {
+    if (owner !== userId) return;
+    toast.error("השמירה לא הצליחה; הנקודות נטענות מחדש");
+    loaded = false; await connectWallet(userId);
+  });
   return true;
 }
 
