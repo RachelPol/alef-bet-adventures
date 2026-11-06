@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { syllableSound } from "./hebrew-syllables";
+import { LEVELS } from "./levels";
 describe("isolated Hebrew syllables", () => {
   it("reads the photographed shin-patach as sha, not so, in Litvish", () => {
     expect(syllableSound("שַׁ", "litvish")).toBe("sha");
@@ -18,5 +19,14 @@ describe("isolated Hebrew syllables", () => {
   it("does not guess pronunciation for whole words or unvowelled letters", () => {
     expect(syllableSound("פִּיל", "litvish")).toBeNull();
     expect(syllableSound("שׁ", "litvish")).toBeNull();
+  });
+  it("resolves every dealt syllable in both dialects, including soft tav", () => {
+    const level = LEVELS.find(level => level.id === "syl");
+    if (!level) throw new Error("Missing syllables level");
+    expect(level.items.some(item => item.text === "תַ")).toBe(true);
+    for (const item of level.items) {
+      expect(syllableSound(item.say, "litvish")).toMatch(/^[a-z]+$/);
+      expect(syllableSound(item.say, "israeli")).toMatch(/^[a-z]+$/);
+    }
   });
 });
