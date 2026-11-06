@@ -8,6 +8,13 @@
       "when": 1793949368407,
       "tag": "0000_child_profiles_wallets",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1793950935398,
+      "tag": "0001_child_code_accounts",
+      "breakpoints": true
     }
   ]
 }

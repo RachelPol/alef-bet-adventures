@@ -14,6 +14,35 @@ export type Database = {
   }
   public: {
     Tables: {
+      child_logins: {
+        Row: {
+          contact_email: string | null
+          created_at: string
+          name_key: string
+          user_id: string
+        }
+        Insert: {
+          contact_email?: string | null
+          created_at?: string
+          name_key: string
+          user_id: string
+        }
+        Update: {
+          contact_email?: string | null
+          created_at?: string
+          name_key?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "child_logins_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_path: string | null
