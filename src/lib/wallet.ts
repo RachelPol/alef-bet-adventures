@@ -212,7 +212,7 @@ export async function connectWallet(userId: string | null) {
   owner = userId; loaded = false; snapshot = EMPTY; notify();
   if (!userId) { loaded = true; notify(); return; }
   for (let attempt = 0; ; attempt++) {
-    const { data, error } = await supabase.from("wallets").select("points,owned,wall").eq("user_id", userId).single();
+    const { data, error } = await supabase.from("wallets").select("points,owned,wall").eq("user_id", userId).abortSignal(AbortSignal.timeout(10000)).single();
     if (owner !== userId || revision !== connectionRevision) return;
     if (!error && data) {
       snapshot = { points: data.points, owned: data.owned as Placed[], wall: data.wall };

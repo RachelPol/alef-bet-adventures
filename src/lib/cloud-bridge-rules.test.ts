@@ -13,3 +13,10 @@ describe("Cloud request bridge", () => {
     expect(h.get("authorization")).toBeNull(); expect(h.get("cookie")).toBeNull(); expect(h.get("apikey")).toBe("test-publishable");
   });
 });
+import { aliasCloudPath, unaliasCloudPath } from "./cloud-bridge-rules";
+import { it as aliasIt, expect as aliasExpect } from "vitest";
+aliasIt("hides the points table name from filtered URLs and restores it on the server", () => {
+  aliasExpect(aliasCloudPath("rest/v1/wallets")).toBe("rest/v1/kupa");
+  aliasExpect(unaliasCloudPath("rest/v1/kupa")).toBe("rest/v1/wallets");
+  aliasExpect(aliasCloudPath("rest/v1/profiles")).toBe("rest/v1/profiles");
+});
