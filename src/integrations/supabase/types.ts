@@ -14,7 +14,56 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      profiles: {
+        Row: {
+          avatar_path: string | null
+          id: string
+          name: string
+        }
+        Insert: {
+          avatar_path?: string | null
+          id: string
+          name?: string
+        }
+        Update: {
+          avatar_path?: string | null
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
+      wallets: {
+        Row: {
+          owned: Json
+          points: number
+          user_id: string
+          version: number
+          wall: string | null
+        }
+        Insert: {
+          owned?: Json
+          points?: number
+          user_id: string
+          version?: number
+          wall?: string | null
+        }
+        Update: {
+          owned?: Json
+          points?: number
+          user_id?: string
+          version?: number
+          wall?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wallets_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
