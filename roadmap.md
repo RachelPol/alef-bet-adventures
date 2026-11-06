@@ -1,4 +1,7 @@
 # Roadmap
+- [x] Remove book shop; seven building entrances and complete street scenes verified on desktop/mobile
+- [x] Save room-object rotation, flipping and resizing; purchase, adjustments and reload readback verified
+- [x] Independent short success chimes, six pre-generated dialect-specific praise clips with varied voices, milestones every five successes / three memory pairs; reading milestone and memory completion verified (auditory humor requires user listening)
 - [x] Fix intermittent speech failures: shared AudioContext with gesture resume, bounded 429/5xx retry, double-stop guard; rapid letter clicks verified with 200 streams and no console errors
 - [x] Securely replace forgotten shared parent code; optional per-child signup parent code verified with wrong-code rejection, 100-point credit and saved 65-point bunk-bed purchase
 - [x] Mask shared reveal code; declined using publicly known 555 alone to authorize wallet credits

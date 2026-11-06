@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { roomTransform, type RoomTransform } from "./room-transform";
 
 export type ShopId = "furniture" | "toys" | "music" | "paint" | "plants" | "books" | "sports" | "crafts";
 export type ShopItem = { id: string; name: string; emoji: string; price: number; shop: ShopId; color?: string };
-export type Placed = { uid: string; itemId: string; x: number; y: number };
+export type Placed = { uid: string; itemId: string; x: number; y: number } & RoomTransform;
 export type Wallet = { points: number; owned: Placed[]; wall: string | null };
 
 export const SHOPS: { id: ShopId; name: string; emoji: string; tone: string }[] = [
@@ -13,7 +14,6 @@ export const SHOPS: { id: ShopId; name: string; emoji: string; tone: string }[] 
   { id: "music", name: "כְּלֵי נְגִינָה", emoji: "🎸", tone: "text-accent" },
   { id: "paint", name: "צְבָעִים", emoji: "🎨", tone: "text-success" },
   { id: "plants", name: "צְמָחִים וְקִשּׁוּט", emoji: "🪴", tone: "text-destructive" },
-  { id: "books", name: "סְפָרִים", emoji: "📚", tone: "text-primary" },
   { id: "sports", name: "סְפּוֹרְט", emoji: "🏀", tone: "text-secondary" },
   { id: "crafts", name: "יְצִירָה", emoji: "🖍️", tone: "text-success" },
 ];
@@ -182,6 +182,10 @@ export function buy(w: Wallet, item: ShopItem, uid: string, random = Math.random
 export function move(w: Wallet, uid: string, x: number, y: number): Wallet {
   const c = (v: number) => Math.min(95, Math.max(5, v));
   return { ...w, owned: w.owned.map((p) => (p.uid === uid ? { ...p, x: c(x), y: c(y) } : p)) };
+}
+
+export function transformItem(w: Wallet, uid: string, change: RoomTransform): Wallet {
+  return { ...w, owned: w.owned.map(p => p.uid === uid ? { ...p, ...roomTransform({ ...p, ...change }) } : p) };
 }
 
 const EVT = "wallet-change";

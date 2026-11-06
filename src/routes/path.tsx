@@ -140,7 +140,7 @@ function PathGame() {
 
   return (
     <Shell title="שְׁבִיל הַמִּלִּים" score={score} wide>
-      <Celebration trigger={cel} />
+      <Celebration trigger={cel} count={score} complete={phase === "gate"} />
       {phase === "setup" ? (
         <section className="mx-auto max-w-2xl py-6 text-center">
           <div className="mb-5 text-7xl">🐥</div>

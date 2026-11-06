@@ -3,6 +3,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { addPoints, updateWallet, useWallet } from "@/lib/wallet";
 import { useAccount } from "@/lib/account";
 import { Button } from "@/components/ui/button";
+import { playEncouragement, stopEncouragement } from "@/lib/encouragement-audio";
 
 export function Shell({ title, score, wide, children }: { title: string; score?: number; wide?: boolean; children: ReactNode }) {
   const width = wide ? "max-w-6xl" : "max-w-3xl";
@@ -21,7 +22,8 @@ export function Shell({ title, score, wide, children }: { title: string; score?:
     if (delta > 0 && updateWallet((w) => addPoints(w, delta))) setEarned((e) => e + delta);
   }, [score]);
 
-  const leave = () => (earned > 0 ? setSummary(true) : navigate({ to: "/" }));
+  const leave = () => { if (earned > 0) { playEncouragement(); setSummary(true); } else void navigate({ to: "/" }); };
+  useEffect(() => stopEncouragement, []);
 
   return (
     <div className="min-h-screen bg-background px-4 py-6">

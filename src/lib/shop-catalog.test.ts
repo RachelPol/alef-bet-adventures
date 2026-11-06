@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { CATALOG, SHOPS, EMPTY, buy } from "./wallet";
 describe("expanded shops", () => {
+  it("does not offer a book shop", () => { expect(SHOPS.some(s => s.id === "books")).toBe(false); });
   it("expands every shop beyond its previous selection", () => { for (const shop of SHOPS) expect(CATALOG.filter(i => i.shop === shop.id).length).toBeGreaterThanOrEqual(16); });
   it.each(["bunk-bed", "toy-cabinet"])("offers requested furniture %s for purchase", id => {
     const item = CATALOG.find(item => item.id === id);

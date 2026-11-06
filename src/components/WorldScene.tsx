@@ -2,18 +2,21 @@ import { useEffect, useRef } from "react";
 import type { Application, Sprite } from "pixi.js";
 import room from "@/assets/room-scene.jpg";
 import street from "@/assets/shopping-street.jpg";
-import streetEast from "@/assets/shopping-street-east.jpg";
+import streetEast from "@/assets/shopping-street-east-complete.jpg";
 import redCar from "@/assets/actors/red-car.png";
 import blueCar from "@/assets/actors/blue-car.png";
 import family from "@/assets/actors/family.png";
 import walkers from "@/assets/actors/walkers.png";
 import { ITEM_ART, ITEM_SIZE } from "@/lib/room-art";
 import { CATALOG, type Wallet } from "@/lib/wallet";
+import { roomTransform } from "@/lib/room-transform";
 
-export default function WorldScene({ kind, wallet, onMove, streetSection = "west" }: { kind: "room" | "street"; wallet: Wallet; streetSection?: "west" | "east"; onMove?: (uid: string, x: number, y: number) => void }) {
+export default function WorldScene({ kind, wallet, onMove, onSelect, selected, streetSection = "west" }: { kind: "room" | "street"; wallet: Wallet; selected?: string | null; onSelect?: (uid: string) => void; streetSection?: "west" | "east"; onMove?: (uid: string, x: number, y: number) => void }) {
   const host = useRef<HTMLDivElement>(null);
   const state = useRef(wallet); state.current = wallet;
   const callback = useRef(onMove); callback.current = onMove;
+  const select = useRef(onSelect); select.current = onSelect;
+  const selection = useRef(selected); selection.current = selected;
   const scene = useRef<{ app: Application; rebuild: () => Promise<void> } | null>(null);
   useEffect(() => {
     let disposed = false; let app: Application | undefined;
@@ -43,9 +46,14 @@ export default function WorldScene({ kind, wallet, onMove, streetSection = "west
           const texture = textures[index];
           const object = texture ? new Sprite(texture) : new Text({ text: item.emoji, style: { fontSize: 90 } });
           object.anchor.set(.5, .8); if (texture) { const size = ITEM_SIZE[item.id] ?? 100; object.width = size; object.height = size * texture.height / texture.width; }
+          const transform = roomTransform(p);
+          object.scale.x *= transform.scale * (transform.flipped ? -1 : 1);
+          object.scale.y *= transform.scale;
+          object.angle = transform.rotation;
+          object.alpha = selection.current && selection.current !== p.uid ? .8 : 1;
           object.position.set(p.x / 100 * 1536, p.y / 100 * 1024); object.zIndex = p.y;
           object.eventMode = "static"; object.cursor = "grab"; let dragging = false;
-          object.on("pointerdown", () => { dragging = true; object.cursor = "grabbing"; });
+          object.on("pointerdown", () => { dragging = true; object.cursor = "grabbing"; select.current?.(p.uid); });
           object.on("globalpointermove", e => { if (!dragging) return; object.position.set(Math.max(77, Math.min(1459, e.global.x)), Math.max(51, Math.min(973, e.global.y))); });
           const finish = () => { if (!dragging) return; dragging = false; object.cursor = "grab"; callback.current?.(p.uid, object.x / 1536 * 100, object.y / 1024 * 100); };
           object.on("pointerup", finish); object.on("pointerupoutside", finish); object.on("pointercancel", finish); layer.addChild(object);

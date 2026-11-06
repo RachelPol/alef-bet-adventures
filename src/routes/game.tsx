@@ -60,7 +60,7 @@ function Game() {
 
   return (
     <Shell title="בַּלּוֹנִים" score={score}>
-      <Celebration trigger={cel} />
+      <Celebration trigger={cel} count={score} />
       {!playing ? <GameSetup level={level} onLevel={setLevel} timed={timed} onTimed={setTimed} onStart={start} /> : <>
       <Button variant="ghost" size="icon" onClick={settings} title="בחירת משחק" aria-label="בחירת משחק"><Settings2 /></Button>
       <div className="mt-4"><SpeedBar speed={speed} unit={level.unit} /></div>

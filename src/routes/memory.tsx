@@ -2,7 +2,6 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Shell } from "@/components/Shell";
 import { Celebration, SpeedBar, SpeedResult } from "@/components/Extras";
-import { speak } from "@/lib/letters";
 import { useCelebrate, useLevel, useSpeedTest } from "@/lib/hooks";
 import { GameSetup } from "@/components/GameSetup";
 import { dealMemory, type MemoryCard as Card } from "@/lib/memory-game";
@@ -57,7 +56,6 @@ function MemoryGame() {
       if (done.length + 2 === cards.length) {
         finishTime();
         if (!timed) speed.stop();
-        speak("כָּל הַכָּבוֹד! מָצָאתָ אֶת כָּל הַזּוּגוֹת!");
       }
     } else {
       setBusy(true);
@@ -78,7 +76,7 @@ function MemoryGame() {
 
   return (
     <Shell title="מִשְׂחַק זִכָּרוֹן" score={score} wide>
-      <Celebration trigger={cel} />
+      <Celebration trigger={cel} count={score} interval={3} voiced complete={won} />
       {!playing ? <GameSetup level={level} onLevel={setLevel} timed={timed} onTimed={setTimed} onStart={restart} /> : <>
       <Button variant="ghost" size="icon" title="בחירת משחק" aria-label="בחירת משחק" onClick={() => { setPlaying(false); speed.stop(); speed.close(); }}><Settings2 /></Button>
       <SpeedBar speed={speed} unit="זוּגוֹת" />
