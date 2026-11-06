@@ -1,4 +1,6 @@
 # Roadmap
+- [ ] Expand products in every shop and add book, sports and creative shops; verify purchases
+- [ ] Repair street people using complete transparent local sprites; verify motion and filtered-network rendering
 - [x] Remove unsuccessful microphone trial from reading activity; retain manual parent approval
 - [x] Immediate next-target speech after correct answers in all listening games, preserving silent independent reading/memory; interaction verified
 - [x] Path next-word speech during celebration; shared unbiased shuffle and six word-picture memory pairs verified
