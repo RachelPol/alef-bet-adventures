@@ -1,4 +1,5 @@
 # Roadmap
+- [ ] Increase speech pace while preserving emphasis on כל in כל הכבוד
 - [ ] Restore all games after profile-read regression and verify activity entry
 - [ ] Fix signup session failure in preview and verify returning entry
 - [ ] Replace Elidushi with varied emoji celebrations
