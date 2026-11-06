@@ -19,3 +19,4 @@
 - Keep the generated Cloud client and brokered session storage intact; an app-owned same-origin fetch bridge forwards only allowlisted Auth, Data and Storage paths using the publishable key and caller bearer, never service-role data access.
 - Room and street use a lazily loaded Pixi.js scene with generated bitmap backgrounds and sprites; save placement once on drag release, and keep navigation and purchase controls accessible in HTML.
 - Parent recovery requires the separate server-held parent code and a validated authenticated child session; credit points atomically with a wallet version increment and audit row, never authorize by hidden keys alone.
+- Microphone trials use complete in-memory WAV uploads through an authenticated bounded multipart/SSE route; lexical transcript comparison never awards points or proves niqqud accuracy. Persist terminal AI access blocks in a server-only table to prevent repeated blocked calls.
