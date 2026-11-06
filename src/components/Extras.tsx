@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { LEVELS, type Level } from "@/lib/levels";
 import elidushi from "@/assets/elidushi.png.asset.json";
 import { Button } from "@/components/ui/button";
@@ -21,21 +21,13 @@ type Speed = ReturnType<typeof useSpeedTest>;
 
 export function SpeedBar({ speed, unit }: { speed: Speed; unit: string }) {
   if (!speed.active) return null;
-  if (false)
-    return (
-      <div className="text-center">
-        <button onClick={speed.start} className="rounded-full bg-secondary px-6 py-2 text-lg font-bold text-secondary-foreground shadow-soft hover:scale-105 transition">
-          ⏱️ בְּדִיקַת מְהִירוּת – דַּקָּה אַחַת
-        </button>
-      </div>
-    );
   const pct = (speed.left / TEST_SECONDS) * 100;
   return (
     <div className="rounded-2xl bg-card p-3 shadow-soft">
       <div className="mb-2 flex items-center justify-between font-bold">
         <span>⏱️ {Math.ceil(speed.left)} שְׁנִיּוֹת</span>
         <span className="text-primary">{speed.count} {unit}</span>
-        <button onClick={speed.stop} className="text-sm text-muted-foreground underline">עֲצִירָה</button>
+        <Button variant="ghost" onClick={speed.stop} className="text-sm text-muted-foreground underline">עֲצִירָה</Button>
       </div>
       <div className="h-4 overflow-hidden rounded-full bg-muted">
         <div className="h-full rounded-full bg-gradient-to-l from-success to-accent transition-[width] duration-100" style={{ width: `${pct}%` }} />

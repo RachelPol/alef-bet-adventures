@@ -1,3 +1,5 @@
+import { streamSpeech } from "./stream-speech";
+import { toast } from "sonner";
 export type Letter = { char: string; name: string; word: string; emoji: string };
 
 export const LETTERS: Letter[] = [
@@ -30,17 +32,17 @@ export const LETTERS: Letter[] = [
   { char: "ת", name: "תָו", word: "בַּיִת", emoji: "🏡" },
 ];
 
-let current: HTMLAudioElement | null = null;
+let current: AbortController | null = null;
 
 export function speak(text: string) {
   if (typeof window === "undefined") return;
-  current?.pause();
-  const audio = new Audio(`/api/public/tts?q=${encodeURIComponent(text)}`);
-  current = audio;
+  current?.abort();
+  const controller = new AbortController();
+  current = controller;
   window.speechSynthesis?.cancel();
-  audio.play().catch((e) => {
-    // An interrupted (replaced) sound must not fall back and speak the old word
-    if (current === audio && e?.name !== "AbortError") speakBrowser(text);
+  void streamSpeech("/api/public/tts", text, controller.signal).catch(error => {
+    if (controller.signal.aborted || current !== controller) return;
+    toast.error(error instanceof Error ? error.message : "הקול אינו זמין כרגע");
   });
 }
 

@@ -1,4 +1,5 @@
 import { createParser } from "eventsource-parser";
+import { supabase } from "@/integrations/supabase/client";
 
 export function decodePCM(pending: Uint8Array, incoming: Uint8Array) {
   const bytes = new Uint8Array(pending.length + incoming.length);
@@ -28,9 +29,11 @@ export async function streamSpeech(endpoint: string, text: string, signal?: Abor
   let playback: Promise<void> = Promise.resolve();
   try {
     if (context.state === "suspended") await context.resume();
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) throw new Error("נדרשת כניסה לחשבון להשמעת הקול");
     const response = await fetch(endpoint, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${session.access_token}` },
       body: JSON.stringify({ text }),
       signal: controller.signal,
     });
