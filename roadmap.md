@@ -1,5 +1,5 @@
 # Roadmap
-- [ ] Move reading pronunciation to account settings and persist per child
+- [x] Move reading pronunciation to account settings and persist per child; saved selection survives reload, removed from game setup
 - [x] Explain that pronunciation is selected on the pre-game entry screen
 - [x] Investigate Itamar wallet persistence and prevent queued saves being lost on account changes; existing account has 28 points and 3 items, historical missing totals unknown
 - [x] Device-local returning-account picker with three-digit PIN only; 10 earned points, purchase, returning readback and wrong PIN verified
