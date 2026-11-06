@@ -9,8 +9,8 @@ import { ITEM_ART } from "@/lib/room-art";
 import { Home, Coins, ShoppingBag, ArrowLeft, ArrowRight, Check } from "lucide-react";
 const WorldScene = lazy(() => import("@/components/WorldScene"));
 const STREET_SHOPS: ShopId[] = ["toys", "furniture", "music", "paint", "plants"];
-const SHOP_ORDER = [...STREET_SHOPS, "books", "sports", "crafts"] as const;
-const EAST_SHOPS: ShopId[] = ["books", "sports", "crafts"];
+const SHOP_ORDER = [...STREET_SHOPS, "sports", "crafts"] as const;
+const EAST_SHOPS: ShopId[] = ["sports", "crafts"];
 export const Route = createFileRoute("/street")({
   head: () => ({
     meta: [
@@ -34,7 +34,7 @@ function Street() {
  if(!user||!profile?.name?.trim())return <div className="p-12 text-center"><Button asChild><Link to="/auth">כְּנִיסָה לַחֶשְׁבּוֹן</Link></Button></div>;
  return <main className="world-page">
   <header className="world-header"><Button asChild variant="outline" className="h-14 px-6 text-xl"><Link to="/room"><Home />לחדר שלי</Link></Button><div className="text-center"><p className="text-sm text-muted-foreground">מסע הקניות של {profile.name}</p><h1 className="text-3xl font-bold">רְחוֹב הַחֲנֻיּוֹת</h1></div><span className="world-balance"><Coins />{wallet.points}</span></header>
-  <div className="street-scroll" dir="ltr" ref={streetScroll}><div className="street-blocks">{(["west", "east"] as const).map(section => <section key={section} className={`world-street street-${section}`} aria-label={section === "west" ? "רחוב החנויות" : "רחוב הספרים והגן"}><ClientOnly><Suspense fallback={<div className="world-loading">מכינים את הרחוב…</div>}><WorldScene kind="street" streetSection={section} wallet={wallet} /></Suspense></ClientOnly>
+  <div className="street-scroll" dir="ltr" ref={streetScroll}><div className="street-blocks">{(["west", "east"] as const).map(section => <section key={section} className={`world-street street-${section}`} aria-label={section === "west" ? "רחוב החנויות" : "רחוב הספורט היצירה והגן"}><ClientOnly><Suspense fallback={<div className="world-loading">מכינים את הרחוב…</div>}><WorldScene kind="street" streetSection={section} wallet={wallet} /></Suspense></ClientOnly>
     <div className="street-buildings">{(section === "west" ? STREET_SHOPS : EAST_SHOPS).map(id=>{const s=SHOPS.find(s=>s.id===id);if(!s)return null;return <Button key={id} variant="ghost" className="street-building" aria-label={`כניסה לחנות ${s.name}`} onClick={()=>{setShop(id);setBought(null);}}><span className="street-building-sign" dir="rtl"><span aria-hidden="true">{s.emoji}</span><span>{s.name}</span></span></Button>;})}</div>
   </section>)}</div></div>
   <nav className="street-travel" aria-label="טיול ברחוב"><Button variant="outline" size="icon" title="לתחילת הרחוב" aria-label="לתחילת הרחוב" onClick={()=>streetScroll.current?.scrollTo({left:0,behavior:'smooth'})}><ArrowLeft /></Button><Button variant="outline" size="icon" title="להמשך הרחוב" aria-label="להמשך הרחוב" onClick={()=>{const el=streetScroll.current;if(el)el.scrollBy({left:el.clientWidth*.8,behavior:'smooth'});}}><ArrowRight /></Button></nav>
