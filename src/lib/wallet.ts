@@ -66,7 +66,6 @@ export function move(w: Wallet, uid: string, x: number, y: number): Wallet {
   return { ...w, owned: w.owned.map((p) => (p.uid === uid ? { ...p, x: c(x), y: c(y) } : p)) };
 }
 
-const KEY = "wallet";
 const EVT = "wallet-change";
 let owner: string | null = null;
 let snapshot: Wallet = EMPTY;

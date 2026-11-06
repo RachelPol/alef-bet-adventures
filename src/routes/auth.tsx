@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 import { useAccount } from "@/lib/account";
@@ -14,6 +14,7 @@ function Auth() {
   const [mode, setMode] = useState<"login" | "signup" | "forgot">("login");
   const [name, setName] = useState(""); const [email, setEmail] = useState(""); const [password, setPassword] = useState("");
   const [photo, setPhoto] = useState<File | null>(null); const [busy, setBusy] = useState(false); const [message, setMessage] = useState("");
+  useEffect(() => { setName(profile?.name ?? ""); }, [profile?.name]);
   const submit = async (event: React.FormEvent) => {
     event.preventDefault(); setBusy(true); setMessage("");
     try {
@@ -53,7 +54,7 @@ function Auth() {
     {!ready ? <p>טוענים…</p> : <>
     {user && avatar && <img src={avatar} alt="תמונת הילד" className="mx-auto mb-4 size-24 rounded-full object-cover" />}
     <form onSubmit={submit} className="grid gap-4">
-      {(user || mode === "signup") && <label className="grid gap-1 text-xl">שֵׁם הַיֶּלֶד *<input required maxLength={80} value={name || (user ? profile?.name ?? "" : "")} onChange={e => setName(e.target.value)} className="rounded-lg border bg-card p-3" /></label>}
+      {(user || mode === "signup") && <label className="grid gap-1 text-xl">שֵׁם הַיֶּלֶד *<input required maxLength={80} value={name} onChange={e => setName(e.target.value)} className="rounded-lg border bg-card p-3" /></label>}
       {user ? <label className="grid gap-1 text-xl">תְּמוּנָה (לִבְחִירָה)<input type="file" accept="image/png,image/jpeg,image/webp" onChange={e => setPhoto(e.target.files?.[0] ?? null)} /></label> : <>
         <label className="grid gap-1 text-xl">מֵייל<input required type="email" dir="ltr" value={email} onChange={e => setEmail(e.target.value)} className="rounded-lg border bg-card p-3" /></label>
         {mode !== "forgot" && <label className="grid gap-1 text-xl">סִיסְמָה<input required type="password" minLength={8} autoComplete={mode === "signup" ? "new-password" : "current-password"} dir="ltr" value={password} onChange={e => setPassword(e.target.value)} className="rounded-lg border bg-card p-3" /></label>}

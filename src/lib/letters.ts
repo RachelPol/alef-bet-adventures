@@ -46,17 +46,6 @@ export function speak(text: string) {
   });
 }
 
-function speakBrowser(text: string) {
-  if (!window.speechSynthesis) return;
-  window.speechSynthesis.cancel();
-  const u = new SpeechSynthesisUtterance(text);
-  u.lang = "he-IL";
-  u.rate = 0.8;
-  const v = window.speechSynthesis.getVoices().find((x) => x.lang.startsWith("he"));
-  if (v) u.voice = v;
-  window.speechSynthesis.speak(u);
-}
-
 export function pick<T>(arr: T[], n: number, exclude: T[] = []): T[] {
   const pool = arr.filter((x) => !exclude.includes(x));
   return [...pool].sort(() => Math.random() - 0.5).slice(0, n);

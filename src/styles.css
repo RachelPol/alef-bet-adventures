@@ -153,8 +153,8 @@
 @theme inline {
   --color-success: var(--success);
   --color-success-foreground: var(--success-foreground);
-  --font-display: "David Libre", "Times New Roman", serif;
-  --font-sans: "David Libre", "Times New Roman", serif;
+  --font-display: "Noto Serif Hebrew", "Times New Roman", serif;
+  --font-sans: "Noto Serif Hebrew", "Times New Roman", serif;
   --shadow-soft: 0 6px 0 -1px color-mix(in oklab, var(--foreground) 15%, transparent);
   --shadow-pop: 0 8px 0 0 color-mix(in oklab, var(--primary) 55%, black);
 }
