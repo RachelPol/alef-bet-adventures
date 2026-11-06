@@ -1,0 +1,17 @@
+CREATE TABLE public.profiles (id uuid PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE, name text NOT NULL DEFAULT '' CHECK (char_length(name) <= 80), avatar_path text);
+GRANT SELECT, UPDATE ON public.profiles TO authenticated;
+GRANT ALL ON public.profiles TO service_role;
+ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
+CREATE POLICY profiles_read ON public.profiles FOR SELECT TO authenticated USING (id = auth.uid());
+CREATE POLICY profiles_update ON public.profiles FOR UPDATE TO authenticated USING (id = auth.uid()) WITH CHECK (id = auth.uid());
+CREATE TABLE public.wallets (user_id uuid PRIMARY KEY REFERENCES public.profiles(id) ON DELETE CASCADE, points integer NOT NULL DEFAULT 0 CHECK (points >= 0), owned jsonb NOT NULL DEFAULT '[]', wall text, version integer NOT NULL DEFAULT 0);
+GRANT SELECT, UPDATE ON public.wallets TO authenticated;
+GRANT ALL ON public.wallets TO service_role;
+ALTER TABLE public.wallets ENABLE ROW LEVEL SECURITY;
+CREATE POLICY wallets_read ON public.wallets FOR SELECT TO authenticated USING (user_id = auth.uid());
+CREATE POLICY wallets_update ON public.wallets FOR UPDATE TO authenticated USING (user_id = auth.uid()) WITH CHECK (user_id = auth.uid());
+CREATE FUNCTION public.create_child_profile() RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $$ BEGIN INSERT INTO public.profiles(id,name) VALUES (NEW.id, left(coalesce(NEW.raw_user_meta_data->>'name', NEW.raw_user_meta_data->>'full_name', ''),80)); INSERT INTO public.wallets(user_id) VALUES (NEW.id); RETURN NEW; END; $$;
+CREATE TRIGGER child_profile_signup AFTER INSERT ON auth.users FOR EACH ROW EXECUTE FUNCTION public.create_child_profile();
+CREATE POLICY avatar_read ON storage.objects FOR SELECT TO authenticated USING (bucket_id = 'child-avatars' AND (storage.foldername(name))[1] = auth.uid()::text);
+CREATE POLICY avatar_insert ON storage.objects FOR INSERT TO authenticated WITH CHECK (bucket_id = 'child-avatars' AND (storage.foldername(name))[1] = auth.uid()::text);
+CREATE POLICY avatar_update ON storage.objects FOR UPDATE TO authenticated USING (bucket_id = 'child-avatars' AND (storage.foldername(name))[1] = auth.uid()::text) WITH CHECK (bucket_id = 'child-avatars' AND (storage.foldername(name))[1] = auth.uid()::text);

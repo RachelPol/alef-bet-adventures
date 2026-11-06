@@ -1,4 +1,9 @@
 # Roadmap
+- [ ] Account sign-in, required name, optional photo, account-owned points and room
+- [ ] Home points display
+- [ ] Pre-game settings across activities and memory levels
+- [ ] Human Hebrew speech and kamatz katan pronunciation
+- [ ] Yoni varied non-overlapping celebrations and basic Hebrew font
 - [x] Difficulty levels, 1-minute speed test, success animations
 - [x] Distinguish שׁ/שׂ and dagesh/rafe in ב, כ, פ, ת
 - [x] Bigger word lists + no repeats
