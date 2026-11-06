@@ -211,12 +211,24 @@ export async function connectWallet(userId: string | null) {
   if (owner === userId && loaded) return;
   owner = userId; loaded = false; snapshot = EMPTY; notify();
   if (!userId) { loaded = true; notify(); return; }
-  const { data, error } = await supabase.from("wallets").select("points,owned,wall").eq("user_id", userId).single();
-  if (owner !== userId || revision !== connectionRevision) return;
-  if (error) { toast.error("לא הצלחנו לטעון את הנקודות; נסו שוב"); return; }
-  snapshot = { points: data.points, owned: data.owned as Placed[], wall: data.wall };
-  loaded = true; notify();
+  for (let attempt = 0; ; attempt++) {
+    const { data, error } = await supabase.from("wallets").select("points,owned,wall").eq("user_id", userId).single();
+    if (owner !== userId || revision !== connectionRevision) return;
+    if (!error && data) {
+      snapshot = { points: data.points, owned: data.owned as Placed[], wall: data.wall };
+      loaded = true; notify();
+      // Changes earned while the account was still loading are applied now instead of being lost.
+      const waiting = deferred.splice(0).filter(d => d.userId === userId);
+      for (const d of waiting) updateWallet(d.f);
+      return;
+    }
+    if (attempt === 1) toast.error("טוענים את הנקודות מחדש…");
+    // Keep retrying transient load failures (e.g. network filters) rather than leaving the wallet unusable.
+    await new Promise(r => setTimeout(r, Math.min(1000 * 2 ** attempt, 8000)));
+    if (owner !== userId || revision !== connectionRevision) return;
+  }
 }
+const deferred: { userId: string; f: (w: Wallet) => Wallet | null }[] = [];
 
 function load(): Wallet {
   return snapshot;
@@ -224,12 +236,13 @@ function load(): Wallet {
 
 export async function reloadWallet() {
   await queue;
-  loaded = false;
+  loaded = false; connectionRevision++;
   await connectWallet(owner);
 }
 
 export function updateWallet(f: (w: Wallet) => Wallet | null): boolean {
-  if (!owner || !loaded) return false;
+  if (!owner) return false;
+  if (!loaded) { deferred.push({ userId: owner, f }); return true; }
   const next = f(load());
   if (!next) return false;
   // Fix the randomly placed coordinates at acceptance, rather than dealing them again on save.
