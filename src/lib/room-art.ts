@@ -14,5 +14,23 @@ import plant from "@/assets/items/plant.png";
 import fish from "@/assets/items/fish.png";
 import picture from "@/assets/items/picture.png";
 import clock from "@/assets/items/clock.png";
-export const ITEM_ART: Record<string, string> = { bed, chair, sofa, lamp, bear, ball, car, robot, guitar, drum, piano, violin, plant, fish, picture, clock };
-export const ITEM_SIZE: Record<string, number> = { bed: 240, chair: 150, sofa: 270, lamp: 85, piano: 220, fish: 170, picture: 140, clock: 85, bear: 85, ball: 65, car: 90, robot: 90, plant: 120, guitar: 80, violin: 70, drum: 90 };
+import desk from "@/assets/items/desk.png";
+import wardrobe from "@/assets/items/wardrobe.png";
+import rug from "@/assets/items/rug.png";
+import pillow from "@/assets/items/pillow.png";
+import bookshelf from "@/assets/items/bookshelf.png";
+import nightstand from "@/assets/items/nightstand.png";
+import armchair from "@/assets/items/armchair.png";
+import rockingChair from "@/assets/items/rocking-chair.png";
+import bookSet from "@/assets/items/book-set.png";
+import storybook from "@/assets/items/storybook.png";
+import animalBook from "@/assets/items/animal-book.png";
+import easel from "@/assets/items/easel.png";
+import basketball from "@/assets/items/basketball.png";
+import scooter from "@/assets/items/scooter.png";
+import bicycle from "@/assets/items/bicycle.png";
+import trophy from "@/assets/items/trophy.png";
+export const ITEM_ART: Record<string, string> = { bed, chair, sofa, lamp, bear, ball, car, robot, guitar, drum, piano, violin, plant, fish, picture, clock, desk, wardrobe, rug, pillow, bookshelf, nightstand, armchair, "rocking-chair": rockingChair, "book-set": bookSet, storybook, "animal-book": animalBook, easel, basketball, scooter, bicycle, trophy,
+  "space-book": storybook, tehillim: animalBook, siddur: storybook, atlas: animalBook, poems: storybook, encyclopedia: bookSet, "coloring-book": animalBook, "nature-book": animalBook, "riddle-book": storybook,
+};
+export const ITEM_SIZE: Record<string, number> = { bed: 240, chair: 150, sofa: 270, lamp: 85, piano: 220, fish: 170, picture: 140, clock: 85, bear: 85, ball: 65, car: 90, robot: 90, plant: 120, guitar: 80, violin: 70, drum: 90, desk: 210, wardrobe: 170, rug: 240, pillow: 70, bookshelf: 160, nightstand: 105, armchair: 160, "rocking-chair": 155, "book-set": 75, storybook: 65, "animal-book": 65, easel: 150, basketball: 65, scooter: 120, bicycle: 200, trophy: 75 };

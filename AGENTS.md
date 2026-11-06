@@ -17,6 +17,6 @@
 - Display the companion in a reserved in-flow stage, never as a fixed overlay, so celebrations cannot hide game text.
 - Child-code sign-in uses server-only name mappings and HMAC-derived Auth credentials; validate PINs on the server and retain authenticated wallet RLS. Existing accounts may attach a child code only from their own authenticated session to avoid name-based account takeover.
 - Keep the generated Cloud client and brokered session storage intact; an app-owned same-origin fetch bridge forwards only allowlisted Auth, Data and Storage paths using the publishable key and caller bearer, never service-role data access.
-- Room and street use a lazily loaded Pixi.js scene with generated bitmap backgrounds and sprites; save placement once on drag release, and keep navigation and purchase controls accessible in HTML.
+- Room and street use a lazily loaded Pixi.js scene with generated bitmap backgrounds and sprites bundled on the same origin; pedestrian crops must retain full heads/feet and transparent backgrounds. Save placement once on drag release, and keep every shop, navigation and purchase control accessible in HTML.
 - Parent recovery requires the separate server-held parent code and a validated authenticated child session; credit points atomically with a wallet version increment and audit row, never authorize by hidden keys alone.
 - The dormant microphone trial modules are not mounted by the reading route; preserve their complete WAV/authenticated SSE boundary and durable AI access blocks if explicitly reactivated.
