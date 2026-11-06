@@ -1,4 +1,7 @@
 # Roadmap
+- [ ] Remove book shop and show complete uncropped street scenes
+- [ ] Save room-object rotation, flipping and resizing with accessible controls
+- [ ] Nonblocking success sounds, varied funny completion praise and progress milestones across games
 - [x] Fix intermittent speech failures: shared AudioContext with gesture resume, bounded 429/5xx retry, double-stop guard; rapid letter clicks verified with 200 streams and no console errors
 - [x] Securely replace forgotten shared parent code; optional per-child signup parent code verified with wrong-code rejection, 100-point credit and saved 65-point bunk-bed purchase
 - [x] Mask shared reveal code; declined using publicly known 555 alone to authorize wallet credits
