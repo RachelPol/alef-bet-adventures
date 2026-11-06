@@ -126,7 +126,9 @@ export async function streamSpeech(endpoint: string, text: string, signal?: Abor
         playhead += buffer.duration;
       },
     });
-    const reader = response.body.pipeThrough(new TextDecoderStream()).getReader();
+    const stream = response.body;
+    if (!stream) throw new Error("TTS failed: empty response");
+    const reader = stream.pipeThrough(new TextDecoderStream()).getReader();
     try {
       while (true) {
         const next = await reader.read();
