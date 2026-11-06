@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { setResponseHeader } from "@tanstack/react-start/server";
-import { childLoginSchema } from "./child-login";
+import { childLoginSchema, childSignupSchema } from "./child-login";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 export const enterChildAccount = createServerFn({ method: "POST" })
@@ -12,7 +12,7 @@ export const enterChildAccount = createServerFn({ method: "POST" })
   });
 
 export const createChildAccount = createServerFn({ method: "POST" })
-  .inputValidator((input: unknown) => childLoginSchema.parse(input))
+  .inputValidator((input: unknown) => childSignupSchema.parse(input))
   .handler(async ({ data }) => {
     setResponseHeader("Cache-Control", "no-store");
     const { authenticateChild } = await import("./child-login.server");

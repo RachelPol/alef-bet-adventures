@@ -1,9 +1,9 @@
 # Roadmap
-- [ ] Securely replace forgotten shared parent code and allow parent-code setup for each new child account
+- [x] Securely replace forgotten shared parent code; optional per-child signup parent code verified with wrong-code rejection, 100-point credit and saved 65-point bunk-bed purchase
 - [x] Mask shared reveal code; declined using publicly known 555 alone to authorize wallet credits
 - [x] Replace shortcut with room balance click and masked shared 555 reveal code; wrong code rejected and protected form verified
 - [x] Reinforce all Ashkenazi kamatz as o, preserve original vowel marks; rule tests and Litvish audio stream passed, auditory accuracy needs user review
-- [ ] Forgotten parent-code replacement awaits a new secure code; secure form was cancelled, current authorization preserved
+- [x] User saved replacement shared parent code through secure form; legacy accounts use it, new accounts with their own parent code use the account-specific verifier
 - [x] Enlarge close/navigation targets; 56px close verified on desktop/mobile and kept outside product scroll
 - [x] Research YIVO and Hebrew pronunciation references; explicit traditional names and Israeli-only respellings tested, auditory limits disclosed
 - [x] Add 32 products across every shop (143 total), including bunk bed and open toy cabinet with 16 local product images; catalog and purchase rules tested

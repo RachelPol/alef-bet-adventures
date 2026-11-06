@@ -27,3 +27,4 @@
 - Resolve traditional letter names through a browser-safe dialect lexicon; apply Israeli pronunciation respellings only to Israeli requests so Litvish kamatz is never changed into cholam.
 - Street buildings use accessible HTML hit regions aligned to fixed-ratio local bitmap scenes; extend the street horizontally rather than distorting its canvas to viewport height.
 - Parent recovery opens from the room balance through a public convenience gate; revealing the form never replaces server-side parent-code authorization.
+- Optional signup parent credentials are salted PBKDF2 verifiers in a server-only table; an account-specific verifier supersedes the legacy shared server secret and child sessions cannot overwrite it.

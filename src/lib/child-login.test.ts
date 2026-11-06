@@ -1,7 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { childLoginSchema, childNameKey } from "./child-login";
+import { childLoginSchema, childNameKey, childSignupSchema } from "./child-login";
 
 describe("child account entry", () => {
+  it("allows a separate optional parent code at new account creation",()=>{
+    expect(childSignupSchema.parse({name:"יוני",pin:"007",parentCode:"test-only-parent"}).parentCode).toBe("test-only-parent");
+    expect(childSignupSchema.safeParse({name:"יוני",pin:"007"}).success).toBe(true);
+    expect(childSignupSchema.safeParse({name:"יוני",pin:"007",parentCode:"555"}).success).toBe(false);
+  });
   it("requires a child's name", () => {
     expect(childLoginSchema.safeParse({ name: " ", pin: "123" }).success).toBe(false);
   });

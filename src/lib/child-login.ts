@@ -7,6 +7,8 @@ export const childLoginSchema = z.object({
 });
 
 export type ChildLoginInput = z.input<typeof childLoginSchema>;
+export const childSignupSchema = childLoginSchema.extend({ parentCode: z.union([z.literal(""),z.string().min(8,"קוד ההורה חייב להכיל לפחות 8 תווים").max(200)]).optional() });
+export type ChildSignupInput = z.input<typeof childSignupSchema>;
 export function childNameKey(name: string) {
   return name.normalize("NFKC").replace(/[\u0591-\u05bd\u05bf-\u05c7]/g, "").trim().replace(/\s+/g, " ").toLocaleLowerCase("he");
 }
