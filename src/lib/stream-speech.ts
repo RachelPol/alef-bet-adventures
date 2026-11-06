@@ -13,32 +13,84 @@ export function decodePCM(pending: Uint8Array, incoming: Uint8Array) {
   return { samples, pending: bytes.slice(usable) };
 }
 
+// One shared AudioContext for the whole app. Creating a new context per word
+// hits the browser's context limit after rapid clicks and leaves later words
+// silent; a shared context also survives calls made outside a direct tap.
+let sharedContext: AudioContext | null = null;
+let resumeListenerAttached = false;
+
+function speechContext(): AudioContext {
+  if (!sharedContext) sharedContext = new AudioContext({ sampleRate: 24000 });
+  if (!resumeListenerAttached) {
+    resumeListenerAttached = true;
+    const resume = () => void sharedContext?.resume().catch(() => undefined);
+    window.addEventListener("pointerdown", resume);
+    window.addEventListener("keydown", resume);
+  }
+  return sharedContext;
+}
+
+// resume() called outside a user gesture can stay pending until the next tap;
+// never block the whole utterance on it.
+async function ensureRunning(context: AudioContext) {
+  if (context.state !== "suspended") return;
+  await Promise.race([
+    context.resume().catch(() => undefined),
+    new Promise((resolve) => setTimeout(resolve, 300)),
+  ]);
+}
+
+async function fetchSpeech(endpoint: string, text: string, token: string, signal: AbortSignal): Promise<Response> {
+  for (let attempt = 0; ; attempt++) {
+    signal.throwIfAborted();
+    const response = await fetch(endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ text, dialect: getAccountDialect() }),
+      signal,
+    });
+    if (response.ok && response.body) return response;
+    const retryable = response.status === 429 || response.status >= 500;
+    if (!retryable || attempt >= 1) {
+      throw new Error(`TTS failed: ${response.status} ${await response.text()}`);
+    }
+    // Transient gateway hiccup: one bounded retry, honoring Retry-After.
+    const retryAfter = Number(response.headers.get("Retry-After"));
+    const delay = Number.isFinite(retryAfter) && retryAfter > 0 ? retryAfter * 1000 : 800;
+    await new Promise((resolve) => setTimeout(resolve, delay));
+  }
+}
+
 export async function streamSpeech(endpoint: string, text: string, signal?: AbortSignal): Promise<void> {
   signal?.throwIfAborted();
-  const context = new AudioContext({ sampleRate: 24000 });
+  const context = speechContext();
   const sources = new Set<AudioBufferSourceNode>();
   let playhead = 0;
   let pending = new Uint8Array(0);
   let completed = false;
   let samplesPlayed = 0;
   const controller = new AbortController();
+  const stopAll = () => {
+    for (const source of sources) {
+      try {
+        source.stop();
+      } catch {
+        // Already stopped or finished; nothing to do.
+      }
+    }
+    sources.clear();
+  };
   const abort = () => {
     controller.abort(signal?.reason);
-    for (const source of sources) source.stop();
+    stopAll();
   };
   signal?.addEventListener("abort", abort, { once: true });
   let playback: Promise<void> = Promise.resolve();
   try {
-    if (context.state === "suspended") await context.resume();
+    await ensureRunning(context);
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) throw new Error("נדרשת כניסה לחשבון להשמעת הקול");
-    const response = await fetch(endpoint, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${session.access_token}` },
-      body: JSON.stringify({ text, dialect: getAccountDialect() }),
-      signal: controller.signal,
-    });
-    if (!response.ok || !response.body) throw new Error(`TTS failed: ${response.status} ${await response.text()}`);
+    const response = await fetchSpeech(endpoint, text, session.access_token, controller.signal);
     const parser = createParser({
       onEvent(event) {
         const payload = JSON.parse(event.data) as { type: string; audio?: string; error?: unknown };
@@ -74,7 +126,9 @@ export async function streamSpeech(endpoint: string, text: string, signal?: Abor
         playhead += buffer.duration;
       },
     });
-    const reader = response.body.pipeThrough(new TextDecoderStream()).getReader();
+    const stream = response.body;
+    if (!stream) throw new Error("TTS failed: empty response");
+    const reader = stream.pipeThrough(new TextDecoderStream()).getReader();
     try {
       while (true) {
         const next = await reader.read();
@@ -91,7 +145,6 @@ export async function streamSpeech(endpoint: string, text: string, signal?: Abor
   } finally {
     signal?.removeEventListener("abort", abort);
     controller.abort();
-    for (const source of sources) source.stop();
-    await context.close();
+    stopAll();
   }
 }

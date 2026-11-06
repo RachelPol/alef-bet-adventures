@@ -21,7 +21,13 @@ export const Route = createFileRoute("/api/public/tts")({
           const { requestSpeech } = await import("@/lib/speech-request.server");
           const res = await requestSpeech({ baseURL: "https://ai.gateway.lovable.dev", apiKey, model: "google/gemini-3.1-flash-tts-preview", format: "gemini", voice: "Kore" }, speechPrompt(body.text, readingDialect(body.dialect)), false, request.signal);
           return new Response(res.body, { status: res.status, headers: { "Content-Type": res.headers.get("Content-Type") ?? "text/event-stream", "Cache-Control": "no-store" } });
-        } catch (error) { if (request.signal.aborted) return new Response(null, { status: 499 }); throw error; }
+        } catch (error) {
+          // Client cancelled (e.g. child tapped the next letter): not a failure.
+          if (request.signal.aborted || (error instanceof Error && error.name === "AbortError")) {
+            return new Response(null, { status: 499 });
+          }
+          throw error;
+        }
       },
     },
   },
