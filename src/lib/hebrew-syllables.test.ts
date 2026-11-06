@@ -2,6 +2,8 @@ import { describe, expect, it } from "vitest";
 import { syllableSound } from "./hebrew-syllables";
 import { LEVELS } from "./levels";
 describe("isolated Hebrew syllables", () => {
+  it("distinguishes bet-tsere from bet-patach", () => { expect(syllableSound("בֵּ", "litvish")).toBe("bey"); expect(syllableSound("בַּ", "litvish")).toBe("ba"); });
+  it("reads standalone shuruk as u without a v consonant", () => { expect(syllableSound("וּ", "litvish")).toBe("u"); expect(syllableSound("וּ", "israeli")).toBe("u"); });
   it("reads the photographed shin-patach as sha, not so, in Litvish", () => {
     expect(syllableSound("שַׁ", "litvish")).toBe("sha");
     expect(syllableSound("שַׁ", "litvish")).toBe("sha");

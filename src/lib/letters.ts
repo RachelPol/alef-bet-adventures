@@ -6,7 +6,7 @@ export type Letter = { char: string; name: string; word: string; emoji: string }
 export const LETTERS: Letter[] = [
   { char: "א", name: "אָלֶף", word: "אַרְיֵה", emoji: "🦁" },
   { char: "בּ", name: "בֵּית", word: "בַּיִת", emoji: "🏠" },
-  { char: "ב", name: "וֵית", word: "כּוֹבַע", emoji: "🎩" },
+  { char: "ב", name: "בֵית", word: "כּוֹבַע", emoji: "🎩" },
   { char: "ג", name: "גִּימֶל", word: "גָּמָל", emoji: "🐪" },
   { char: "ד", name: "דָּלֶת", word: "דָּג", emoji: "🐟" },
   { char: "ה", name: "הֵא", word: "הַר", emoji: "⛰️" },

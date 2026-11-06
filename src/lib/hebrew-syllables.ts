@@ -10,6 +10,7 @@ const VOWELS: Record<string, [string, string]> = {
 /** Only isolated consonant + vowel clusters: never guess sheva or whole-word phonology. */
 export function syllableSound(text: string, dialect: ReadingDialect): string | null {
   const cluster = text.trim().normalize("NFD");
+  if (cluster === "וּ") return "u";
   if (!/^[א-ת][\u0591-\u05c7]+$/u.test(cluster)) return null;
   const vowels = [...cluster].filter(mark => VOWELS[mark]);
   if (vowels.length !== 1) return null;
@@ -27,5 +28,5 @@ export function syllableSound(text: string, dialect: ReadingDialect): string | n
 export function syllablePrompt(text: string, dialect: ReadingDialect): string | null {
   const sound = syllableSound(text, dialect);
   if (sound === null) return null;
-  return `Say exactly one short Hebrew learning syllable, not a letter name or a word. The written syllable is ${text}. Its EXACT spoken sound is "${sound}". The phonetic spelling is pronunciation guidance, never spell its letters aloud. a = ah, o = oh, e = eh, ey = the vowel in say, i = ee, u = oo, kh = Hebrew ח, sh = English sh. Preserve the initial consonant exactly. Patach is always a, never o, even in Litvish. Shin with a right dot is sh, never s; sin with a left dot is s. Do not add a final consonant, a vowel, an explanation or a letter name. Use a clear natural voice without stretching. Output ONLY the sound "${sound}". TEXT: ${text}`;
+  return `Say exactly one short Hebrew learning syllable, not a letter name or a word. The written syllable is ${text}. Its EXACT spoken sound is "${sound}". The phonetic spelling is pronunciation guidance, never spell its letters aloud. a = ah, o = pure rounded o without an English oh glide, e = eh, ey = the vowel in say, i = ee, u = oo, kh = Hebrew ח, sh = English sh. Preserve the initial consonant exactly. Patach is always a, never o, even in Litvish. Shin with a right dot is sh, never s; sin with a left dot is s. Do not add a final consonant, a vowel, an explanation or a letter name. Use a clear natural voice without stretching. Output ONLY the sound "${sound}". TEXT: ${text}`;
 }

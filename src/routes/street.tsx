@@ -1,5 +1,5 @@
 import { createFileRoute, Link, ClientOnly } from "@tanstack/react-router";
-import { lazy, Suspense, useState } from "react";
+import { lazy, Suspense, useState, useRef } from "react";
 import { toast } from "sonner";
 import { CATALOG, SHOPS, buy, useWallet, type ShopId } from "@/lib/wallet";
 import { useAccount } from "@/lib/account";
@@ -10,6 +10,7 @@ import { Home, Coins, ShoppingBag, ArrowLeft, ArrowRight, Check } from "lucide-r
 const WorldScene = lazy(() => import("@/components/WorldScene"));
 const STREET_SHOPS: ShopId[] = ["toys", "furniture", "music", "paint", "plants"];
 const SHOP_ORDER = [...STREET_SHOPS, "books", "sports", "crafts"] as const;
+const EAST_SHOPS: ShopId[] = ["books", "sports", "crafts"];
 export const Route = createFileRoute("/street")({
   head: () => ({
     meta: [
@@ -25,22 +26,23 @@ export const Route = createFileRoute("/street")({
 });
 
 function Street() {
+ const streetScroll = useRef<HTMLDivElement>(null);
  const [wallet, update] = useWallet(); const [shop, setShop] = useState<ShopId | null>(null); const [bought,setBought] = useState<string|null>(null);
  const current=SHOPS.find(s=>s.id===shop); const { user,ready,profile }=useAccount();
  const purchase=(id:string)=>{ const item=CATALOG.find(i=>i.id===id); if (!item) return; const uid=crypto.randomUUID(); const ok=update(w=>buy(w,item,uid)); if(ok){setBought(id);toast.success(item.shop==='paint' ? 'הקירות נצבעו!' : `${item.name} מחכה לך בחדר!`);}else toast.error('אין מספיק נקודות לפריט הזה'); };
  if(!ready)return <p className="p-8 text-center">טוענים…</p>;
  if(!user||!profile?.name?.trim())return <div className="p-12 text-center"><Button asChild><Link to="/auth">כְּנִיסָה לַחֶשְׁבּוֹן</Link></Button></div>;
  return <main className="world-page">
-  <header className="world-header"><Button asChild variant="outline" className="h-12"><Link to="/room"><Home />לחדר שלי</Link></Button><div className="text-center"><p className="text-sm text-muted-foreground">מסע הקניות של {profile.name}</p><h1 className="text-3xl font-bold">רְחוֹב הַחֲנֻיּוֹת</h1></div><span className="world-balance"><Coins />{wallet.points}</span></header>
-  <div className="street-scroll" dir="ltr"><section className="world-street" aria-label="רחוב החנויות"><ClientOnly><Suspense fallback={<div className="world-loading">מכינים את הרחוב…</div>}><WorldScene kind="street" wallet={wallet} /></Suspense></ClientOnly>
-    <div className="street-shop-signs">{STREET_SHOPS.map(id=>{const s=SHOPS.find(s=>s.id===id);if(!s)return null;return <Button key={id} variant="secondary" className="street-shop-sign" aria-label={`כניסה לחנות ${s.name}`} onClick={()=>{setShop(id);setBought(null);}}><span className="text-3xl">{s.emoji}</span><span>{s.name}</span><ShoppingBag className="size-4" /></Button>;})}</div>
-  </section></div>
-  <nav className="world-shop-nav" aria-label="חנויות">{SHOPS.map(s=><Button key={s.id} variant={shop===s.id?'default':'outline'} className="h-12 gap-2 text-lg" onClick={()=>{setShop(s.id);setBought(null);}}>{s.emoji} {s.name}</Button>)}</nav>
+  <header className="world-header"><Button asChild variant="outline" className="h-14 px-6 text-xl"><Link to="/room"><Home />לחדר שלי</Link></Button><div className="text-center"><p className="text-sm text-muted-foreground">מסע הקניות של {profile.name}</p><h1 className="text-3xl font-bold">רְחוֹב הַחֲנֻיּוֹת</h1></div><span className="world-balance"><Coins />{wallet.points}</span></header>
+  <div className="street-scroll" dir="ltr" ref={streetScroll}><div className="street-blocks">{(["west", "east"] as const).map(section => <section key={section} className={`world-street street-${section}`} aria-label={section === "west" ? "רחוב החנויות" : "רחוב הספרים והגן"}><ClientOnly><Suspense fallback={<div className="world-loading">מכינים את הרחוב…</div>}><WorldScene kind="street" streetSection={section} wallet={wallet} /></Suspense></ClientOnly>
+    <div className="street-buildings">{(section === "west" ? STREET_SHOPS : EAST_SHOPS).map(id=>{const s=SHOPS.find(s=>s.id===id);if(!s)return null;return <Button key={id} variant="ghost" className="street-building" aria-label={`כניסה לחנות ${s.name}`} onClick={()=>{setShop(id);setBought(null);}}><span className="street-building-sign" dir="rtl"><span aria-hidden="true">{s.emoji}</span><span>{s.name}</span></span></Button>;})}</div>
+  </section>)}</div></div>
+  <nav className="street-travel" aria-label="טיול ברחוב"><Button variant="outline" size="icon" title="לתחילת הרחוב" aria-label="לתחילת הרחוב" onClick={()=>streetScroll.current?.scrollTo({left:0,behavior:'smooth'})}><ArrowLeft /></Button><Button variant="outline" size="icon" title="להמשך הרחוב" aria-label="להמשך הרחוב" onClick={()=>{const el=streetScroll.current;if(el)el.scrollBy({left:el.clientWidth*.8,behavior:'smooth'});}}><ArrowRight /></Button></nav>
   <Dialog open={Boolean(current)} onOpenChange={open=>{if(!open)setShop(null);}}><DialogContent className="shop-dialog"><DialogHeader><DialogTitle className="text-3xl">{current?.emoji} {current?.name}</DialogTitle><DialogDescription className="text-lg">🪙 {wallet.points} נקודות בארנק</DialogDescription></DialogHeader>
    <div className="shop-products">{CATALOG.filter(i=>i.shop===shop).map(item=>{const afford=wallet.points>=item.price; return <article className="shop-product" key={item.id}>
      <div className={`shop-item-image ${item.color ? `paint-${item.id}` : ''}`}>{ITEM_ART[item.id]?<img src={ITEM_ART[item.id]} alt={item.name} className="h-full w-full object-contain" />:<span className="text-6xl">{item.emoji}</span>}</div>
      <h3 className="mt-3 text-xl font-bold">{item.name}</h3><p className="my-2 flex items-center justify-center gap-1 text-lg"><Coins className="size-4" />{item.price} נקודות</p>
-     <Button className="h-11 w-full gap-2 text-lg" disabled={!afford} onClick={()=>purchase(item.id)} aria-label={`קניית ${item.name} ב-${item.price} נקודות`}>{bought===item.id?<Check />:<ShoppingBag className="size-4" />}{afford?'קנייה':`חסרות ${item.price-wallet.points}`}</Button>
+     <Button className="h-14 w-full gap-2 text-lg" disabled={!afford} onClick={()=>purchase(item.id)} aria-label={`קניית ${item.name} ב-${item.price} נקודות`}>{bought===item.id?<Check />:<ShoppingBag className="size-4" />}{afford?'קנייה':`חסרות ${item.price-wallet.points}`}</Button>
    </article>;})}</div>
    <div className="flex flex-wrap justify-between gap-2"><Button variant="outline" onClick={()=>{const index=SHOP_ORDER.indexOf(shop??'toys');setShop(SHOP_ORDER[(index+1)%SHOP_ORDER.length]??'toys');setBought(null);}}><ArrowLeft />לחנות הבאה</Button><Button asChild><Link to="/room"><Home />לחדר שלי</Link></Button><Button variant="ghost" onClick={()=>setShop(null)}>לרחוב<ArrowRight /></Button></div>
   </DialogContent></Dialog>

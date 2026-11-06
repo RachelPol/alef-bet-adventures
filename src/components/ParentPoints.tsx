@@ -4,12 +4,21 @@ import { restoreParentPoints } from "@/lib/parent-points.functions";
 import { reloadWallet } from "@/lib/wallet";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { parentShortcutStep } from "@/lib/parent-shortcut";
 export function ParentPoints() {
   const [open, setOpen] = useState(false); const [code, setCode] = useState(""); const [points, setPoints] = useState(100);
   const [busy, setBusy] = useState(false); const [message, setMessage] = useState("");
   const restore = useServerFn(restoreParentPoints);
   useEffect(() => {
-    const key = (e: KeyboardEvent) => { if (e.ctrlKey && e.shiftKey && e.code === "KeyP") { e.preventDefault(); setOpen(true); } };
+    let previous: number | null = null;
+    const key = (e: KeyboardEvent) => {
+      const target = e.target;
+      const editing = target instanceof HTMLElement && Boolean(target.closest('input,textarea,select,[contenteditable="true"]'));
+      const result = parentShortcutStep(previous, Date.now(), { code:e.code, ctrlKey:e.ctrlKey, shiftKey:e.shiftKey, altKey:e.altKey, metaKey:e.metaKey, repeat:e.repeat, editing });
+      previous = result.previous;
+      if (previous !== null || result.open) e.preventDefault();
+      if (result.open) setOpen(true);
+    };
     window.addEventListener("keydown", key); return () => window.removeEventListener("keydown", key);
   }, []);
   return <Dialog open={open} onOpenChange={value => { setOpen(value); setCode(""); setMessage(""); }}><DialogContent><DialogHeader><DialogTitle>שחזור נקודות להורה</DialogTitle><DialogDescription>הנקודות יתווספו לחשבון הילד המחובר.</DialogDescription></DialogHeader>
