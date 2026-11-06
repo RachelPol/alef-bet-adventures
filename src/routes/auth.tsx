@@ -8,6 +8,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 import { useAccount } from "@/lib/account";
 import { Button } from "@/components/ui/button";
+import { forgetChild, rememberedChildren, type RememberedChild } from "@/lib/remembered-children";
+import { flushWallet } from "@/lib/wallet";
+import { X } from "lucide-react";
 import "@lovable.dev/cloud-auth-js/styles.css";
 export const Route = createFileRoute("/auth")({
   head: () => ({ meta: [{ title: "החשבון שלי – אָלֶף בֵּית" }, { name: "description", content: "כניסה לחשבון הילד לשמירת נקודות וחדר אישי" }, { property: "og:title", content: "החשבון שלי – אָלֶף בֵּית" }, { property: "og:description", content: "שם, תמונה ונקודות אישיות לכל ילד" }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary_large_image" }] }),
@@ -27,11 +30,14 @@ function Auth() {
   const [photo, setPhoto] = useState<File | null>(null);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
+  const [children, setChildren] = useState<RememberedChild[]>([]);
+  const [selected, setSelected] = useState<RememberedChild | null>(null);
+  useEffect(() => { setChildren(rememberedChildren()); }, [user?.id]);
   useEffect(() => { setName(profile?.name ?? ""); }, [profile?.name]);
   const submit = async (event: React.FormEvent) => {
     event.preventDefault(); setBusy(true); setMessage("");
     try {
-      const parsed = childLoginSchema.safeParse({ name, pin, email });
+      const parsed = childLoginSchema.safeParse({ name: !user && selected && mode === "login" ? selected.name : name, pin, email });
       if ((!user || pin) && !parsed.success) throw new Error(parsed.error.issues[0]?.message ?? "בדקו את הפרטים");
       if (user) {
         const childName = name.trim();
@@ -71,6 +77,7 @@ function Auth() {
   };
   const signOut = async () => {
     setBusy(true);
+    await flushWallet();
     await queryClient.cancelQueries(); queryClient.clear();
     await supabase.auth.signOut();
     setName(""); setPin(""); setEmail(""); setMessage("");
@@ -81,17 +88,25 @@ function Auth() {
     <Button asChild variant="ghost"><Link to="/">🏠 בַּיִת</Link></Button>
     <h1 className="my-6 text-center text-4xl font-bold">{user ? "הַחֶשְׁבּוֹן שֶׁלִּי" : mode === "signup" ? "חֶשְׁבּוֹן חָדָשׁ" : "כְּנִיסָה לַחֶשְׁבּוֹן"}</h1>
     {!ready ? <p>טוענים…</p> : <>
+      {!user && mode === "login" && children.length > 0 && <section className="mb-5 grid gap-2" aria-label="חשבונות שמורים במכשיר">
+        <h2 className="text-xl font-bold">מי משחק היום?</h2>
+        {children.map(child => <div key={child.id} className="flex gap-2">
+          <Button type="button" disabled={busy} variant={selected?.id === child.id ? "default" : "outline"} className="h-12 min-w-0 flex-1 text-xl" onClick={() => { setSelected(child); setPin(""); setMessage(""); }}>👤 {child.name}</Button>
+          <Button type="button" variant="ghost" size="icon" disabled={busy} title="הסרה מהמכשיר בלבד" aria-label={`הסרת ${child.name} מהמכשיר`} onClick={() => { forgetChild(child.id); setChildren(rememberedChildren()); if (selected?.id === child.id) setSelected(null); }}><X /></Button>
+        </div>)}
+        <Button type="button" variant="ghost" disabled={busy} onClick={() => { setSelected(null); setName(""); setPin(""); }}>כניסה עם שם אחר</Button>
+      </section>}
       {user && avatar && <img src={avatar} alt="תמונת הילד" className="mx-auto mb-4 size-24 rounded-full object-cover" />}
       <form onSubmit={submit} className="grid gap-4">
-        <label className="grid min-w-0 gap-1 text-xl">שֵׁם הַיֶּלֶד<input required maxLength={80} autoComplete="username" value={name} onChange={e => setName(e.target.value)} className="w-full min-w-0 rounded-lg border border-input bg-card p-3 text-card-foreground" /></label>
+        {(!selected || user || mode === "signup") && <label className="grid min-w-0 gap-1 text-xl">שֵׁם הַיֶּלֶד<input required maxLength={80} autoComplete="username" value={name} onChange={e => setName(e.target.value)} className="w-full min-w-0 rounded-lg border border-input bg-card p-3 text-card-foreground" /></label>}
         <label className="grid min-w-0 gap-1 text-xl">{user ? "קוד אישי חדש (לבחירה)" : "קוד אישי בן 3 ספרות"}<input required={!user} type="text" inputMode="numeric" pattern="[0-9]{3}" minLength={3} maxLength={3} autoComplete="off" dir="ltr" value={pin} onChange={e => setPin(e.target.value.replace(/[^0-9]/g, "").slice(0, 3))} className="w-full min-w-0 rounded-lg border border-input bg-card p-3 text-center text-3xl text-card-foreground" /></label>
-        <label className="grid min-w-0 gap-1 text-xl">מייל (לבחירה)<input type="email" autoComplete="email" maxLength={254} dir="ltr" value={email} onChange={e => setEmail(e.target.value)} className="w-full min-w-0 rounded-lg border border-input bg-card p-3 text-card-foreground" /></label>
+        {(user || mode === "signup") && <label className="grid min-w-0 gap-1 text-xl">מייל (לבחירה)<input type="email" autoComplete="email" maxLength={254} dir="ltr" value={email} onChange={e => setEmail(e.target.value)} className="w-full min-w-0 rounded-lg border border-input bg-card p-3 text-card-foreground" /></label>}
         {user && <label className="grid min-w-0 gap-1 text-xl">תְּמוּנָה (לִבְחִירָה)<input type="file" accept="image/png,image/jpeg,image/webp" onChange={e => setPhoto(e.target.files?.[0] ?? null)} /></label>}
         <Button disabled={busy} className="h-12 text-xl">{busy ? "רגע…" : user ? "שְׁמִירָה" : mode === "signup" ? "יְצִירַת חֶשְׁבּוֹן" : "כְּנִיסָה"}</Button>
       </form>
       {message && <p role="status" className="my-4 text-center text-lg">{message}</p>}
       {user ? <div className="mt-6 flex flex-wrap justify-between gap-3"><Button asChild><Link to="/">מַתְחִילִים לְשַׂחֵק</Link></Button><Button disabled={busy} variant="outline" onClick={() => void signOut()}>יְצִיאָה מֵהַחֶשְׁבּוֹן</Button></div> : <>
-        <div className="my-4 flex justify-center"><Button disabled={busy} variant="ghost" onClick={() => { setMode(mode === "signup" ? "login" : "signup"); setMessage(""); }}>{mode === "signup" ? "כבר יש חשבון" : "חשבון חדש"}</Button></div>
+        <div className="my-4 flex justify-center"><Button disabled={busy} variant="ghost" onClick={() => { setMode(mode === "signup" ? "login" : "signup"); setSelected(null); setPin(""); setMessage(""); }}>{mode === "signup" ? "כבר יש חשבון" : "חשבון חדש"}</Button></div>
         <details className="border-t border-border pt-4">
           <summary className="cursor-pointer text-center text-muted-foreground">אפשרויות כניסה נוספות</summary>
           <div className="mt-3 grid gap-3"><Button variant="outline" disabled={busy} onClick={() => void social("google")}>המשך עם Google</Button><Button variant="outline" disabled={busy} onClick={() => void social("lovable")}>המשך עם Lovable</Button></div>
