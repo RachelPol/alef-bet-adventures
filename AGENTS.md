@@ -13,6 +13,7 @@
 - Share a start/finish completion clock across games and freeze the duration on the final correct answer so exit animations do not inflate reading time.
 - Activity points are banked centrally by Shell into the authenticated account wallet; browser mutations serialize optimistic updates with version checks to avoid cross-tab overwrites.
 - Share pre-game difficulty and timed-mode settings; keep memory dealing and pronunciation exceptions in browser-safe modules with rule tests.
+- Use the shared browser-safe Fisher–Yates shuffle for all card and answer dealing; memory has an explicit pictured vocabulary by difficulty, never a duplicate-text fallback when a word lacks a picture.
 - Display the companion in a reserved in-flow stage, never as a fixed overlay, so celebrations cannot hide game text.
 - Child-code sign-in uses server-only name mappings and HMAC-derived Auth credentials; validate PINs on the server and retain authenticated wallet RLS. Existing accounts may attach a child code only from their own authenticated session to avoid name-based account takeover.
 - Keep the generated Cloud client and brokered session storage intact; an app-owned same-origin fetch bridge forwards only allowlisted Auth, Data and Storage paths using the publishable key and caller bearer, never service-role data access.
