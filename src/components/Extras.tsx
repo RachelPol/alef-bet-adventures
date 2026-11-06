@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { LEVELS, type Level } from "@/lib/levels";
 import { Button } from "@/components/ui/button";
 import { TEST_SECONDS, type useSpeedTest } from "@/lib/hooks";
@@ -66,9 +66,11 @@ const CHEERS = [
 export function Celebration({ trigger, count = trigger, interval = 5, voiced = false, complete = false }: { trigger: number; count?: number; interval?: number; voiced?: boolean; complete?: boolean }) {
   const [show, setShow] = useState(false);
   const [cheer, setCheer] = useState("");
+  const lastTrigger = useRef(0);
   useEffect(() => { preloadEncouragement(); return stopEncouragement; }, []);
   useEffect(() => {
-    if (!trigger) return;
+    if (!trigger || trigger === lastTrigger.current) return;
+    lastTrigger.current = trigger;
     const milestone = progressMilestone(count, interval);
     successSound(milestone || complete);
     const phrase = (complete || (milestone && voiced)) ? playEncouragement() : CHEERS[Math.floor(Math.random() * CHEERS.length)] ?? "יִישַׁר כֹּחַ!";
@@ -76,7 +78,7 @@ export function Celebration({ trigger, count = trigger, interval = 5, voiced = f
     setShow(true);
     const timer = setTimeout(() => setShow(false), milestone || complete ? 4500 : 2600);
     return () => clearTimeout(timer);
-  }, [trigger, count, interval, voiced, complete]);
+  }, [trigger]);
   const motion = ["elidushi-flip", "elidushi-jump", "elidushi-five"][trigger % 3];
   const animal = ["🐰", "🐢", "🦁", "🐼", "🦊", "🐥", "🐬"][trigger % 7] ?? "🐰";
   return <div className="companion-stage" aria-label="חגיגת הצלחה">

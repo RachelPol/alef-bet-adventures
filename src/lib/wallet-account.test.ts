@@ -8,7 +8,7 @@ vi.mock("@/integrations/supabase/client", () => ({ supabase: { from: () => ({
     Object.assign(rows[id], structuredClone(values)); return { data: [{ user_id: id }], error: null };
   } }) }) }),
 }) } }));
-import { connectWallet, updateWallet, addPoints, useWallet, flushWallet, buy, move, CATALOG } from "./wallet";
+import { connectWallet, updateWallet, addPoints, useWallet, flushWallet, buy, move, transformItem, CATALOG } from "./wallet";
 import { renderHook, act, cleanup } from "@testing-library/react";
 afterEach(cleanup);
 it("switching accounts reads only that child's points", async () => {
@@ -40,4 +40,12 @@ it("retains a purchase and moved coordinates after returning to the account", as
   await connectWallet(null); await connectWallet("a");
   const { result } = renderHook(useWallet);
   expect(result.current[0].owned.find(p => p.uid === "saved-chair")).toMatchObject({ x: 72, y: 81, itemId: "chair" });
+});
+it("retains rotation, size and flipped direction after returning to the account", async () => {
+  await connectWallet("a");
+  updateWallet(w => transformItem(w, "saved-chair", { rotation: 135, scale: 1.5, flipped: true }));
+  await flushWallet();
+  await connectWallet(null); await connectWallet("a");
+  const { result } = renderHook(useWallet);
+  expect(result.current[0].owned.find(p => p.uid === "saved-chair")).toMatchObject({ rotation: 135, scale: 1.5, flipped: true, x: 72, y: 81 });
 });
