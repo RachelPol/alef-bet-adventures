@@ -15,6 +15,13 @@
       "when": 1793950935398,
       "tag": "0001_child_code_accounts",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1793951604896,
+      "tag": "0002_parent_points_recovery",
+      "breakpoints": true
     }
   ]
 }

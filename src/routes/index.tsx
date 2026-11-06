@@ -2,7 +2,6 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useWallet } from "@/lib/wallet";
 import { useAccount } from "@/lib/account";
 import { Button } from "@/components/ui/button";
-import elidushi from "@/assets/elidushi.png.asset.json";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -39,7 +38,7 @@ function Index() {
           <Button asChild variant="secondary" className="h-auto py-2 text-xl"><Link to="/room" aria-label="הנקודות שלי">🪙 {wallet.points} נְקֻדּוֹת</Link></Button>
         </div>
         <h1 className="font-display text-6xl text-primary md:text-7xl">אָלֶף בֵּית</h1>
-        <img src={elidushi.url} alt="אלידושי" className="mx-auto mt-4 h-32 object-contain" />
+        <div aria-hidden="true" className="mt-4 text-6xl">🐰 📖 🐥</div>
         <p className="mt-3 text-xl text-muted-foreground">לוֹמְדִים לִקְרֹא – אוֹת אַחַר אוֹת</p>
         <div className="mt-10 grid gap-5 sm:grid-cols-2">
           {MODES.map((m) => (

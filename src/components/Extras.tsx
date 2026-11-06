@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { LEVELS, type Level } from "@/lib/levels";
-import elidushi from "@/assets/elidushi.png.asset.json";
 import { Button } from "@/components/ui/button";
 import { TEST_SECONDS, type useSpeedTest } from "@/lib/hooks";
 
@@ -71,8 +70,9 @@ export function Celebration({ trigger }: { trigger: number }) {
   }, [trigger]);
   const cheer = CHEERS[trigger % CHEERS.length] ?? "כָּל הַכָּבוֹד!";
   const motion = ["elidushi-flip", "elidushi-jump", "elidushi-five"][trigger % 3];
-  return <div className="companion-stage" aria-label="אלידושי מלווה אותך">
-    <img key={trigger} src={elidushi.url} alt="אלידושי" className={`companion-figure ${show ? motion : ""}`} />
+  const animal = ["🐰", "🐢", "🦁", "🐼", "🦊", "🐥", "🐬"][trigger % 7] ?? "🐰";
+  return <div className="companion-stage" aria-label="חגיגת הצלחה">
+    <span key={trigger} aria-hidden="true" className={`celebration-emoji ${show ? motion : ""}`}>{show ? animal : ""}</span>
     <p className="companion-cheer" aria-live="polite">{show ? cheer : ""}</p>
   </div>;
 }

@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useRef, useState, type ReactNode 
 import type { User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { connectWallet } from "./wallet";
+import { installCloudBridge } from "./cloud-bridge";
 type Profile = { name: string; avatar_path: string | null };
 const AccountContext = createContext<{ user: User | null; profile: Profile | null; avatar: string | null; ready: boolean; refresh: () => Promise<void> }>({ user: null, profile: null, avatar: null, ready: false, refresh: async () => {} });
 export const useAccount = () => useContext(AccountContext);
@@ -32,11 +33,12 @@ export function AccountProvider({ children }: { children: ReactNode }) {
     setReady(true);
   };
   useEffect(() => {
+    const removeBridge = installCloudBridge();
     void refresh();
     const { data: { subscription } } = supabase.auth.onAuthStateChange(event => {
       if (["SIGNED_IN", "SIGNED_OUT", "USER_UPDATED"].includes(event)) setTimeout(() => void refresh(), 0);
     });
-    return () => subscription.unsubscribe();
+    return () => { subscription.unsubscribe(); removeBridge?.(); };
   }, []);
   return <AccountContext.Provider value={{ user, profile, avatar, ready, refresh }}>{children}</AccountContext.Provider>;
 }
