@@ -80,10 +80,10 @@ function Auth() {
     {!ready ? <p>טוענים…</p> : <>
       {user && avatar && <img src={avatar} alt="תמונת הילד" className="mx-auto mb-4 size-24 rounded-full object-cover" />}
       <form onSubmit={submit} className="grid gap-4">
-        <label className="grid gap-1 text-xl">שֵׁם הַיֶּלֶד<input required maxLength={80} autoComplete="username" value={name} onChange={e => setName(e.target.value)} className="rounded-lg border border-input bg-card p-3 text-card-foreground" /></label>
-        <label className="grid gap-1 text-xl">{user ? "קוד אישי חדש (לבחירה)" : "קוד אישי בן 3 ספרות"}<input required={!user} type="text" inputMode="numeric" pattern="[0-9]{3}" minLength={3} maxLength={3} autoComplete="off" dir="ltr" value={pin} onChange={e => setPin(e.target.value.replace(/[^0-9]/g, "").slice(0, 3))} className="rounded-lg border border-input bg-card p-3 text-center text-3xl text-card-foreground" /></label>
-        <label className="grid gap-1 text-xl">מייל (לבחירה)<input type="email" autoComplete="email" maxLength={254} dir="ltr" value={email} onChange={e => setEmail(e.target.value)} className="rounded-lg border border-input bg-card p-3 text-card-foreground" /></label>
-        {user && <label className="grid gap-1 text-xl">תְּמוּנָה (לִבְחִירָה)<input type="file" accept="image/png,image/jpeg,image/webp" onChange={e => setPhoto(e.target.files?.[0] ?? null)} /></label>}
+        <label className="grid min-w-0 gap-1 text-xl">שֵׁם הַיֶּלֶד<input required maxLength={80} autoComplete="username" value={name} onChange={e => setName(e.target.value)} className="w-full min-w-0 rounded-lg border border-input bg-card p-3 text-card-foreground" /></label>
+        <label className="grid min-w-0 gap-1 text-xl">{user ? "קוד אישי חדש (לבחירה)" : "קוד אישי בן 3 ספרות"}<input required={!user} type="text" inputMode="numeric" pattern="[0-9]{3}" minLength={3} maxLength={3} autoComplete="off" dir="ltr" value={pin} onChange={e => setPin(e.target.value.replace(/[^0-9]/g, "").slice(0, 3))} className="w-full min-w-0 rounded-lg border border-input bg-card p-3 text-center text-3xl text-card-foreground" /></label>
+        <label className="grid min-w-0 gap-1 text-xl">מייל (לבחירה)<input type="email" autoComplete="email" maxLength={254} dir="ltr" value={email} onChange={e => setEmail(e.target.value)} className="w-full min-w-0 rounded-lg border border-input bg-card p-3 text-card-foreground" /></label>
+        {user && <label className="grid min-w-0 gap-1 text-xl">תְּמוּנָה (לִבְחִירָה)<input type="file" accept="image/png,image/jpeg,image/webp" onChange={e => setPhoto(e.target.files?.[0] ?? null)} /></label>}
         <Button disabled={busy} className="h-12 text-xl">{busy ? "רגע…" : user ? "שְׁמִירָה" : mode === "signup" ? "יְצִירַת חֶשְׁבּוֹן" : "כְּנִיסָה"}</Button>
       </form>
       {message && <p role="status" className="my-4 text-center text-lg">{message}</p>}
