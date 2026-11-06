@@ -25,12 +25,12 @@ export function Shell({ title, score, wide, children }: { title: string; score?:
 
   return (
     <div className="min-h-screen bg-background px-4 py-6">
-      <header className={`mx-auto flex ${width} items-center justify-between gap-2`}>
-        <button onClick={leave} className="rounded-full bg-card px-5 py-2 text-lg font-bold text-foreground shadow-soft">🏠 סִיּוּם</button>
-        <h1 className="font-display text-3xl text-primary">{title}</h1>
+      <header className={`activity-header mx-auto flex ${width} items-center justify-between gap-2`}>
+        <Button onClick={leave} variant="outline" className="h-14 shrink-0 px-5 text-lg font-bold">🏠 סִיּוּם</Button>
+        <h1 className="min-w-0 font-display text-3xl text-primary">{title}</h1>
         <div className="flex gap-2">
           {score !== undefined && <span className="rounded-full bg-accent px-4 py-2 text-lg font-bold text-accent-foreground">⭐ {score}</span>}
-          <Link to="/room" className="rounded-full bg-card px-4 py-2 text-lg font-bold text-foreground shadow-soft">🪙 {wallet.points}</Link>
+          <Button asChild variant="outline" className="h-14 px-4 text-lg font-bold"><Link to="/room" aria-label="החדר שלי והנקודות">🪙 {wallet.points}</Link></Button>
         </div>
       </header>
       <main className={`mx-auto mt-5 ${width}`}>

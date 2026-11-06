@@ -27,7 +27,7 @@ function Room() {
  if (!user || !profile?.name?.trim()) return <div className="p-12 text-center"><Button asChild><Link to="/auth">כְּנִיסָה לַחֶשְׁבּוֹן</Link></Button></div>;
  return <main className="world-page">
    <header className="world-header">
-     <Button asChild variant="outline" className="h-12"><Link to="/"><Home />בית</Link></Button>
+     <Button asChild variant="outline" className="h-14 px-6 text-xl"><Link to="/"><Home />בית</Link></Button>
      <div className="text-center"><p className="text-sm text-muted-foreground">העולם של {profile.name}</p><h1 className="text-3xl font-bold">הַחֶדֶר שֶׁלִּי</h1></div>
      <span className="world-balance"><Coins />{wallet.points}</span>
    </header>
