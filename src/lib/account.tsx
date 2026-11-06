@@ -4,7 +4,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { connectWallet } from "./wallet";
 import { installCloudBridge } from "./cloud-bridge";
 import { rememberChild } from "./remembered-children";
-type Profile = { name: string; avatar_path: string | null };
+import { setAccountDialect } from "./account-speech";
+type Profile = { name: string; avatar_path: string | null; reading_dialect: string };
 const AccountContext = createContext<{ user: User | null; profile: Profile | null; avatar: string | null; ready: boolean; refresh: () => Promise<void> }>({ user: null, profile: null, avatar: null, ready: false, refresh: async () => {} });
 export const useAccount = () => useContext(AccountContext);
 export function AccountProvider({ children }: { children: ReactNode }) {
@@ -19,12 +20,14 @@ export function AccountProvider({ children }: { children: ReactNode }) {
     if (run !== revision.current) return;
     const current = data.user;
     setReady(false); setUser(current); setProfile(null); setAvatar(null);
+    setAccountDialect(null);
     await connectWallet(current?.id ?? null);
     if (run !== revision.current) return;
     if (current) {
-      const { data: p } = await supabase.from("profiles").select("name,avatar_path").eq("id", current.id).single();
+      const { data: p } = await supabase.from("profiles").select("name,avatar_path,reading_dialect").eq("id", current.id).single();
       if (run !== revision.current) return;
       setProfile(p);
+      setAccountDialect(p?.reading_dialect);
       if (p?.name?.trim()) rememberChild({ id: current.id, name: p.name });
       if (p?.avatar_path) {
         const { data: image } = await supabase.storage.from("child-avatars").createSignedUrl(p.avatar_path, 3600);

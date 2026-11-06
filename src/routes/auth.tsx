@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { forgetChild, rememberedChildren, type RememberedChild } from "@/lib/remembered-children";
 import { flushWallet } from "@/lib/wallet";
 import { X } from "lucide-react";
+import { readingDialect, type ReadingDialect } from "@/lib/reading-dialect";
 import "@lovable.dev/cloud-auth-js/styles.css";
 export const Route = createFileRoute("/auth")({
   head: () => ({ meta: [{ title: "החשבון שלי – אָלֶף בֵּית" }, { name: "description", content: "כניסה לחשבון הילד לשמירת נקודות וחדר אישי" }, { property: "og:title", content: "החשבון שלי – אָלֶף בֵּית" }, { property: "og:description", content: "שם, תמונה ונקודות אישיות לכל ילד" }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary_large_image" }] }),
@@ -32,6 +33,8 @@ function Auth() {
   const [message, setMessage] = useState("");
   const [children, setChildren] = useState<RememberedChild[]>([]);
   const [selected, setSelected] = useState<RememberedChild | null>(null);
+  const [dialect, setDialect] = useState<ReadingDialect>("israeli");
+  useEffect(() => { setDialect(readingDialect(profile?.reading_dialect)); }, [profile?.reading_dialect]);
   useEffect(() => { setChildren(rememberedChildren()); }, [user?.id]);
   useEffect(() => { setName(profile?.name ?? ""); }, [profile?.name]);
   const submit = async (event: React.FormEvent) => {
@@ -50,7 +53,7 @@ function Auth() {
           if (error) throw new Error("לא הצלחנו לשמור את התמונה");
         }
         if (pin && parsed.success) await saveCode({ data: parsed.data });
-        const { error } = await supabase.from("profiles").update({ name: childName, avatar_path: path }).eq("id", user.id);
+        const { error } = await supabase.from("profiles").update({ name: childName, avatar_path: path, reading_dialect: dialect }).eq("id", user.id);
         if (error) throw new Error("לא הצלחנו לשמור את הפרטים");
         await refresh(); setPin(""); setMessage("הפרטים נשמרו");
       } else if (parsed.success) {
@@ -97,11 +100,13 @@ function Auth() {
         <Button type="button" variant="ghost" disabled={busy} onClick={() => { setSelected(null); setName(""); setPin(""); }}>כניסה עם שם אחר</Button>
       </section>}
       {user && avatar && <img src={avatar} alt="תמונת הילד" className="mx-auto mb-4 size-24 rounded-full object-cover" />}
+      {user && <h2 className="mb-4 text-xl font-bold">הגדרות החשבון</h2>}
       <form onSubmit={submit} className="grid gap-4">
         {(!selected || user || mode === "signup") && <label className="grid min-w-0 gap-1 text-xl">שֵׁם הַיֶּלֶד<input required maxLength={80} autoComplete="username" value={name} onChange={e => setName(e.target.value)} className="w-full min-w-0 rounded-lg border border-input bg-card p-3 text-card-foreground" /></label>}
         <label className="grid min-w-0 gap-1 text-xl">{user ? "קוד אישי חדש (לבחירה)" : "קוד אישי בן 3 ספרות"}<input required={!user} type="text" inputMode="numeric" pattern="[0-9]{3}" minLength={3} maxLength={3} autoComplete="off" dir="ltr" value={pin} onChange={e => setPin(e.target.value.replace(/[^0-9]/g, "").slice(0, 3))} className="w-full min-w-0 rounded-lg border border-input bg-card p-3 text-center text-3xl text-card-foreground" /></label>
         {(user || mode === "signup") && <label className="grid min-w-0 gap-1 text-xl">מייל (לבחירה)<input type="email" autoComplete="email" maxLength={254} dir="ltr" value={email} onChange={e => setEmail(e.target.value)} className="w-full min-w-0 rounded-lg border border-input bg-card p-3 text-card-foreground" /></label>}
         {user && <label className="grid min-w-0 gap-1 text-xl">תְּמוּנָה (לִבְחִירָה)<input type="file" accept="image/png,image/jpeg,image/webp" onChange={e => setPhoto(e.target.files?.[0] ?? null)} /></label>}
+        {user && <fieldset><legend className="mb-3 text-xl font-bold">הֲבָרַת הַקְּרִיאָה</legend><div className="grid gap-2"><Button type="button" variant={dialect === "israeli" ? "default" : "outline"} aria-pressed={dialect === "israeli"} onClick={() => setDialect("israeli")} className="h-auto min-h-12 whitespace-normal">עברית ישראלית</Button><Button type="button" variant={dialect === "litvish" ? "default" : "outline"} aria-pressed={dialect === "litvish"} onClick={() => setDialect("litvish")} className="h-auto min-h-12 whitespace-normal">לשון הקודש · אשכנזית ליטאית</Button></div></fieldset>}
         <Button disabled={busy} className="h-12 text-xl">{busy ? "רגע…" : user ? "שְׁמִירָה" : mode === "signup" ? "יְצִירַת חֶשְׁבּוֹן" : "כְּנִיסָה"}</Button>
       </form>
       {message && <p role="status" className="my-4 text-center text-lg">{message}</p>}
