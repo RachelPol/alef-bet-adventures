@@ -26,12 +26,12 @@ it("does not lock matching cards into symmetric positions", () => {
   expect(cards).toHaveLength(12);
   for (const pair of new Set(cards.map(c => c.pair))) {
     const m = cards.filter(c => c.pair === pair);
-    expect(m.map(c => c.kind)).toEqual(["letter", "letter"]); expect(m[0].text).toBe(m[1].text);
-    expect(level.items.some(i => i.text === m[0].text)).toBe(true);
+    expect(m.map(c => c.kind)).toEqual(["letter", "letter"]); expect(m[0]?.text).toBe(m[1]?.text);
+    expect(level.items.some(i => i.text === m[0]?.text)).toBe(true);
   }
 });
 it("pictures-only mode shows the same picture on both cards", () => {
   for (const level of LEVELS) { const cards = dealMemory(level, Math.random, "pictures");
     for (const pair of new Set(cards.map(c => c.pair))) { const m = cards.filter(c => c.pair === pair);
-      expect(m.every(c => c.kind === "pic")).toBe(true); expect(m[0].text).toBe(m[1].text); } }
+      expect(m.every(c => c.kind === "pic")).toBe(true); expect(m[0]?.text).toBe(m[1]?.text); } }
 });
