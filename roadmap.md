@@ -1,4 +1,6 @@
 # Roadmap
+- [ ] Verify optional Lithuanian pronunciation and single-letter tav narration
+- [ ] Verify room item positions persist after drag and reload; explain parent point recovery entry
 - [x] Expand to 111 products across eight shops including books, sports and creative supplies; purchase and room readback verified
 - [x] Repair street people with full transparent local sprites; motion and external-network-blocked rendering verified (actual Etrog policy needs user-side check)
 - [x] Remove unsuccessful microphone trial from reading activity; retain manual parent approval
