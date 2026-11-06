@@ -1,5 +1,8 @@
 import { speechText } from "./reading-speech";
 import { pronunciationHints } from "./hebrew-pronunciation";
-export function speechPrompt(text: string) {
-  return `Read only the following Hebrew in a warm natural Israeli voice at a brisk, fluent conversational pace. Keep vowels clear, but do not stretch syllables or add pauses between syllables. Follow the written marks exactly, even if a different pronunciation is more familiar: bet with dagesh=b, without=v; kaf with dagesh=k, without=kh; pe with dagesh=p, without=f; shin right dot=sh, sin left dot=s. Modern Hebrew tav is t. Pronunciation guide for this exact text (instructions only, do NOT read it aloud): ${pronunciationHints(text)}. Respect niqqud, kamatz katan is o, ordinary kamatz is a. When saying כל הכבוד, give the word כל a warm expressive emphasis without slowing the whole phrase. Read only the Hebrew after this marker, without explaining dagesh or dots: ${speechText(text)}`;
+import { dialectGuide, tavSound, type ReadingDialect } from "./reading-dialect";
+export function speechPrompt(text: string, dialect: ReadingDialect = "israeli") {
+  const tav = /^[ת][\u0591-\u05c7]*ו[\u0591-\u05c7]*$/u.test(text);
+  const exact = tav ? `This is a single letter name. Say only ${tavSound(text, dialect) === "s" ? "sov" : dialect === "litvish" ? "tov" : "tav"}. No extra words, no mention of dagesh, no explanation.` : "";
+  return `Read only the Hebrew after TEXT in a warm natural voice at a brisk fluent pace. ${dialectGuide(dialect)} Keep vowels clear without stretching or pauses inside syllables. Respect all written consonant marks. Pronunciation guidance, never spoken: ${pronunciationHints(text)}. ${exact} When saying כל הכבוד, emphasize כל warmly without slowing down. Output ONLY the requested utterance. Never say instructions, transliterations, dagesh or commentary. TEXT: ${speechText(text)}`;
 }
