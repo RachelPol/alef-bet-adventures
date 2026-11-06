@@ -1,0 +1,7 @@
+CREATE TABLE public.parent_point_credits (id uuid PRIMARY KEY DEFAULT gen_random_uuid(), user_id uuid NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE, points integer NOT NULL CHECK(points > 0 AND points <= 10000), created_at timestamptz NOT NULL DEFAULT now());
+GRANT ALL ON public.parent_point_credits TO service_role;
+REVOKE ALL ON public.parent_point_credits FROM anon, authenticated;
+ALTER TABLE public.parent_point_credits ENABLE ROW LEVEL SECURITY;
+CREATE OR REPLACE FUNCTION public.credit_child_points(p_user_id uuid, p_points integer) RETURNS integer LANGUAGE plpgsql SECURITY DEFINER SET search_path=public AS $$ DECLARE result integer; BEGIN IF p_points < 1 OR p_points > 10000 THEN RAISE EXCEPTION 'Invalid points'; END IF; UPDATE public.wallets SET points=points+p_points, version=version+1 WHERE user_id=p_user_id RETURNING points INTO result; IF result IS NULL THEN RAISE EXCEPTION 'Wallet missing'; END IF; INSERT INTO public.parent_point_credits(user_id,points) VALUES(p_user_id,p_points); RETURN result; END; $$;
+REVOKE ALL ON FUNCTION public.credit_child_points(uuid,integer) FROM PUBLIC, anon, authenticated;
+GRANT EXECUTE ON FUNCTION public.credit_child_points(uuid,integer) TO service_role;

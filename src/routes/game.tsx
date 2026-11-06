@@ -53,7 +53,8 @@ function Game() {
     if (l === r.target) {
       setPopped(l.text); setFb("ok"); setScore((s) => s + 1); celebrate();
       if (speed.active) speed.record();
-      pending.current = setTimeout(() => { const n = make(level); setR(n); setPopped(null); setFb(null); speak(n.target.say); }, speed.active ? 600 : 1200);
+      const next = make(level);
+      setR(next); setPopped(null); setFb(null); speak(next.target.say);
     } else { setFb("bad"); speak(r.target.say); }
   };
 

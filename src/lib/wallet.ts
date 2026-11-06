@@ -88,6 +88,12 @@ function load(): Wallet {
   return snapshot;
 }
 
+export async function reloadWallet() {
+  await queue;
+  loaded = false;
+  await connectWallet(owner);
+}
+
 export function updateWallet(f: (w: Wallet) => Wallet | null): boolean {
   if (!owner || !loaded) return false;
   const next = f(load());

@@ -1,5 +1,6 @@
 import { streamSpeech } from "./stream-speech";
 import { toast } from "sonner";
+import { shuffled } from "./random";
 export type Letter = { char: string; name: string; word: string; emoji: string };
 
 export const LETTERS: Letter[] = [
@@ -48,11 +49,11 @@ export function speak(text: string) {
 
 export function pick<T>(arr: T[], n: number, exclude: T[] = []): T[] {
   const pool = arr.filter((x) => !exclude.includes(x));
-  return [...pool].sort(() => Math.random() - 0.5).slice(0, n);
+  return shuffled(pool).slice(0, n);
 }
 
 export function shuffle<T>(arr: T[]): T[] {
-  return [...arr].sort(() => Math.random() - 0.5);
+  return shuffled(arr);
 }
 
 // Pairs that look alike and children often confuse

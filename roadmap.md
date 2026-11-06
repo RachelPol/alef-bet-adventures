@@ -1,8 +1,13 @@
 # Roadmap
-- [ ] Fix signup session failure in preview and verify returning entry
-- [ ] Replace Elidushi with varied emoji celebrations
-- [ ] Immersive room and animated shopping street with purchases and draggable real-looking items
-- [ ] Hidden parent point recovery with a separate parent code
+- [x] Immediate next-target speech after correct answers in all listening games, preserving silent independent reading/memory; interaction verified
+- [x] Path next-word speech during celebration; shared unbiased shuffle and six word-picture memory pairs verified
+- [x] Current Shell safely handles missing profile names; malformed profile response tested without crash
+- [x] Increase speech pace while preserving emphasis on כל in כל הכבוד; stream verified, listening quality needs user feedback
+- [x] Restore all games after profile-read regression and verify activity entry
+- [x] Fix signup session failure with same-origin bridge; verified signup with direct Cloud requests blocked and returning entry
+- [x] Replace Elidushi with varied emoji celebrations
+- [x] Immersive Pixi.js room and animated shopping street with purchases and draggable items; desktop/mobile checked
+- [x] Hidden parent point recovery with separate parent code; wrong-code rejection and atomic credit verified
 - [x] Child-name and three-digit personal-code sign-in, optional email, no password field; verified wrong-code rejection and points after returning entry
 - [x] Account sign-in, required name, optional photo, account-owned points and room
 - [x] Home points display

@@ -34,7 +34,7 @@ export function Shell({ title, score, wide, children }: { title: string; score?:
         </div>
       </header>
       <main className={`mx-auto mt-5 ${width}`}>
-        {!ready ? <p className="text-center text-xl">טוענים…</p> : !user || !profile?.name.trim() ? <div className="py-12 text-center"><Button asChild className="h-auto px-6 py-4 text-2xl"><Link to="/auth">{user ? "הַשְׁלָמַת שֵׁם הַיֶּלֶד" : "כְּנִיסָה לַחֶשְׁבּוֹן"}</Link></Button></div> : children}
+        {!ready ? <p className="text-center text-xl">טוענים…</p> : !user || !profile?.name?.trim() ? <div className="py-12 text-center"><Button asChild className="h-auto px-6 py-4 text-2xl"><Link to="/auth">{user ? "הַשְׁלָמַת שֵׁם הַיֶּלֶד" : "כְּנִיסָה לַחֶשְׁבּוֹן"}</Link></Button></div> : children}
       </main>
       {summary && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/40 p-4 backdrop-blur-sm">

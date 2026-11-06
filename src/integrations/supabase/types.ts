@@ -43,6 +43,35 @@ export type Database = {
           },
         ]
       }
+      parent_point_credits: {
+        Row: {
+          created_at: string
+          id: string
+          points: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          points: number
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          points?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "parent_point_credits_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_path: string | null
@@ -98,7 +127,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      credit_child_points: {
+        Args: { p_points: number; p_user_id: string }
+        Returns: number
+      }
     }
     Enums: {
       [_ in never]: never

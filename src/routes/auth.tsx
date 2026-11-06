@@ -50,7 +50,10 @@ function Auth() {
       } else if (parsed.success) {
         const session = await (mode === "signup" ? create : enter)({ data: parsed.data });
         const { error } = await supabase.auth.setSession(session);
-        if (error) throw new Error("לא הצלחנו להיכנס, נסו שוב");
+        if (error) {
+          if (mode === "signup") setMode("login");
+          throw new Error(mode === "signup" ? "החשבון נוצר, אך החיבור נקטע. נסו להיכנס עם אותו שם וקוד" : "החיבור נקטע, נסו שוב");
+        }
         setPin("");
         await refresh();
         await router.navigate({ to: "/" });
