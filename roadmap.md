@@ -1,4 +1,5 @@
 # Roadmap
+- [ ] Immediate next-target speech after correct answers in all listening games, preserving silent independent reading/memory
 - [ ] Path next-word speech during celebration; verify random dealing across games and picture-only memory pairs
 - [ ] Verify current Shell safely handles missing profile names
 - [x] Increase speech pace while preserving emphasis on כל in כל הכבוד; stream verified, listening quality needs user feedback
