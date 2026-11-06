@@ -1,4 +1,5 @@
 # Roadmap
+- [x] Explain that pronunciation is selected on the pre-game entry screen
 - [ ] Investigate Itamar wallet persistence and prevent queued saves being lost on account changes
 - [ ] Device-local returning-account picker with three-digit PIN only; verify saved wallet readback
 - [x] Optional Lithuanian pronunciation selection persists; dialect tests and tav audio response verified, auditory fidelity needs user feedback
