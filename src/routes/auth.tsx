@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQueryClient } from "@tanstack/react-query";
-import { childLoginSchema } from "@/lib/child-login";
+import { childLoginSchema, childSignupSchema } from "@/lib/child-login";
 import { enterChildAccount, createChildAccount, setChildCode } from "@/lib/child-login.functions";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -28,6 +28,7 @@ function Auth() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [pin, setPin] = useState("");
+  const [parentCode,setParentCode]=useState("");
   const [photo, setPhoto] = useState<File | null>(null);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
@@ -57,13 +58,14 @@ function Auth() {
         if (error) throw new Error("לא הצלחנו לשמור את הפרטים");
         await refresh(); setPin(""); setMessage("הפרטים נשמרו");
       } else if (parsed.success) {
-        const session = await (mode === "signup" ? create : enter)({ data: parsed.data });
+        const session = mode === "signup" ? await create({data:childSignupSchema.parse({...parsed.data,parentCode})}) : await enter({data:parsed.data});
         const { error } = await supabase.auth.setSession(session);
         if (error) {
           if (mode === "signup") setMode("login");
           throw new Error(mode === "signup" ? "החשבון נוצר, אך החיבור נקטע. נסו להיכנס עם אותו שם וקוד" : "החיבור נקטע, נסו שוב");
         }
         setPin("");
+        setParentCode("");
         await refresh();
         await router.navigate({ to: "/" });
       }
@@ -102,6 +104,7 @@ function Auth() {
       {user && avatar && <img src={avatar} alt="תמונת הילד" className="mx-auto mb-4 size-24 rounded-full object-cover" />}
       {user && <h2 className="mb-4 text-xl font-bold">הגדרות החשבון</h2>}
       <form onSubmit={submit} className="grid gap-4">
+        {!user && mode === "signup" && <label className="grid gap-1 text-xl">קוד הורה לשחזור נקודות (לבחירה)<input type="password" autoComplete="new-password" minLength={8} maxLength={200} value={parentCode} onChange={e=>setParentCode(e.target.value)} className="w-full rounded-lg border border-input bg-card p-3" /></label>}
         {(!selected || user || mode === "signup") && <label className="grid min-w-0 gap-1 text-xl">שֵׁם הַיֶּלֶד<input required maxLength={80} autoComplete="username" value={name} onChange={e => setName(e.target.value)} className="w-full min-w-0 rounded-lg border border-input bg-card p-3 text-card-foreground" /></label>}
         <label className="grid min-w-0 gap-1 text-xl">{user ? "קוד אישי חדש (לבחירה)" : "קוד אישי בן 3 ספרות"}<input required={!user} type="text" inputMode="numeric" pattern="[0-9]{3}" minLength={3} maxLength={3} autoComplete="off" dir="ltr" value={pin} onChange={e => setPin(e.target.value.replace(/[^0-9]/g, "").slice(0, 3))} className="w-full min-w-0 rounded-lg border border-input bg-card p-3 text-center text-3xl text-card-foreground" /></label>
         {(user || mode === "signup") && <label className="grid min-w-0 gap-1 text-xl">מייל (לבחירה)<input type="email" autoComplete="email" maxLength={254} dir="ltr" value={email} onChange={e => setEmail(e.target.value)} className="w-full min-w-0 rounded-lg border border-input bg-card p-3 text-card-foreground" /></label>}

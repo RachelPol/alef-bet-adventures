@@ -1,6 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
-import { childNameKey, type ChildLoginInput } from "./child-login";
+import { childNameKey, type ChildLoginInput, type ChildSignupInput } from "./child-login";
+import { createParentCode } from "./parent-code.server";
 
 async function credential(userId: string, pin: string, secret: string | undefined) {
   if (!secret) throw new Error("הכניסה אינה זמינה כרגע, נסו שוב מאוחר יותר");
@@ -10,7 +11,7 @@ async function credential(userId: string, pin: string, secret: string | undefine
   return Array.from(new Uint8Array(signature), b => b.toString(16).padStart(2, "0")).join("");
 }
 
-export async function authenticateChild(data: ChildLoginInput, signup: boolean, secret: string | undefined, url: string | undefined, key: string | undefined) {
+export async function authenticateChild(data: ChildSignupInput, signup: boolean, secret: string | undefined, url: string | undefined, key: string | undefined) {
   if (!url || !key || !secret) throw new Error("הכניסה אינה זמינה כרגע, נסו שוב מאוחר יותר");
   const nameKey = childNameKey(data.name);
   if (!nameKey) throw new Error("נא להזין את שם הילד");
@@ -32,6 +33,10 @@ export async function authenticateChild(data: ChildLoginInput, signup: boolean, 
       throw new Error("לא הצלחנו ליצור חשבון. ייתכן שהשם כבר בשימוש");
     }
     userId = actualId;
+    if(data.parentCode){
+      try { await createParentCode(actualId,data.parentCode); }
+      catch { await supabaseAdmin.auth.admin.deleteUser(actualId); throw new Error("לא הצלחנו לשמור את קוד ההורה. נסו ליצור חשבון שוב"); }
+    }
   }
   if (!userId) throw new Error("השם או הקוד אינם נכונים");
   const { data: account, error: accountError } = await supabaseAdmin.auth.admin.getUserById(userId);
