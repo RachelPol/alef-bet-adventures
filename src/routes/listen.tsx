@@ -56,12 +56,10 @@ function Listen() {
         setScore((s) => s + 1);
         celebrate();
         if (speed.active) speed.record();
-        pending.current = setTimeout(() => {
-          const r = newRound(level);
-          setRound(r);
-          setFb(null);
-          setTimeout(() => speak(r.target.say), 200);
-        }, speed.active ? 600 : 1300);
+        const next = newRound(level);
+        setRound(next);
+        setFb(null);
+        speak(next.target.say);
       } else {
         setFb("bad");
         speak(round.target.say);
