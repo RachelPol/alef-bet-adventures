@@ -10,12 +10,14 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as GameRouteImport } from './routes/game'
 import { Route as LettersRouteImport } from './routes/letters'
 import { Route as ListenRouteImport } from './routes/listen'
 import { Route as MemoryRouteImport } from './routes/memory'
 import { Route as PathRouteImport } from './routes/path'
 import { Route as ReadRouteImport } from './routes/read'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RoomRouteImport } from './routes/room'
 import { Route as StreetRouteImport } from './routes/street'
 import { Route as ApiPublicTtsRouteImport } from './routes/api/public/tts'
@@ -23,6 +25,11 @@ import { Route as ApiPublicTtsRouteImport } from './routes/api/public/tts'
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GameRoute = GameRouteImport.update({
@@ -55,6 +62,11 @@ const ReadRoute = ReadRouteImport.update({
   path: '/read',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RoomRoute = RoomRouteImport.update({
   id: '/room',
   path: '/room',
@@ -73,24 +85,28 @@ const ApiPublicTtsRoute = ApiPublicTtsRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/game': typeof GameRoute
   '/letters': typeof LettersRoute
   '/listen': typeof ListenRoute
   '/memory': typeof MemoryRoute
   '/path': typeof PathRoute
   '/read': typeof ReadRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/room': typeof RoomRoute
   '/street': typeof StreetRoute
   '/api/public/tts': typeof ApiPublicTtsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/game': typeof GameRoute
   '/letters': typeof LettersRoute
   '/listen': typeof ListenRoute
   '/memory': typeof MemoryRoute
   '/path': typeof PathRoute
   '/read': typeof ReadRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/room': typeof RoomRoute
   '/street': typeof StreetRoute
   '/api/public/tts': typeof ApiPublicTtsRoute
@@ -98,12 +114,14 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/game': typeof GameRoute
   '/letters': typeof LettersRoute
   '/listen': typeof ListenRoute
   '/memory': typeof MemoryRoute
   '/path': typeof PathRoute
   '/read': typeof ReadRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/room': typeof RoomRoute
   '/street': typeof StreetRoute
   '/api/public/tts': typeof ApiPublicTtsRoute
@@ -112,36 +130,42 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/auth'
     | '/game'
     | '/letters'
     | '/listen'
     | '/memory'
     | '/path'
     | '/read'
+    | '/reset-password'
     | '/room'
     | '/street'
     | '/api/public/tts'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/auth'
     | '/game'
     | '/letters'
     | '/listen'
     | '/memory'
     | '/path'
     | '/read'
+    | '/reset-password'
     | '/room'
     | '/street'
     | '/api/public/tts'
   id:
     | '__root__'
     | '/'
+    | '/auth'
     | '/game'
     | '/letters'
     | '/listen'
     | '/memory'
     | '/path'
     | '/read'
+    | '/reset-password'
     | '/room'
     | '/street'
     | '/api/public/tts'
@@ -149,12 +173,14 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthRoute: typeof AuthRoute
   GameRoute: typeof GameRoute
   LettersRoute: typeof LettersRoute
   ListenRoute: typeof ListenRoute
   MemoryRoute: typeof MemoryRoute
   PathRoute: typeof PathRoute
   ReadRoute: typeof ReadRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   RoomRoute: typeof RoomRoute
   StreetRoute: typeof StreetRoute
   ApiPublicTtsRoute: typeof ApiPublicTtsRoute
@@ -167,6 +193,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/game': {
@@ -211,6 +244,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ReadRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/room': {
       id: '/room'
       path: '/room'
@@ -237,12 +277,14 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthRoute: AuthRoute,
   GameRoute: GameRoute,
   LettersRoute: LettersRoute,
   ListenRoute: ListenRoute,
   MemoryRoute: MemoryRoute,
   PathRoute: PathRoute,
   ReadRoute: ReadRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   RoomRoute: RoomRoute,
   StreetRoute: StreetRoute,
   ApiPublicTtsRoute: ApiPublicTtsRoute,

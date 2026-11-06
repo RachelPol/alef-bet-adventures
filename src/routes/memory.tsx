@@ -79,6 +79,7 @@ function MemoryGame() {
 
   return (
     <Shell title="מִשְׂחַק זִכָּרוֹן" score={done.length / 2} wide>
+      <Celebration trigger={cel} />
       <p className="text-center text-xl text-muted-foreground">מָצֵא זוּג: מִלָּה וְתַמּוּנָה 🖼️</p>
 
       {won ? (
@@ -104,7 +105,6 @@ function MemoryGame() {
           })}
         </div>
       )}
-      <Celebration trigger={cel} />
     </Shell>
   );
 }

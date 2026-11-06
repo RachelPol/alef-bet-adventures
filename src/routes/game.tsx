@@ -1,7 +1,10 @@
+import { GameSetup } from "@/components/GameSetup";
+import { Button } from "@/components/ui/button";
+import { Settings2 } from "lucide-react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Feedback, Shell } from "@/components/Shell";
-import { Celebration, LevelPicker, SpeedBar, SpeedResult } from "@/components/Extras";
+import { Celebration, SpeedBar, SpeedResult } from "@/components/Extras";
 import { pick, shuffle, speak } from "@/lib/letters";
 import { draw, type Item, type Level } from "@/lib/levels";
 import { useCelebrate, useLevel, useSpeedTest } from "@/lib/hooks";
@@ -35,10 +38,16 @@ function Game() {
   const [score, setScore] = useState(0);
   const [cel, celebrate] = useCelebrate();
   const speed = useSpeedTest();
+  const [playing, setPlaying] = useState(false);
+  const [timed, setTimed] = useState(false);
+  const start = () => { setPlaying(true); setFb(null); speed.close(); if (timed) speed.start(); else speed.stop(); };
+  const settings = () => { setPlaying(false); speed.stop(); speed.close(); };
+  const blocked = !playing || speed.result !== null || (timed && !speed.active);
+
   useEffect(() => { setR(make(level)); setFb(null); }, [level]);
 
   const hit = (l: Item) => {
-    if (!r || fb === "ok") return;
+    if (blocked || !r || fb === "ok") return;
     if (l === r.target) {
       setPopped(l.text); setFb("ok"); setScore((s) => s + 1); celebrate();
       if (speed.active) speed.record();
@@ -48,26 +57,28 @@ function Game() {
 
   return (
     <Shell title="בַּלּוֹנִים" score={score}>
-      <LevelPicker level={level} onChange={setLevel} />
+      <Celebration trigger={cel} />
+      {!playing ? <GameSetup level={level} onLevel={setLevel} timed={timed} onTimed={setTimed} onStart={start} /> : <>
+      <Button variant="ghost" size="icon" onClick={settings} title="בחירת משחק" aria-label="בחירת משחק"><Settings2 /></Button>
       <div className="mt-4"><SpeedBar speed={speed} unit={level.unit} /></div>
       {r && (
         <>
           <div className="mt-6 text-center">
-            <button onClick={() => speak(r.target.say)} className="rounded-full bg-primary px-10 py-5 font-display text-3xl text-primary-foreground shadow-pop">🔊 מָה שָׁמַעְתָּ?</button>
+            <Button variant="ghost" onClick={() => speak(r.target.say)} className="rounded-full bg-primary px-10 py-5 font-display text-3xl text-primary-foreground shadow-pop">🔊 מָה שָׁמַעְתָּ?</Button>
           </div>
           <div className="mt-10 grid grid-cols-2 gap-6 sm:grid-cols-3">
             {r.balloons.map((l, i) => (
-              <button key={l.text} onClick={() => hit(l)} style={{ animationDelay: `${i * 0.3}s` }}
+              <Button variant="ghost" key={l.text} onClick={() => hit(l)} style={{ animationDelay: `${i * 0.3}s` }}
                 className={`balloon mx-auto flex h-36 min-w-32 items-center justify-center px-5 font-display ${l.text.length > 4 ? "text-3xl" : "text-5xl"} ${COLORS[i % 4]} ${popped === l.text ? "scale-150 opacity-0" : ""}`}>
                 {l.text}
-              </button>
+              </Button>
             ))}
           </div>
         </>
       )}
       <div className="mt-8"><Feedback state={fb === "bad" ? "bad" : null} /></div>
-      <Celebration trigger={cel} />
-      <SpeedResult speed={speed} unit={level.unit} />
+      </>}
+      <SpeedResult speed={speed} unit={level.unit} onRestart={start} />
     </Shell>
   );
 }

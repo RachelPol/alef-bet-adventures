@@ -1,7 +1,10 @@
+import { GameSetup } from "@/components/GameSetup";
+import { Button } from "@/components/ui/button";
+import { Settings2 } from "lucide-react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Feedback, Shell } from "@/components/Shell";
-import { Celebration, LevelPicker, SpeedBar, SpeedResult } from "@/components/Extras";
+import { Celebration, SpeedBar, SpeedResult } from "@/components/Extras";
 import { speak } from "@/lib/letters";
 import { draw, textSize, type Item } from "@/lib/levels";
 import { useCelebrate, useLevel, useSpeedTest } from "@/lib/hooks";
@@ -27,6 +30,12 @@ function Read() {
   const [score, setScore] = useState(0);
   const [cel, celebrate] = useCelebrate();
   const speed = useSpeedTest();
+  const [playing, setPlaying] = useState(false);
+  const [timed, setTimed] = useState(false);
+  const start = () => { setPlaying(true); setFb(null); speed.close(); if (timed) speed.start(); else speed.stop(); };
+  const settings = () => { setPlaying(false); speed.stop(); speed.close(); };
+  const blocked = !playing || speed.result !== null || (timed && !speed.active);
+
 
   const next = () => {
     setFb(null);
@@ -35,6 +44,8 @@ function Read() {
   useEffect(next, [level]);
 
   const ok = () => {
+    if (blocked || fb === "ok") return;
+    setFb("ok");
     setScore((s) => s + 1);
     celebrate();
     if (speed.active) speed.record();
@@ -43,7 +54,9 @@ function Read() {
 
   return (
     <Shell title="קְרָא בְּקוֹל" score={score}>
-      <LevelPicker level={level} onChange={setLevel} />
+      <Celebration trigger={cel} />
+      {!playing ? <GameSetup level={level} onLevel={setLevel} timed={timed} onTimed={setTimed} onStart={start} /> : <>
+      <Button variant="ghost" size="icon" onClick={settings} title="בחירת משחק" aria-label="בחירת משחק"><Settings2 /></Button>
       <div className="mt-4"><SpeedBar speed={speed} unit={level.unit} /></div>
       {item && (
         <div key={item.text} className="letter-tile mx-auto mt-6 flex aspect-[4/3] max-w-md items-center justify-center p-6 animate-in zoom-in">
@@ -52,13 +65,13 @@ function Read() {
       )}
       <p className="mt-6 text-center text-xl text-muted-foreground">👦 קְרָא בְּקוֹל · 👩 הַמְּבֻגָּר מְאַשֵּׁר</p>
       <div className="mt-4 flex flex-wrap justify-center gap-4">
-        <button onClick={ok} className="rounded-2xl bg-success px-8 py-4 text-2xl font-bold text-success-foreground shadow-soft active:scale-95">✔ קָרָא נָכוֹן</button>
-        <button onClick={() => { setFb("bad"); if (item) speak(item.say); }} className="rounded-2xl bg-destructive px-8 py-4 text-2xl font-bold text-destructive-foreground shadow-soft">✘ עוֹד פַּעַם</button>
-        <button onClick={() => item && speak(item.say)} className="rounded-2xl bg-card px-8 py-4 text-2xl font-bold text-foreground shadow-soft">🔊 אֵיךְ קוֹרְאִים?</button>
+        <Button variant="ghost" onClick={ok} className="rounded-2xl bg-success px-8 py-4 text-2xl font-bold text-success-foreground shadow-soft active:scale-95">✔ קָרָא נָכוֹן</Button>
+        <Button variant="ghost" onClick={() => { setFb("bad"); if (item) speak(item.say); }} className="rounded-2xl bg-destructive px-8 py-4 text-2xl font-bold text-destructive-foreground shadow-soft">✘ עוֹד פַּעַם</Button>
+        <Button variant="ghost" onClick={() => item && speak(item.say)} className="rounded-2xl bg-card px-8 py-4 text-2xl font-bold text-foreground shadow-soft">🔊 אֵיךְ קוֹרְאִים?</Button>
       </div>
       <div className="mt-6"><Feedback state={fb} /></div>
-      <Celebration trigger={cel} />
-      <SpeedResult speed={speed} unit={level.unit} />
+      </>}
+      <SpeedResult speed={speed} unit={level.unit} onRestart={start} />
     </Shell>
   );
 }
