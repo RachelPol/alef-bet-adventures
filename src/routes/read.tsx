@@ -65,7 +65,7 @@ function Read() {
       )}
       <p className="mt-6 text-center text-xl text-muted-foreground">👦 קְרָא בְּקוֹל · 👩 הַמְּבֻגָּר מְאַשֵּׁר</p>
       <div className="mt-4 flex flex-wrap justify-center gap-4">
-        <Button variant="ghost" onClick={ok} className="rounded-2xl bg-success px-8 py-4 text-2xl font-bold text-success-foreground shadow-soft active:scale-95">✔ קָרָא נָכוֹן</Button>
+        <Button disabled={blocked || fb === "ok"} variant="ghost" onClick={ok} className="h-auto rounded-2xl bg-success px-8 py-4 text-2xl font-bold text-success-foreground shadow-soft active:scale-95">✔ קָרָא נָכוֹן</Button>
         <Button variant="ghost" onClick={() => { setFb("bad"); if (item) speak(item.say); }} className="rounded-2xl bg-destructive px-8 py-4 text-2xl font-bold text-destructive-foreground shadow-soft">✘ עוֹד פַּעַם</Button>
         <Button variant="ghost" onClick={() => item && speak(item.say)} className="rounded-2xl bg-card px-8 py-4 text-2xl font-bold text-foreground shadow-soft">🔊 אֵיךְ קוֹרְאִים?</Button>
       </div>

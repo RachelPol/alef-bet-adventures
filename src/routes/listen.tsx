@@ -25,7 +25,9 @@ export const Route = createFileRoute("/listen")({
 
 function newRound(level: Level) {
   const pair = pickPair(level);
-  return { pair, target: pair[Math.floor(Math.random() * 2)]! };
+  const target = pair[Math.floor(Math.random() * 2)] ?? pair[0];
+  if (!target) throw new Error("No letter pair available");
+  return { pair, target };
 }
 
 function Listen() {
@@ -69,8 +71,8 @@ function Listen() {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (!round || blocked) return;
-      if (e.key === "ArrowRight") choose(round.pair[0]!);
-      else if (e.key === "ArrowLeft") choose(round.pair[1]!);
+      if (e.key === "ArrowRight" && round.pair[0]) { e.preventDefault(); choose(round.pair[0]); }
+      else if (e.key === "ArrowLeft" && round.pair[1]) { e.preventDefault(); choose(round.pair[1]); }
       else {
         const hit = round.pair.find((l) => l.text === e.key);
         if (hit) choose(hit);
@@ -96,7 +98,7 @@ function Listen() {
           </div>
           <div className="mt-8 grid grid-cols-2 gap-6">
             {round.pair.map((l) => (
-              <Button variant="ghost" key={l.text} onClick={() => choose(l)} className={`letter-tile flex aspect-square items-center justify-center p-4 ${textSize(l.text)}`}>
+              <Button disabled={blocked} variant="ghost" key={l.text} onClick={() => choose(l)} className={`letter-tile flex h-auto min-w-0 aspect-square whitespace-normal break-words items-center justify-center p-4 ${l.text.replace(/[֑-ׇ]/g, "").length > 4 ? "text-4xl sm:text-6xl" : textSize(l.text)}`}>
                 {l.text}
               </Button>
             ))}
