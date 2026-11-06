@@ -53,6 +53,9 @@ export async function recordWav(): Promise<{ stop: () => Promise<File> }> {
         const blob = encodeWav(chunks, audioContext.sampleRate);
         await audioContext.close();
         if (blob.size < 2048) throw new Error("Recording was empty; please record again");
+        const energy = chunks.reduce((total, chunk) => total + chunk.reduce((sum, sample) => sum + sample * sample, 0), 0);
+        const samples = chunks.reduce((total, chunk) => total + chunk.length, 0);
+        if (!samples || Math.sqrt(energy / samples) < 0.001) throw new Error("לא נשמע דיבור; בדקו את המיקרופון והקליטו שוב");
         return new File([blob], "recording.wav", { type: "audio/wav" });
       },
     };
