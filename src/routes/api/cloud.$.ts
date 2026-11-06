@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { cloudRequestHeaders } from "@/lib/cloud-bridge-rules";
 
 async function forward(request: Request, path: string) {
   const url = process.env['SUPABASE_URL'];
@@ -9,14 +10,7 @@ async function forward(request: Request, path: string) {
   const source = new URL(request.url);
   const origin = request.headers.get("Origin");
   if (origin && origin !== source.origin) return new Response(null, { status: 403 });
-  const headers = new Headers();
-  for (const name of ["authorization", "accept", "accept-profile", "content-profile", "content-type", "prefer", "range", "x-client-info", "x-supabase-api-version", "x-upsert"]) {
-    const value = request.headers.get(name); if (value) headers.set(name, value);
-  }
-  headers.set("apikey", key);
-  // Never forward privileged keys or caller-selected hosts. RLS and Auth validate the bearer.
-  const bearer = headers.get("authorization");
-  if (bearer?.includes("sb_secret_") || bearer === `Bearer ${key}`) headers.delete("authorization");
+  const headers = cloudRequestHeaders(request.headers, key);
   try {
     const response = await fetch(`${url.replace(/\/$/, "")}/${path}${source.search}`, {
       method: request.method, headers, body: ["GET", "HEAD"].includes(request.method) ? null : await request.arrayBuffer(), redirect: "manual",
