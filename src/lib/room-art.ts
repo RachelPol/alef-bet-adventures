@@ -30,7 +30,25 @@ import basketball from "@/assets/items/basketball.png";
 import scooter from "@/assets/items/scooter.png";
 import bicycle from "@/assets/items/bicycle.png";
 import trophy from "@/assets/items/trophy.png";
+import bunkBed from "@/assets/items/bunk-bed.png";
+import toyCabinet from "@/assets/items/toy-cabinet.png";
+import beanbag from "@/assets/items/beanbag.png";
+import kidsTable from "@/assets/items/kids-table.png";
+import playKitchen from "@/assets/items/play-kitchen.png";
+import dollhouse from "@/assets/items/dollhouse.png";
+import abacus from "@/assets/items/abacus.png";
+import fireTruck from "@/assets/items/fire-truck.png";
+import cello from "@/assets/items/cello.png";
+import xylophone from "@/assets/items/xylophone.png";
+import harp from "@/assets/items/harp.png";
+import musicStand from "@/assets/items/music-stand.png";
+import hangingPlant from "@/assets/items/hanging-plant.png";
+import fountain from "@/assets/items/fountain.png";
+import gymMat from "@/assets/items/gym-mat.png";
+import watercolors from "@/assets/items/watercolors.png";
 export const ITEM_ART: Record<string, string> = { bed, chair, sofa, lamp, bear, ball, car, robot, guitar, drum, piano, violin, plant, fish, picture, clock, desk, wardrobe, rug, pillow, bookshelf, nightstand, armchair, "rocking-chair": rockingChair, "book-set": bookSet, storybook, "animal-book": animalBook, easel, basketball, scooter, bicycle, trophy,
   "space-book": storybook, tehillim: animalBook, siddur: storybook, atlas: animalBook, poems: storybook, encyclopedia: bookSet, "coloring-book": animalBook, "nature-book": animalBook, "riddle-book": storybook,
+  "bunk-bed": bunkBed, "toy-cabinet": toyCabinet, beanbag, "kids-table": kidsTable, "play-kitchen": playKitchen, dollhouse, abacus, "fire-truck": fireTruck, cello, xylophone, harp, "music-stand": musicStand, "hanging-plant": hangingPlant, fountain, "gym-mat": gymMat, watercolors,
+  "alphabet-book": animalBook, "adventure-book": storybook, "garden-book": animalBook, cookbook: storybook,
 };
-export const ITEM_SIZE: Record<string, number> = { bed: 240, chair: 150, sofa: 270, lamp: 85, piano: 220, fish: 170, picture: 140, clock: 85, bear: 85, ball: 65, car: 90, robot: 90, plant: 120, guitar: 80, violin: 70, drum: 90, desk: 210, wardrobe: 170, rug: 240, pillow: 70, bookshelf: 160, nightstand: 105, armchair: 160, "rocking-chair": 155, "book-set": 75, storybook: 65, "animal-book": 65, easel: 150, basketball: 65, scooter: 120, bicycle: 200, trophy: 75 };
+export const ITEM_SIZE: Record<string, number> = { bed: 240, chair: 150, sofa: 270, lamp: 85, piano: 220, fish: 170, picture: 140, clock: 85, bear: 85, ball: 65, car: 90, robot: 90, plant: 120, guitar: 80, violin: 70, drum: 90, desk: 210, wardrobe: 170, rug: 240, pillow: 70, bookshelf: 160, nightstand: 105, armchair: 160, "rocking-chair": 155, "book-set": 75, storybook: 65, "animal-book": 65, easel: 150, basketball: 65, scooter: 120, bicycle: 200, trophy: 75, "bunk-bed": 270, "toy-cabinet": 180, beanbag: 160, "kids-table": 210, "play-kitchen": 180, dollhouse: 160, abacus: 80, "fire-truck": 110, cello: 120, xylophone: 100, harp: 160, "music-stand": 120, "hanging-plant": 110, fountain: 130, "gym-mat": 140, watercolors: 80 };

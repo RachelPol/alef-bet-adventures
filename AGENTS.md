@@ -24,3 +24,6 @@
 - The dormant microphone trial modules are not mounted by the reading route; preserve their complete WAV/authenticated SSE boundary and durable AI access blocks if explicitly reactivated.
 - Reading pronunciation is saved in the authenticated child's profile through account settings and loaded into the common speech client; dialect and tav rules stay browser-safe and tested, and the server selects dialect-specific instructions without changing display text.
 - Resolve isolated pointed syllables into explicit consonant-plus-vowel sounds before TTS, separate from whole-word guidance, to avoid model guesses about letter names and dialect vowels.
+- Resolve traditional letter names through a browser-safe dialect lexicon; apply Israeli pronunciation respellings only to Israeli requests so Litvish kamatz is never changed into cholam.
+- Street buildings use accessible HTML hit regions aligned to fixed-ratio local bitmap scenes; extend the street horizontally rather than distorting its canvas to viewport height.
+- Parent recovery opens from the room balance through a public convenience gate; revealing the form never replaces server-side parent-code authorization.

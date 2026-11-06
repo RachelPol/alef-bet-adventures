@@ -1,4 +1,11 @@
 # Roadmap
+- [ ] Replace shortcut with room balance click and shared 555 reveal code; retain protected parent authorization
+- [ ] Reinforce all Ashkenazi kamatz as o, not patach a, and verify account dialect delivery
+- [ ] Replace conflicting parent shortcut and explain forgotten-parent-code options without weakening authorization
+- [ ] Enlarge small close/navigation hit targets without shrinking play space
+- [ ] Research and improve Litvish pronunciation and familiar letter names; verify rules and disclose auditory limits
+- [ ] Expand every shop including bunk bed and open toy cabinet with local artwork
+- [ ] Replace separate shop buttons with clickable signed buildings; preserve street/car proportions and add local street details
 - [x] Explicit Litvish consonant/vowel cues for isolated syllables including shin-patach and soft tav; all targets pass rule tests and shin-patach returned complete audio, auditory accuracy needs user confirmation
 - [x] Move reading pronunciation to account settings and persist per child; saved selection survives reload, removed from game setup
 - [x] Explain that pronunciation is selected on the pre-game entry screen

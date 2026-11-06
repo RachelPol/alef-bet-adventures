@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import type { Application, Sprite } from "pixi.js";
 import room from "@/assets/room-scene.jpg";
 import street from "@/assets/shopping-street.jpg";
+import streetEast from "@/assets/shopping-street-east.jpg";
 import redCar from "@/assets/actors/red-car.png";
 import blueCar from "@/assets/actors/blue-car.png";
 import family from "@/assets/actors/family.png";
@@ -9,7 +10,7 @@ import walkers from "@/assets/actors/walkers.png";
 import { ITEM_ART, ITEM_SIZE } from "@/lib/room-art";
 import { CATALOG, type Wallet } from "@/lib/wallet";
 
-export default function WorldScene({ kind, wallet, onMove }: { kind: "room" | "street"; wallet: Wallet; onMove?: (uid: string, x: number, y: number) => void }) {
+export default function WorldScene({ kind, wallet, onMove, streetSection = "west" }: { kind: "room" | "street"; wallet: Wallet; streetSection?: "west" | "east"; onMove?: (uid: string, x: number, y: number) => void }) {
   const host = useRef<HTMLDivElement>(null);
   const state = useRef(wallet); state.current = wallet;
   const callback = useRef(onMove); callback.current = onMove;
@@ -22,7 +23,7 @@ export default function WorldScene({ kind, wallet, onMove }: { kind: "room" | "s
       app = new Application(); await app.init({ width: 1536, height: 1024, backgroundAlpha: 0, antialias: true, resolution: 1, preference: "webgl" });
       if (disposed) { app.destroy(true, { children: true }); return; }
       element.appendChild(app.canvas); app.canvas.setAttribute("aria-label", kind === "room" ? "החדר האישי" : "רחוב עם מכוניות ואנשים");
-      const bg = new Sprite(await Assets.load(kind === "room" ? room : street)); bg.width = 1536; bg.height = 1024; app.stage.addChild(bg);
+      const bg = new Sprite(await Assets.load(kind === "room" ? room : streetSection === "east" ? streetEast : street)); bg.width = 1536; bg.height = 1024; app.stage.addChild(bg);
       const layer = new Container(); layer.sortableChildren = true; app.stage.addChild(layer);
       let rebuildRevision = 0;
       async function rebuild() {
@@ -70,7 +71,7 @@ export default function WorldScene({ kind, wallet, onMove }: { kind: "room" | "s
     }
     void start().catch(() => host.current?.setAttribute("data-scene-error", "true"));
     return () => { disposed = true; scene.current = null; if (app?.renderer) app.destroy(true, { children: true }); };
-  }, [kind]);
+  }, [kind, streetSection]);
   useEffect(() => { void scene.current?.rebuild(); }, [wallet.owned, wallet.wall]);
-  return <div ref={host} className="world-canvas" style={{ backgroundImage: `url(${kind === "room" ? room : street})` }} />;
+  return <div ref={host} className="world-canvas" style={{ backgroundImage: `url(${kind === "room" ? room : streetSection === "east" ? streetEast : street})` }} />;
 }
