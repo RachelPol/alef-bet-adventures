@@ -1,3 +1,11 @@
+import israeliWoman from "@/assets/praise/israeli-kol-woman.wav.asset.json";
+import israeliMan from "@/assets/praise/israeli-kol-man.wav.asset.json";
+import israeliChild from "@/assets/praise/israeli-kol-child.wav.asset.json";
+import israeliBaby from "@/assets/praise/israeli-kol-baby.wav.asset.json";
+import litvishWoman from "@/assets/praise/litvish-kol-woman.wav.asset.json";
+import litvishMan from "@/assets/praise/litvish-kol-man.wav.asset.json";
+import litvishChild from "@/assets/praise/litvish-kol-child.wav.asset.json";
+import litvishBaby from "@/assets/praise/litvish-kol-baby.wav.asset.json";
 import israeliYasher from "@/assets/praise/israeli-yasher.wav.asset.json";
 import israeliSuccess from "@/assets/praise/israeli-success.wav.asset.json";
 import israeliBravo from "@/assets/praise/israeli-bravo.wav.asset.json";
@@ -7,7 +15,7 @@ import litvishBravo from "@/assets/praise/litvish-bravo.wav.asset.json";
 import { getAccountDialect } from "./account-speech";
 import { PRAISE, praiseIndex } from "./encouragement";
 
-const clips = { israeli: [israeliYasher, israeliSuccess, israeliBravo], litvish: [litvishYasher, litvishSuccess, litvishBravo] };
+const clips = { israeli: [israeliWoman, israeliMan, israeliChild, israeliBaby, israeliYasher, israeliSuccess, israeliBravo], litvish: [litvishWoman, litvishMan, litvishChild, litvishBaby, litvishYasher, litvishSuccess, litvishBravo] };
 let previous = -1;
 let audio: HTMLAudioElement | null = null;
 export function stopEncouragement() { audio?.pause(); audio = null; }
