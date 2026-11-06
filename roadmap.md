@@ -1,4 +1,6 @@
 # Roadmap
+- [x] Optional Lithuanian pronunciation selection persists; dialect tests and tav audio response verified, auditory fidelity needs user feedback
+- [x] Room item positions already persist after drag and reload; verified saved coordinates and parent recovery shortcut
 - [x] Expand to 111 products across eight shops including books, sports and creative supplies; purchase and room readback verified
 - [x] Repair street people with full transparent local sprites; motion and external-network-blocked rendering verified (actual Etrog policy needs user-side check)
 - [x] Remove unsuccessful microphone trial from reading activity; retain manual parent approval
