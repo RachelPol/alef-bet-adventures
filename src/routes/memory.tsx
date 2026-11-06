@@ -4,7 +4,7 @@ import { Shell } from "@/components/Shell";
 import { Celebration, SpeedBar, SpeedResult } from "@/components/Extras";
 import { useCelebrate, useLevel, useSpeedTest } from "@/lib/hooks";
 import { GameSetup } from "@/components/GameSetup";
-import { dealMemory, type MemoryCard as Card } from "@/lib/memory-game";
+import { dealMemory, type MemoryCard as Card, type MemoryMode } from "@/lib/memory-game";
 import { Settings2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { completionTimeLabel, useCompletionTime } from "@/lib/completion-time";
@@ -27,6 +27,7 @@ function MemoryGame() {
   const [level, setLevel] = useLevel();
   const [playing, setPlaying] = useState(false);
   const [timed, setTimed] = useState(false);
+  const [mode, setMode] = useState<MemoryMode>("words");
   const speed = useSpeedTest();
   const [score, setScore] = useState(0);
   const [cards, setCards] = useState<Card[]>([]);
@@ -64,7 +65,7 @@ function MemoryGame() {
   };
 
   const restart = () => {
-    setCards(dealMemory(level));
+    setCards(dealMemory(level, Math.random, mode));
     setPlaying(true);
     setOpen([]);
     setDone([]);
@@ -77,7 +78,12 @@ function MemoryGame() {
   return (
     <Shell title="מִשְׂחַק זִכָּרוֹן" score={score} wide>
       <Celebration trigger={cel} count={score} interval={3} voiced complete={won} />
-      {!playing ? <GameSetup level={level} onLevel={setLevel} timed={timed} onTimed={setTimed} onStart={restart} /> : <>
+      {!playing ? <>
+        <div className="mb-4 flex flex-wrap justify-center gap-3" role="group" aria-label="סוג המשחק">
+          <Button variant={mode === "words" ? "default" : "outline"} aria-pressed={mode === "words"} onClick={() => setMode("words")} className="h-auto px-6 py-3 text-xl">📖 קְרִיאָה וּתְמוּנָה</Button>
+          <Button variant={mode === "pictures" ? "default" : "outline"} aria-pressed={mode === "pictures"} onClick={() => setMode("pictures")} className="h-auto px-6 py-3 text-xl">🖼️ רַק תְּמוּנוֹת</Button>
+        </div>
+        <GameSetup level={level} onLevel={setLevel} timed={timed} onTimed={setTimed} onStart={restart} /></> : <>
       <Button variant="ghost" size="icon" title="בחירת משחק" aria-label="בחירת משחק" onClick={() => { setPlaying(false); speed.stop(); speed.close(); }}><Settings2 /></Button>
       <SpeedBar speed={speed} unit="זוּגוֹת" />
 
@@ -87,7 +93,7 @@ function MemoryGame() {
           <p className="mt-4 font-display text-5xl text-primary">מָצָאתָ אֶת כָּל הַזּוּגוֹת!</p>
           <p className="mt-2 text-2xl">בְּ {moves} נִסְיוֹנוֹת</p>
           {seconds !== null && <p className="mt-3 text-xl" aria-label="זמן סיום">⏱️ מָצָאתָ אֶת כָּל הַזּוּגוֹת בְּ־{completionTimeLabel(seconds)}</p>}
-          <Button onClick={() => timed && speed.active ? (setCards(dealMemory(level)), setDone([]), setOpen([]), setMoves(0), startTime()) : restart()} className="mt-6 h-auto rounded-full bg-primary px-8 py-4 font-display text-2xl text-primary-foreground shadow-pop">
+          <Button onClick={() => timed && speed.active ? (setCards(dealMemory(level, Math.random, mode)), setDone([]), setOpen([]), setMoves(0), startTime()) : restart()} className="mt-6 h-auto rounded-full bg-primary px-8 py-4 font-display text-2xl text-primary-foreground shadow-pop">
             🔁 מִשְׂחָק חָדָשׁ
           </Button>
         </div>
@@ -97,7 +103,7 @@ function MemoryGame() {
             const shown = open.includes(c.id) || done.includes(c.id);
             return (
               <Button variant="ghost" key={c.id} onClick={() => flip(c)} aria-label={shown ? c.text : "קלף הפוך"}
-                className={`flex h-32 min-w-0 items-center justify-center whitespace-normal break-words rounded-3xl px-2 font-display shadow-soft transition sm:h-40 ${shown ? (done.includes(c.id) ? "bg-success/30" : "bg-card") : "bg-primary text-primary-foreground hover:scale-105"} ${c.kind === "pic" ? "text-6xl" : "text-2xl sm:text-4xl"}`}>
+                className={`flex h-32 min-w-0 items-center justify-center whitespace-normal break-words rounded-3xl px-2 font-display shadow-soft transition sm:h-40 ${shown ? (done.includes(c.id) ? "bg-success/30" : "bg-card") : "bg-primary text-primary-foreground hover:scale-105"} ${c.kind === "pic" ? "text-6xl" : c.kind === "letter" ? "text-7xl" : "text-2xl sm:text-4xl"}`}>
                 {shown ? c.text : "❓"}
               </Button>
             );
