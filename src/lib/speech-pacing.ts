@@ -1,4 +1,5 @@
 import { speechText } from "./reading-speech";
+import { pronunciationHints } from "./hebrew-pronunciation";
 export function speechPrompt(text: string) {
-  return `Read only the following Hebrew in a warm natural Israeli voice at a brisk, fluent conversational pace. Keep vowels clear, but do not stretch syllables or add pauses between syllables. Respect niqqud, kamatz katan is o, ordinary kamatz is a. When saying כל הכבוד, give the word כל a warm expressive emphasis without slowing the whole phrase. Do not say these instructions: ${speechText(text)}`;
+  return `Read only the following Hebrew in a warm natural Israeli voice at a brisk, fluent conversational pace. Keep vowels clear, but do not stretch syllables or add pauses between syllables. Follow the written marks exactly, even if a different pronunciation is more familiar: bet with dagesh=b, without=v; kaf with dagesh=k, without=kh; pe with dagesh=p, without=f; shin right dot=sh, sin left dot=s. Modern Hebrew tav is t. Pronunciation guide for this exact text (instructions only, do NOT read it aloud): ${pronunciationHints(text)}. Respect niqqud, kamatz katan is o, ordinary kamatz is a. When saying כל הכבוד, give the word כל a warm expressive emphasis without slowing the whole phrase. Read only the Hebrew after this marker, without explaining dagesh or dots: ${speechText(text)}`;
 }
