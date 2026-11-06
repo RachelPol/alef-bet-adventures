@@ -157,14 +157,26 @@ let owner: string | null = null;
 let snapshot: Wallet = EMPTY;
 let loaded = false;
 let queue = Promise.resolve();
+let connectionRevision = 0;
+const pending: { userId: string; apply: (w: Wallet) => Wallet | null }[] = [];
 const notify = () => window.dispatchEvent(new Event(EVT));
 
+export async function flushWallet() { await queue; }
+
+// Warn before a full-page departure while accepted changes are still saving.
+if (typeof window !== "undefined") window.addEventListener("beforeunload", event => {
+  if (pending.length) { event.preventDefault(); event.returnValue = ""; }
+});
+
 export async function connectWallet(userId: string | null) {
+  const revision = ++connectionRevision;
+  if (owner !== userId) await flushWallet();
+  if (revision !== connectionRevision) return;
   if (owner === userId && loaded) return;
   owner = userId; loaded = false; snapshot = EMPTY; notify();
   if (!userId) { loaded = true; notify(); return; }
   const { data, error } = await supabase.from("wallets").select("points,owned,wall").eq("user_id", userId).single();
-  if (owner !== userId) return;
+  if (owner !== userId || revision !== connectionRevision) return;
   if (error) { toast.error("לא הצלחנו לטעון את הנקודות; נסו שוב"); return; }
   snapshot = { points: data.points, owned: data.owned as Placed[], wall: data.wall };
   loaded = true; notify();
@@ -184,6 +196,13 @@ export function updateWallet(f: (w: Wallet) => Wallet | null): boolean {
   if (!owner || !loaded) return false;
   const next = f(load());
   if (!next) return false;
+  // Fix the randomly placed coordinates at acceptance, rather than dealing them again on save.
+  const added = next.owned.filter(item => !snapshot.owned.some(old => old.uid === item.uid));
+  const operation = { userId: owner, apply: (w: Wallet) => {
+    const result = f(w);
+    return result ? { ...result, owned: result.owned.map(item => added.find(p => p.uid === item.uid) ?? item) } : null;
+  } };
+  pending.push(operation);
   snapshot = next; notify();
   const userId = owner;
   queue = queue.then(async () => {
@@ -191,17 +210,28 @@ export function updateWallet(f: (w: Wallet) => Wallet | null): boolean {
     for (let attempt = 0; attempt < 4; attempt++) {
       const { data, error } = await supabase.from("wallets").select("points,owned,wall,version").eq("user_id", userId).single();
       if (error || owner !== userId) throw new Error("wallet read failed");
-      const remote = f({ points: data.points, owned: data.owned as Placed[], wall: data.wall });
+      const remote = operation.apply({ points: data.points, owned: data.owned as Placed[], wall: data.wall });
       if (!remote) throw new Error("wallet purchase unavailable");
       const { data: saved, error: saveError } = await supabase.from("wallets").update({ ...remote, version: data.version + 1 }).eq("user_id", userId).eq("version", data.version).select("user_id");
       if (saveError) throw saveError;
-      if (saved?.length) return;
+      if (saved?.length) {
+        pending.splice(pending.indexOf(operation), 1);
+        // Read back the committed account state and retain any later optimistic changes.
+        snapshot = pending.filter(p => p.userId === userId).reduce((w, p) => p.apply(w) ?? w, remote);
+        notify();
+        return;
+      }
     }
     throw new Error("wallet conflict");
   }).catch(async () => {
+    pending.splice(pending.indexOf(operation), 1);
     if (owner !== userId) return;
     toast.error("השמירה לא הצליחה; הנקודות נטענות מחדש");
-    loaded = false; await connectWallet(userId);
+    const { data } = await supabase.from("wallets").select("points,owned,wall").eq("user_id", userId).single();
+    if (data && owner === userId) {
+      snapshot = pending.filter(p => p.userId === userId).reduce((w, p) => p.apply(w) ?? w, { points: data.points, owned: data.owned as Placed[], wall: data.wall });
+      notify();
+    }
   });
   return true;
 }

@@ -24,11 +24,14 @@ export default function WorldScene({ kind, wallet, onMove }: { kind: "room" | "s
       element.appendChild(app.canvas); app.canvas.setAttribute("aria-label", kind === "room" ? "החדר האישי" : "רחוב עם מכוניות ואנשים");
       const bg = new Sprite(await Assets.load(kind === "room" ? room : street)); bg.width = 1536; bg.height = 1024; app.stage.addChild(bg);
       const layer = new Container(); layer.sortableChildren = true; app.stage.addChild(layer);
+      let rebuildRevision = 0;
       async function rebuild() {
         if (!app || disposed || kind !== "room") return;
+        const revision = ++rebuildRevision;
         const current = state.current;
         const textures = await Promise.all(current.owned.map(p => { const url = ITEM_ART[p.itemId]; return url ? Assets.load(url) : Promise.resolve(null); }));
-        if (disposed) return;
+        if (disposed || revision !== rebuildRevision) return;
+        if (current !== state.current) { await rebuild(); return; }
         layer.removeChildren().forEach(c => c.destroy());
         if (current.wall) {
           const tint = new Graphics().poly([65,40,1470,40,1470,550,65,550]).fill({ color: current.wall, alpha: .28 });
