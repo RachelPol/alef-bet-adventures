@@ -53,6 +53,7 @@
 - [x] Global points across all activities + points summary on finish
 - [x] Personal room + shop street (furniture, toys, music, paint, decor); drag items
 - [x] Points not sticking for extra accounts / parent credit not shown (retry wallet load, defer early changes)
+- [x] Hide "wallets" from browser URLs (filter-safe alias)
 - [x] "כל הכבוד" most common praise, voices: woman, man, child, baby
 - [x] Memory: letters level = pairs of same letter
 - [x] Memory: pictures-only mode (classic)

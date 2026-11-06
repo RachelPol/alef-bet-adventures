@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { cloudRequestHeaders } from "@/lib/cloud-bridge-rules";
+import { cloudRequestHeaders, unaliasCloudPath } from "@/lib/cloud-bridge-rules";
 
-async function forward(request: Request, path: string) {
+async function forward(request: Request, rawPath: string) {
+  const path = unaliasCloudPath(rawPath);
   const url = process.env['SUPABASE_URL'];
   const key = process.env['SUPABASE_PUBLISHABLE_KEY'];
   if (!url || !key) return new Response("Service unavailable", { status: 503 });
