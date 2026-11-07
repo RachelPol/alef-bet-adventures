@@ -26,7 +26,7 @@ export const Route = createFileRoute("/api/public/tts")({
           const prompts = [speechPrompt(body.text, dialect), speechPrompt(body.text, dialect), speechFallbackPrompt(body.text, dialect)];
           let res: Response | null = null;
           for (let i = 0; i < prompts.length; i++) {
-            res = await requestSpeech(config, prompts[i], false, request.signal);
+            res = await requestSpeech(config, prompts[i] ?? prompts[0]!, false, request.signal);
             if (res.ok && res.body) break;
             const retryable = res.status === 400 || res.status === 429 || res.status >= 500;
             if (!retryable || i === prompts.length - 1) break;
