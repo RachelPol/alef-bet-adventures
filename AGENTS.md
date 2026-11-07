@@ -30,3 +30,5 @@
 - Use pre-generated dialect-specific praise clips for varied completion voices and independent quiet Web Audio chimes for successes; never interrupt listening targets with spoken milestone praise.
 - Parent recovery opens from the room balance through a public convenience gate; revealing the form never replaces server-side parent-code authorization.
 - Optional signup parent credentials are salted PBKDF2 verifiers in a server-only table; an account-specific verifier supersedes the legacy shared server secret and child sessions cannot overwrite it.
+- Speech failures stay silent to the child: the TTS route retries transient model rejections (last with a short dialect-preserving prompt), the browser retries once and caches finished utterances in memory; never surface raw TTS errors as toasts.
+- The shopping street shows one fixed-ratio section at a time, fitted to the viewport, with HTML buttons to switch sections, so no section is cut off at the screen edge.
