@@ -1,5 +1,4 @@
 import { streamSpeech } from "./stream-speech";
-import { toast } from "sonner";
 import { shuffled } from "./random";
 import { stopEncouragement } from "./encouragement-audio";
 export type Letter = { char: string; name: string; word: string; emoji: string };
@@ -43,10 +42,17 @@ export function speak(text: string) {
   const controller = new AbortController();
   current = controller;
   window.speechSynthesis?.cancel();
-  void streamSpeech("/api/public/tts", text, controller.signal).catch(error => {
-    if (controller.signal.aborted || current !== controller) return;
-    toast.error(error instanceof Error ? error.message : "הקול אינו זמין כרגע");
-  });
+  // Never show technical errors to the child: retry once quietly, then just log.
+  const attempt = () => streamSpeech("/api/public/tts", text, controller.signal);
+  void attempt()
+    .catch(error => {
+      if (controller.signal.aborted || current !== controller) throw error;
+      return new Promise(resolve => setTimeout(resolve, 400)).then(attempt);
+    })
+    .catch(error => {
+      if (controller.signal.aborted || current !== controller) return;
+      console.warn("speech unavailable", error);
+    });
 }
 
 export function pick<T>(arr: T[], n: number, exclude: T[] = []): T[] {

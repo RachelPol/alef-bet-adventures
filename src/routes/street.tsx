@@ -1,5 +1,5 @@
 import { createFileRoute, Link, ClientOnly } from "@tanstack/react-router";
-import { lazy, Suspense, useState, useRef } from "react";
+import { lazy, Suspense, useState } from "react";
 import { toast } from "sonner";
 import { CATALOG, SHOPS, buy, useWallet, type ShopId } from "@/lib/wallet";
 import { useAccount } from "@/lib/account";
@@ -26,7 +26,7 @@ export const Route = createFileRoute("/street")({
 });
 
 function Street() {
- const streetScroll = useRef<HTMLDivElement>(null);
+ const [streetPart, setStreetPart] = useState<"west" | "east">("west");
  const [wallet, update] = useWallet(); const [shop, setShop] = useState<ShopId | null>(null); const [bought,setBought] = useState<string|null>(null);
  const current=SHOPS.find(s=>s.id===shop); const { user,ready,profile }=useAccount();
  const purchase=(id:string)=>{ const item=CATALOG.find(i=>i.id===id); if (!item) return; const uid=crypto.randomUUID(); const ok=update(w=>buy(w,item,uid)); if(ok){setBought(id);toast.success(item.shop==='paint' ? 'הקירות נצבעו!' : `${item.name} מחכה לך בחדר!`);}else toast.error('אין מספיק נקודות לפריט הזה'); };
@@ -34,10 +34,10 @@ function Street() {
  if(!user||!profile?.name?.trim())return <div className="p-12 text-center"><Button asChild><Link to="/auth">כְּנִיסָה לַחֶשְׁבּוֹן</Link></Button></div>;
  return <main className="world-page">
   <header className="world-header"><Button asChild variant="outline" className="h-14 px-6 text-xl"><Link to="/room"><Home />לחדר שלי</Link></Button><div className="text-center"><p className="text-sm text-muted-foreground">מסע הקניות של {profile.name}</p><h1 className="text-3xl font-bold">רְחוֹב הַחֲנֻיּוֹת</h1></div><span className="world-balance"><Coins />{wallet.points}</span></header>
-  <div className="street-scroll" dir="ltr" ref={streetScroll}><div className="street-blocks">{(["west", "east"] as const).map(section => <section key={section} className={`world-street street-${section}`} aria-label={section === "west" ? "רחוב החנויות" : "רחוב הספורט היצירה והגן"}><ClientOnly><Suspense fallback={<div className="world-loading">מכינים את הרחוב…</div>}><WorldScene kind="street" streetSection={section} wallet={wallet} /></Suspense></ClientOnly>
+  <div className="street-scroll" dir="ltr">{[streetPart].map(section => <section key={section} className={`world-street street-${section}`} aria-label={section === "west" ? "רחוב החנויות" : "רחוב הספורט היצירה והגן"}><ClientOnly><Suspense fallback={<div className="world-loading">מכינים את הרחוב…</div>}><WorldScene kind="street" streetSection={section} wallet={wallet} /></Suspense></ClientOnly>
     <div className="street-buildings">{(section === "west" ? STREET_SHOPS : EAST_SHOPS).map(id=>{const s=SHOPS.find(s=>s.id===id);if(!s)return null;return <Button key={id} variant="ghost" className="street-building" aria-label={`כניסה לחנות ${s.name}`} onClick={()=>{setShop(id);setBought(null);}}><span className="street-building-sign" dir="rtl"><span aria-hidden="true">{s.emoji}</span><span>{s.name}</span></span></Button>;})}</div>
-  </section>)}</div></div>
-  <nav className="street-travel" aria-label="טיול ברחוב"><Button variant="outline" size="icon" title="לתחילת הרחוב" aria-label="לתחילת הרחוב" onClick={()=>streetScroll.current?.scrollTo({left:0,behavior:'smooth'})}><ArrowLeft /></Button><Button variant="outline" size="icon" title="להמשך הרחוב" aria-label="להמשך הרחוב" onClick={()=>{const el=streetScroll.current;if(el)el.scrollBy({left:el.clientWidth*.8,behavior:'smooth'});}}><ArrowRight /></Button></nav>
+  </section>)}</div>
+  <nav className="street-travel" aria-label="טיול ברחוב"><Button variant="outline" className="h-14 gap-2 px-5 text-lg" disabled={streetPart==="west"} aria-label="לתחילת הרחוב" onClick={()=>setStreetPart("west")}><ArrowLeft />לתחילת הרחוב</Button><Button variant="outline" className="h-14 gap-2 px-5 text-lg" disabled={streetPart==="east"} aria-label="להמשך הרחוב" onClick={()=>setStreetPart("east")}>להמשך הרחוב<ArrowRight /></Button></nav>
   <Dialog open={Boolean(current)} onOpenChange={open=>{if(!open)setShop(null);}}><DialogContent className="shop-dialog"><DialogHeader><DialogTitle className="text-3xl">{current?.emoji} {current?.name}</DialogTitle><DialogDescription className="text-lg">🪙 {wallet.points} נקודות בארנק</DialogDescription></DialogHeader>
    <div className="shop-products">{CATALOG.filter(i=>i.shop===shop).map(item=>{const afford=wallet.points>=item.price; return <article className="shop-product" key={item.id}>
      <div className={`shop-item-image ${item.color ? `paint-${item.id}` : ''}`}>{ITEM_ART[item.id]?<img src={ITEM_ART[item.id]} alt={item.name} className="h-full w-full object-contain" />:<span className="text-6xl">{item.emoji}</span>}</div>

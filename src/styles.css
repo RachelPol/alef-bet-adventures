@@ -265,9 +265,9 @@
 .world-shopping { position:absolute; bottom:25px; right:25px; }
 .world-inventory { max-width:1320px; margin:auto; padding:28px 24px; }
 .world-loading { padding:60px; text-align:center; }
-.street-scroll { width:100%; overflow-x:auto; }
+.street-scroll { width:100%; display:flex; justify-content:center; padding:0 16px; }
 .street-blocks { display:flex; width:max-content; }
-.world-street { position:relative; width:min(100vw,1320px,calc((100dvh - 190px) * 1.5)); flex-shrink:0; aspect-ratio:3/2; }
+.world-street { position:relative; width:min(100%,1320px,calc((100dvh - 210px) * 1.5)); flex-shrink:0; aspect-ratio:3/2; border-radius:16px; overflow:hidden; box-shadow:var(--world-shadow); }
 .street-buildings { position:absolute; left:2%; right:2%; top:34%; height:36%; display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:1.5%; }
 .street-east .street-buildings { left:28%; right:31%; top:40%; height:33%; grid-template-columns:repeat(2,minmax(0,1fr)); gap:1.5%; }
 .street-building { height:100%; min-height:0; padding:0; align-items:flex-start; border-radius:0; background:transparent; color:var(--foreground); box-shadow:none; white-space:normal; }

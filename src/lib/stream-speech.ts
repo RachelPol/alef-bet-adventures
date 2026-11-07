@@ -61,9 +61,54 @@ async function fetchSpeech(endpoint: string, text: string, token: string, signal
   }
 }
 
+// Finished utterances are kept in memory so repeated letters and words play
+// instantly and never depend on the speech service a second time.
+const audioCache = new Map<string, Float32Array>();
+const CACHE_LIMIT = 300;
+
+function remember(key: string, chunks: Float32Array[]) {
+  const total = chunks.reduce((sum, chunk) => sum + chunk.length, 0);
+  const all = new Float32Array(total);
+  let offset = 0;
+  for (const chunk of chunks) {
+    all.set(chunk, offset);
+    offset += chunk.length;
+  }
+  audioCache.delete(key);
+  audioCache.set(key, all);
+  if (audioCache.size > CACHE_LIMIT) audioCache.delete(audioCache.keys().next().value as string);
+}
+
+async function playCached(context: AudioContext, samples: Float32Array, signal?: AbortSignal) {
+  await ensureRunning(context);
+  signal?.throwIfAborted();
+  const buffer = context.createBuffer(1, samples.length, 24000);
+  buffer.copyToChannel(samples as Float32Array<ArrayBuffer>, 0);
+  const source = context.createBufferSource();
+  source.buffer = buffer;
+  source.connect(context.destination);
+  await new Promise<void>((resolve) => {
+    const stop = () => {
+      try { source.stop(); } catch { /* already stopped */ }
+      resolve();
+    };
+    signal?.addEventListener("abort", stop, { once: true });
+    source.onended = () => {
+      signal?.removeEventListener("abort", stop);
+      resolve();
+    };
+    source.start(context.currentTime + 0.05);
+  });
+  signal?.throwIfAborted();
+}
+
 export async function streamSpeech(endpoint: string, text: string, signal?: AbortSignal): Promise<void> {
   signal?.throwIfAborted();
   const context = speechContext();
+  const cacheKey = `${getAccountDialect()}|${text}`;
+  const cached = audioCache.get(cacheKey);
+  if (cached) return playCached(context, cached, signal);
+  const chunks: Float32Array[] = [];
   const sources = new Set<AudioBufferSourceNode>();
   let playhead = 0;
   let pending = new Uint8Array(0);
@@ -108,6 +153,7 @@ export async function streamSpeech(endpoint: string, text: string, signal?: Abor
         pending = new Uint8Array(decoded.pending);
         if (!decoded.samples.length) return;
         samplesPlayed += decoded.samples.length;
+        chunks.push(decoded.samples);
         const buffer = context.createBuffer(1, decoded.samples.length, 24000);
         buffer.copyToChannel(decoded.samples, 0);
         const source = context.createBufferSource();
@@ -140,6 +186,7 @@ export async function streamSpeech(endpoint: string, text: string, signal?: Abor
       reader.releaseLock();
     }
     if (!completed || !samplesPlayed || pending.length) throw new Error("Incomplete speech stream");
+    remember(cacheKey, chunks);
     await playback;
     signal?.throwIfAborted();
   } finally {
