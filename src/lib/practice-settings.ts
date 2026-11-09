@@ -12,7 +12,7 @@ export const ALL_PRACTICE: PracticeSettings = { letters: null, vowels: null };
 export function normalizePractice(value: unknown): PracticeSettings {
   const raw = value && typeof value === "object" ? value as Record<string, unknown> : {};
   const clean = (v: unknown, allowed: string[]) => Array.isArray(v) ? [...new Set(v.filter((s): s is string => typeof s === "string" && allowed.includes(s)))] : null;
-  return { letters: clean(raw.letters, PRACTICE_LETTERS), vowels: clean(raw.vowels, PRACTICE_VOWELS.map(v => v.id)) };
+  return { letters: clean(raw['letters'], PRACTICE_LETTERS), vowels: clean(raw['vowels'], PRACTICE_VOWELS.map(v => v.id)) };
 }
 const FINALS: Record<string, string> = { "ך": "כ", "ם": "מ", "ן": "נ", "ף": "פ", "ץ": "צ" };
 const MARKS: Record<string, string> = { "ָ": "kamatz", "ׇ": "kamatz", "ַ": "patach", "ֵ": "tsere", "ֶ": "segol", "ִ": "hiriq", "ֹ": "holam", "ֺ": "holam", "ֻ": "kubutz", "ְ": "sheva", "ֲ": "hataf-patach", "ֱ": "hataf-segol", "ֳ": "hataf-kamatz" };
