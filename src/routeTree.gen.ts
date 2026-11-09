@@ -19,6 +19,7 @@ import { Route as PathRouteImport } from './routes/path'
 import { Route as ReadRouteImport } from './routes/read'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RoomRouteImport } from './routes/room'
+import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as StreetRouteImport } from './routes/street'
 import { Route as ApiCloudSplatRouteImport } from './routes/api/cloud.$'
 import { Route as ApiPublicReadingTrialRouteImport } from './routes/api/public/reading-trial'
@@ -74,6 +75,11 @@ const RoomRoute = RoomRouteImport.update({
   path: '/room',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const StreetRoute = StreetRouteImport.update({
   id: '/street',
   path: '/street',
@@ -106,6 +112,7 @@ export interface FileRoutesByFullPath {
   '/read': typeof ReadRoute
   '/reset-password': typeof ResetPasswordRoute
   '/room': typeof RoomRoute
+  '/settings': typeof SettingsRoute
   '/street': typeof StreetRoute
   '/api/cloud/$': typeof ApiCloudSplatRoute
   '/api/public/reading-trial': typeof ApiPublicReadingTrialRoute
@@ -122,6 +129,7 @@ export interface FileRoutesByTo {
   '/read': typeof ReadRoute
   '/reset-password': typeof ResetPasswordRoute
   '/room': typeof RoomRoute
+  '/settings': typeof SettingsRoute
   '/street': typeof StreetRoute
   '/api/cloud/$': typeof ApiCloudSplatRoute
   '/api/public/reading-trial': typeof ApiPublicReadingTrialRoute
@@ -139,6 +147,7 @@ export interface FileRoutesById {
   '/read': typeof ReadRoute
   '/reset-password': typeof ResetPasswordRoute
   '/room': typeof RoomRoute
+  '/settings': typeof SettingsRoute
   '/street': typeof StreetRoute
   '/api/cloud/$': typeof ApiCloudSplatRoute
   '/api/public/reading-trial': typeof ApiPublicReadingTrialRoute
@@ -157,6 +166,7 @@ export interface FileRouteTypes {
     | '/read'
     | '/reset-password'
     | '/room'
+    | '/settings'
     | '/street'
     | '/api/cloud/$'
     | '/api/public/reading-trial'
@@ -173,6 +183,7 @@ export interface FileRouteTypes {
     | '/read'
     | '/reset-password'
     | '/room'
+    | '/settings'
     | '/street'
     | '/api/cloud/$'
     | '/api/public/reading-trial'
@@ -189,6 +200,7 @@ export interface FileRouteTypes {
     | '/read'
     | '/reset-password'
     | '/room'
+    | '/settings'
     | '/street'
     | '/api/cloud/$'
     | '/api/public/reading-trial'
@@ -206,6 +218,7 @@ export interface RootRouteChildren {
   ReadRoute: typeof ReadRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   RoomRoute: typeof RoomRoute
+  SettingsRoute: typeof SettingsRoute
   StreetRoute: typeof StreetRoute
   ApiCloudSplatRoute: typeof ApiCloudSplatRoute
   ApiPublicReadingTrialRoute: typeof ApiPublicReadingTrialRoute
@@ -284,6 +297,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RoomRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/street': {
       id: '/street'
       path: '/street'
@@ -326,6 +346,7 @@ const rootRouteChildren: RootRouteChildren = {
   ReadRoute: ReadRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   RoomRoute: RoomRoute,
+  SettingsRoute: SettingsRoute,
   StreetRoute: StreetRoute,
   ApiCloudSplatRoute: ApiCloudSplatRoute,
   ApiPublicReadingTrialRoute: ApiPublicReadingTrialRoute,
