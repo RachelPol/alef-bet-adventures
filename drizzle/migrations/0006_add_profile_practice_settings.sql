@@ -1,0 +1,2 @@
+ALTER TABLE public.profiles ADD COLUMN practice_settings jsonb NOT NULL DEFAULT '{"letters":null,"vowels":null}'::jsonb;
+COMMENT ON COLUMN public.profiles.practice_settings IS 'Per-child practice letter and vowel selections; null means unrestricted.';

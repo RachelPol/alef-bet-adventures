@@ -30,6 +30,7 @@ export function textSize(t: string) {
 }
 
 export function pickPair(level: Level): Item[] {
+  if (level.items.length < 2) return [...level.items];
   if (level.id === "letters" && Math.random() < 0.5) {
     const selected = CONFUSABLE[Math.floor(Math.random() * CONFUSABLE.length)];
     const [a, b] = selected ?? ["א", "ג"];
@@ -40,15 +41,20 @@ export function pickPair(level: Level): Item[] {
     }
   }
   const a = draw(level);
-  let b = draw(level);
-  if (b === a) b = draw(level);
+  const b = shuffled(level.items.filter(item => item.text !== a.text))[0] ?? a;
   return [a, b];
 }
 
 // Shuffled deck per level: every item appears once before any repeats.
 const decks = new Map<string, Item[]>();
 const previous = new Map<string, Item>();
+const deckSources = new Map<string, Item[]>();
 export function draw(level: Level): Item {
+  if (deckSources.get(level.id) !== level.items) {
+    decks.delete(level.id);
+    previous.delete(level.id);
+    deckSources.set(level.id, level.items);
+  }
   let deck = decks.get(level.id);
   if (!deck || deck.length === 0) {
     deck = shuffled(level.items);

@@ -1,7 +1,15 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { LEVELS, type Level } from "./levels";
+import { useAccount } from "./account";
+import { filterPractice, normalizePractice } from "./practice-settings";
+
+export function usePractice() {
+  const { profile } = useAccount();
+  return useMemo(() => normalizePractice(profile?.practice_settings), [profile?.practice_settings]);
+}
 
 export function useLevel(): [Level, (id: string) => void] {
+  const practice = usePractice();
   const [id, setId] = useState("letters");
   useEffect(() => {
     const s = localStorage.getItem("level");
@@ -13,7 +21,8 @@ export function useLevel(): [Level, (id: string) => void] {
   };
   const level = LEVELS.find((l) => l.id === id) ?? LEVELS[0];
   if (!level) throw new Error("No reading levels configured");
-  return [level, set];
+  const filtered = useMemo(() => ({ ...level, items: filterPractice(level.items, practice) }), [level, practice]);
+  return [filtered, set];
 }
 
 export const TEST_SECONDS = 60;

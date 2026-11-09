@@ -5,7 +5,7 @@ import { connectWallet } from "./wallet";
 import { installCloudBridge } from "./cloud-bridge";
 import { rememberChild } from "./remembered-children";
 import { setAccountDialect } from "./account-speech";
-type Profile = { name: string; avatar_path: string | null; reading_dialect: string };
+type Profile = { name: string; avatar_path: string | null; reading_dialect: string; practice_settings: unknown };
 const AccountContext = createContext<{ user: User | null; profile: Profile | null; avatar: string | null; ready: boolean; refresh: () => Promise<void> }>({ user: null, profile: null, avatar: null, ready: false, refresh: async () => {} });
 export const useAccount = () => useContext(AccountContext);
 export function AccountProvider({ children }: { children: ReactNode }) {
@@ -24,7 +24,7 @@ export function AccountProvider({ children }: { children: ReactNode }) {
     await connectWallet(current?.id ?? null);
     if (run !== revision.current) return;
     if (current) {
-      const { data: p } = await supabase.from("profiles").select("name,avatar_path,reading_dialect").eq("id", current.id).single();
+      const { data: p } = await supabase.from("profiles").select("name,avatar_path,reading_dialect,practice_settings").eq("id", current.id).single();
       if (run !== revision.current) return;
       setProfile(p);
       setAccountDialect(p?.reading_dialect);
