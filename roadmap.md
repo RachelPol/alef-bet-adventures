@@ -1,5 +1,5 @@
 # Roadmap
-- [ ] Account practice settings: choose letters/vowels, save per child, filter all activities and verify restrictive/empty selections
+- [x] Account practice settings: choose letters/vowels, save per child, filter all activities; authenticated save/reload, six activity screens, restrictive/empty selections and mobile layout verified; 24 rule tests passed
 - [x] Remove book shop; seven building entrances and complete street scenes verified on desktop/mobile
 - [x] Save room-object rotation, flipping and resizing; purchase, adjustments and reload readback verified
 - [x] Independent short success chimes, six pre-generated dialect-specific praise clips with varied voices, milestones every five successes / three memory pairs; reading milestone and memory completion verified (auditory humor requires user listening)
