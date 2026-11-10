@@ -7,7 +7,7 @@ export type MemoryCard = { id: string; pair: string; kind: "word" | "pic" | "let
 /** words: word+picture (letters level: same letter twice); pictures: classic picture+picture. */
 export function dealMemory(level: Level, random = Math.random, mode: MemoryMode = "words", practice: PracticeSettings = ALL_PRACTICE): MemoryCard[] {
   if (mode === "words" && level.id === "letters") {
-    const letters = shuffled([...new Set(level.items.map(i => i.text))], random).slice(0, 6);
+    const letters = shuffled([...new Set(filterPractice(level.items, practice).map(i => i.text))], random).slice(0, 6);
     return shuffled(letters.flatMap((text, i) => [
       { id: `${i}-a`, pair: `${i}`, kind: "letter" as const, text },
       { id: `${i}-b`, pair: `${i}`, kind: "letter" as const, text },

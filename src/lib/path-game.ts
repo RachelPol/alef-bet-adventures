@@ -1,9 +1,17 @@
 import type { Item, Level } from "./levels";
+import { shuffled } from "./random";
 
 export const PATH_CELLS = 15;
 export const PATH_GOAL = 25;
 export type Direction = "up" | "down" | "left" | "right";
 export type PathMove = { index: number; direction: Direction };
+
+export function dealPathBoard(items: Item[], random = Math.random): Item[] {
+  if (!items.length) return [];
+  const board: Item[] = [];
+  while (board.length < PATH_CELLS) board.push(...shuffled(items, random).slice(0, PATH_CELLS - board.length));
+  return board;
+}
 
 export function nextPathMove(current: number, columns: number, previous: Direction | null, random = Math.random): PathMove {
   const row = Math.floor(current / columns);

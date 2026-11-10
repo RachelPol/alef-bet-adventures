@@ -22,7 +22,7 @@ it("does not lock matching cards into symmetric positions", () => {
   expect(new Set(layouts.map(cards=>cards.map(c=>c.id).join())).size).toBe(20);
   expect(layouts.some(cards=>cards.some((card,index)=>cards[11-index]?.pair !== card.pair))).toBe(true);
 });it("letters level pairs the same letter twice", () => {
-  const level = LEVELS.find(l => l.id === "letters")!; const cards = dealMemory(level);
+  const level = LEVELS.find(l => l.id === "letters"); if (!level) throw new Error("Missing letters level"); const cards = dealMemory(level);
   expect(cards).toHaveLength(12);
   for (const pair of new Set(cards.map(c => c.pair))) {
     const m = cards.filter(c => c.pair === pair);
@@ -34,4 +34,14 @@ it("pictures-only mode shows the same picture on both cards", () => {
   for (const level of LEVELS) { const cards = dealMemory(level, Math.random, "pictures");
     for (const pair of new Set(cards.map(c => c.pair))) { const m = cards.filter(c => c.pair === pair);
       expect(m.every(c => c.kind === "pic")).toBe(true); expect(m[0]?.text).toBe(m[1]?.text); } }
+});
+it("filters letter pairs by the account selection", () => {
+  const level = LEVELS.find(l => l.id === "letters"); if (!level) throw new Error("Missing letters level");
+  const cards = dealMemory(level, Math.random, "words", { letters: ["א"], vowels: null });
+  expect(cards.map(c => c.text)).toEqual(["א", "א"]);
+});
+it("filters pictured vocabulary instead of using unrelated fallback words", () => {
+  const level = LEVELS.find(l => l.id === "w2"); if (!level) throw new Error("Missing word level");
+  expect(dealMemory(level, Math.random, "words", { letters: ["א"], vowels: ["patach"] })).toEqual([]);
+  expect(dealMemory(level, Math.random, "pictures", { letters: ["א"], vowels: ["patach"] })).toEqual([]);
 });

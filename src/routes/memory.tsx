@@ -1,8 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Shell } from "@/components/Shell";
 import { Celebration, SpeedBar, SpeedResult } from "@/components/Extras";
-import { useCelebrate, useLevel, useSpeedTest } from "@/lib/hooks";
+import { useCelebrate, useLevel, usePractice, useSpeedTest } from "@/lib/hooks";
 import { GameSetup } from "@/components/GameSetup";
 import { dealMemory, type MemoryCard as Card, type MemoryMode } from "@/lib/memory-game";
 import { Settings2 } from "lucide-react";
@@ -25,9 +25,13 @@ export const Route = createFileRoute("/memory")({
 
 function MemoryGame() {
   const [level, setLevel] = useLevel();
+  const practice = usePractice();
   const [playing, setPlaying] = useState(false);
   const [timed, setTimed] = useState(false);
   const [mode, setMode] = useState<MemoryMode>("words");
+  const available = useMemo(() => dealMemory(level, Math.random, mode, practice).length > 0, [level, mode, practice]);
+  const pending = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => { if (pending.current) clearTimeout(pending.current); setPlaying(false); return () => { if (pending.current) clearTimeout(pending.current); }; }, [level, practice]);
   const speed = useSpeedTest();
   const [score, setScore] = useState(0);
   const [cards, setCards] = useState<Card[]>([]);
@@ -60,12 +64,14 @@ function MemoryGame() {
       }
     } else {
       setBusy(true);
-      setTimeout(() => { setOpen([]); setBusy(false); }, 1100);
+      pending.current = setTimeout(() => { setOpen([]); setBusy(false); }, 1100);
     }
   };
 
   const restart = () => {
-    setCards(dealMemory(level, Math.random, mode));
+    if (!available) return;
+    if (pending.current) clearTimeout(pending.current);
+    setCards(dealMemory(level, Math.random, mode, practice));
     setPlaying(true);
     setOpen([]);
     setDone([]);
@@ -83,7 +89,7 @@ function MemoryGame() {
           <Button variant={mode === "words" ? "default" : "outline"} aria-pressed={mode === "words"} onClick={() => setMode("words")} className="h-auto px-6 py-3 text-xl">📖 קְרִיאָה וּתְמוּנָה</Button>
           <Button variant={mode === "pictures" ? "default" : "outline"} aria-pressed={mode === "pictures"} onClick={() => setMode("pictures")} className="h-auto px-6 py-3 text-xl">🖼️ רַק תְּמוּנוֹת</Button>
         </div>
-        <GameSetup level={level} onLevel={setLevel} timed={timed} onTimed={setTimed} onStart={restart} /></> : <>
+        <GameSetup level={level} onLevel={setLevel} timed={timed} onTimed={setTimed} onStart={restart} available={available} /></> : <>
       <Button variant="ghost" size="icon" title="בחירת משחק" aria-label="בחירת משחק" onClick={() => { setPlaying(false); speed.stop(); speed.close(); }}><Settings2 /></Button>
       <SpeedBar speed={speed} unit="זוּגוֹת" />
 
@@ -93,7 +99,7 @@ function MemoryGame() {
           <p className="mt-4 font-display text-5xl text-primary">מָצָאתָ אֶת כָּל הַזּוּגוֹת!</p>
           <p className="mt-2 text-2xl">בְּ {moves} נִסְיוֹנוֹת</p>
           {seconds !== null && <p className="mt-3 text-xl" aria-label="זמן סיום">⏱️ מָצָאתָ אֶת כָּל הַזּוּגוֹת בְּ־{completionTimeLabel(seconds)}</p>}
-          <Button onClick={() => timed && speed.active ? (setCards(dealMemory(level, Math.random, mode)), setDone([]), setOpen([]), setMoves(0), startTime()) : restart()} className="mt-6 h-auto rounded-full bg-primary px-8 py-4 font-display text-2xl text-primary-foreground shadow-pop">
+          <Button onClick={() => timed && speed.active ? (setCards(dealMemory(level, Math.random, mode, practice)), setDone([]), setOpen([]), setMoves(0), startTime()) : restart()} className="mt-6 h-auto rounded-full bg-primary px-8 py-4 font-display text-2xl text-primary-foreground shadow-pop">
             🔁 מִשְׂחָק חָדָשׁ
           </Button>
         </div>

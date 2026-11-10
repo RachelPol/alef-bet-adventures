@@ -32,3 +32,4 @@
 - Optional signup parent credentials are salted PBKDF2 verifiers in a server-only table; an account-specific verifier supersedes the legacy shared server secret and child sessions cannot overwrite it.
 - Speech failures stay silent to the child: the TTS route retries transient model rejections (last with a short dialect-preserving prompt), the browser retries once and caches finished utterances in memory; never surface raw TTS errors as toasts.
 - The shopping street shows one fixed-ratio section at a time, fitted to the viewport, with HTML buttons to switch sections, so no section is cut off at the screen edge.
+- Keep per-account practice filtering in a browser-safe tested module and apply it to every activity vocabulary; empty pools disable entry and small path pools repeat only eligible items so selections never fall back to unrelated content.

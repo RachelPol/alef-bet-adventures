@@ -1,7 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { gateIsOpen, nextPathMove, PATH_GOAL, replaceDepartedCard } from "./path-game";
+import { dealPathBoard, gateIsOpen, nextPathMove, PATH_GOAL, replaceDepartedCard } from "./path-game";
 
 describe("Word path rules", () => {
+  it("fills all 15 cells from only selected items even with a one-item pool", () => {
+    const items = [{ text: "א", say: "א" }];
+    expect(dealPathBoard(items)).toEqual(Array(15).fill(items[0]));
+    expect(dealPathBoard([])).toEqual([]);
+  });
   it("opens the gate after 25 correct answers, not before", () => {
     expect(PATH_GOAL).toBe(25);
     expect(gateIsOpen(24)).toBe(false);

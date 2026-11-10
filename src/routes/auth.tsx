@@ -102,7 +102,7 @@ function Auth() {
         <Button type="button" variant="ghost" disabled={busy} onClick={() => { setSelected(null); setName(""); setPin(""); }}>כניסה עם שם אחר</Button>
       </section>}
       {user && avatar && <img src={avatar} alt="תמונת הילד" className="mx-auto mb-4 size-24 rounded-full object-cover" />}
-      {user && <h2 className="mb-4 text-xl font-bold">הגדרות החשבון</h2>}
+      {user && <><h2 className="mb-4 text-xl font-bold">הגדרות החשבון</h2><Button asChild variant="outline" className="mb-5 h-12 w-full"><Link to="/settings">בחירת אותיות וניקודים לתרגול</Link></Button></>}
       <form onSubmit={submit} className="grid gap-4">
         {!user && mode === "signup" && <label className="grid gap-1 text-xl">קוד הורה לשחזור נקודות (לבחירה)<input type="password" autoComplete="new-password" minLength={8} maxLength={200} value={parentCode} onChange={e=>setParentCode(e.target.value)} className="w-full rounded-lg border border-input bg-card p-3" /></label>}
         {(!selected || user || mode === "signup") && <label className="grid min-w-0 gap-1 text-xl">שֵׁם הַיֶּלֶד<input required maxLength={80} autoComplete="username" value={name} onChange={e => setName(e.target.value)} className="w-full min-w-0 rounded-lg border border-input bg-card p-3 text-card-foreground" /></label>}
