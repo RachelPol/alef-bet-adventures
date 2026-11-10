@@ -2,8 +2,10 @@ import { speechText } from "./reading-speech";
 import { pronunciationHints } from "./hebrew-pronunciation";
 import { dialectGuide, tavSound, type ReadingDialect } from "./reading-dialect";
 import { syllablePrompt } from "./hebrew-syllables";
-import { letterNameHints } from "./letter-names";
+import { letterNameHints, letterNamePrompt } from "./letter-names";
 export function speechPrompt(text: string, dialect: ReadingDialect = "israeli") {
+  const name = letterNamePrompt(text, dialect);
+  if (name) return name;
   const syllable = syllablePrompt(text, dialect);
   if (syllable) return syllable;
   const exact = letterNameHints(text, dialect);
@@ -13,6 +15,10 @@ export function speechPrompt(text: string, dialect: ReadingDialect = "israeli") 
 // The speech model occasionally rejects a long prompt with a transient
 // INVALID_ARGUMENT; a short retry prompt keeps the dialect but drops extra hints.
 export function speechFallbackPrompt(text: string, dialect: ReadingDialect = "israeli") {
+  const name = letterNamePrompt(text, dialect);
+  if (name) return name;
+  const syllable = syllablePrompt(text, dialect);
+  if (syllable) return syllable;
   const spoken = dialect === "israeli" ? speechText(text) : text;
   return `Say this Hebrew aloud clearly. ${dialectGuide(dialect)} Say only: ${spoken}`;
 }
