@@ -34,16 +34,16 @@ function Read() {
   useEffect(() => () => { if (pending.current) clearTimeout(pending.current); }, []);
   const [playing, setPlaying] = useState(false);
   const [timed, setTimed] = useState(false);
-  const start = () => { if (pending.current) clearTimeout(pending.current); setPlaying(true); setFb(null); speed.close(); if (timed) speed.start(); else speed.stop(); };
+  const start = () => { if (!level.items.length) return; if (pending.current) clearTimeout(pending.current); setPlaying(true); setFb(null); speed.close(); if (timed) speed.start(); else speed.stop(); };
   const settings = () => { if (pending.current) clearTimeout(pending.current); setPlaying(false); speed.stop(); speed.close(); };
   const blocked = !playing || speed.result !== null || (timed && !speed.active);
 
 
   const next = () => {
     setFb(null);
-    setItem(draw(level));
+    setItem(level.items.length ? draw(level) : null);
   };
-  useEffect(next, [level]);
+  useEffect(() => { if (pending.current) clearTimeout(pending.current); next(); setPlaying(false); }, [level]);
 
   const ok = () => {
     if (blocked || fb === "ok") return;

@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useWallet } from "@/lib/wallet";
 import { useAccount } from "@/lib/account";
 import { Button } from "@/components/ui/button";
+import { Settings2 } from "lucide-react";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -36,6 +37,7 @@ function Index() {
         <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
           <Button asChild variant="outline" className="h-auto py-2 text-xl"><Link to="/auth">{avatar && <img src={avatar} alt="" className="size-8 rounded-full object-cover" />}{user ? profile?.name || "השלמת פרטי החשבון" : "כְּנִיסָה / חֶשְׁבּוֹן חָדָשׁ"}</Link></Button>
           <Button asChild variant="secondary" className="h-auto py-2 text-xl"><Link to="/room" aria-label="הנקודות שלי">🪙 {wallet.points} נְקֻדּוֹת</Link></Button>
+          <Button asChild variant="outline" className="h-12"><Link to="/settings"><Settings2 /> הגדרות תרגול</Link></Button>
         </div>
         <h1 className="font-display text-6xl text-primary md:text-7xl">אָלֶף בֵּית</h1>
         <div aria-hidden="true" className="mt-4 text-6xl">🐰 📖 🐥</div>

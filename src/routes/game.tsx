@@ -42,11 +42,11 @@ function Game() {
   useEffect(() => () => { if (pending.current) clearTimeout(pending.current); }, []);
   const [playing, setPlaying] = useState(false);
   const [timed, setTimed] = useState(false);
-  const start = () => { if (pending.current) clearTimeout(pending.current); setPlaying(true); setFb(null); speed.close(); if (timed) speed.start(); else speed.stop(); };
+  const start = () => { if (!level.items.length) return; if (pending.current) clearTimeout(pending.current); setPlaying(true); setFb(null); speed.close(); if (timed) speed.start(); else speed.stop(); };
   const settings = () => { if (pending.current) clearTimeout(pending.current); setPlaying(false); speed.stop(); speed.close(); };
   const blocked = !playing || speed.result !== null || (timed && !speed.active);
 
-  useEffect(() => { setR(make(level)); setFb(null); }, [level]);
+  useEffect(() => { setR(level.items.length ? make(level) : null); setFb(null); setPlaying(false); }, [level]);
 
   const hit = (l: Item) => {
     if (blocked || !r || fb === "ok") return;
