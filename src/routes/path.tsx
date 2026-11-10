@@ -4,10 +4,11 @@ import { DoorOpen, RotateCcw, Settings2, Volume2 } from "lucide-react";
 import { Feedback, Shell } from "@/components/Shell";
 import { Celebration, SpeedBar, SpeedResult } from "@/components/Extras";
 import { Button } from "@/components/ui/button";
-import { pick, speak } from "@/lib/letters";
+import { speak } from "@/lib/letters";
+import { PracticeEmpty } from "@/components/PracticeEmpty";
 import { LEVELS, type Item } from "@/lib/levels";
 import { useCelebrate, useLevel, useSpeedTest } from "@/lib/hooks";
-import { gateIsOpen, nextPathMove, PATH_CELLS, PATH_GOAL, replaceDepartedCard, type Direction } from "@/lib/path-game";
+import { dealPathBoard, gateIsOpen, nextPathMove, PATH_CELLS, PATH_GOAL, replaceDepartedCard, type Direction } from "@/lib/path-game";
 import { completionTimeLabel, useCompletionTime } from "@/lib/completion-time";
 
 export const Route = createFileRoute("/path")({
@@ -48,9 +49,11 @@ function PathGame() {
     return () => { media.removeEventListener("change", update); if (pending.current) clearTimeout(pending.current); };
   }, []);
   const clearPending = () => { if (pending.current) clearTimeout(pending.current); locked.current = false; };
+  useEffect(() => { clearPending(); setPhase("setup"); }, [level]);
   const start = () => {
+    if (!level.items.length) return;
     clearPending();
-    const board = pick(level.items, PATH_CELLS);
+    const board = dealPathBoard(level.items);
     const move = nextPathMove(7, columns, null);
     setCards(board);
     setPosition(7);
@@ -152,7 +155,8 @@ function PathGame() {
             <input type="checkbox" checked={timed} onChange={(event) => setTimed(event.target.checked)} className="size-5 accent-primary" />
             בְּדִיקַת מְהִירוּת – דַּקָּה אַחַת
           </label>
-          <Button onClick={start} className="h-auto px-10 py-4 font-display text-2xl">מַתְחִילִים! 🐥</Button>
+          {!level.items.length && <PracticeEmpty />}
+          <Button disabled={!level.items.length} onClick={start} className="h-auto px-10 py-4 font-display text-2xl">מַתְחִילִים! 🐥</Button>
         </section>
       ) : phase === "won" ? (
         <div className="mt-10 text-center animate-in zoom-in">
