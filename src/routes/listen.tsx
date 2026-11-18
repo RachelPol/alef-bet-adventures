@@ -3,11 +3,13 @@ import { Button } from "@/components/ui/button";
 import { Settings2 } from "lucide-react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Feedback, Shell } from "@/components/Shell";
-import { Celebration, SpeedBar, SpeedResult } from "@/components/Extras";
+import { Shell } from "@/components/Shell";
+import { SpeedBar, SpeedResult } from "@/components/Extras";
+import { MountainTrail } from "@/components/MountainTrail";
+import { useMountain } from "@/lib/use-mountain";
 import { speak } from "@/lib/letters";
 import { pickPair, textSize, type Item, type Level } from "@/lib/levels";
-import { useCelebrate, useLevel, useSpeedTest } from "@/lib/hooks";
+import { useLevel, useSpeedTest } from "@/lib/hooks";
 
 export const Route = createFileRoute("/listen")({
   head: () => ({
@@ -35,7 +37,10 @@ function Listen() {
   const [round, setRound] = useState<{ pair: Item[]; target: Item } | null>(null);
   const [fb, setFb] = useState<"ok" | "bad" | null>(null);
   const [score, setScore] = useState(0);
-  const [cel, celebrate] = useCelebrate();
+  const mountain = useMountain('listen');
+  const question = useRef('');
+  const answered = useRef(false);
+  const currentRound = useRef(round); currentRound.current = round;
   const speed = useSpeedTest();
   const pending = useRef<ReturnType<typeof setTimeout> | null>(null);
   useEffect(() => () => { if (pending.current) clearTimeout(pending.current); }, []);
@@ -43,29 +48,33 @@ function Listen() {
   const [timed, setTimed] = useState(false);
   const start = () => { if (!level.items.length) return; if (pending.current) clearTimeout(pending.current); setPlaying(true); setFb(null); speed.close(); if (timed) speed.start(); else speed.stop(); };
   const settings = () => { if (pending.current) clearTimeout(pending.current); setPlaying(false); speed.stop(); speed.close(); };
-  const blocked = !playing || speed.result !== null || (timed && !speed.active);
+  const blocked = !playing || !mountain.loaded || mountain.error || speed.result !== null || (timed && !speed.active);
 
 
-  useEffect(() => { setRound(level.items.length ? newRound(level) : null); setFb(null); setPlaying(false); }, [level]);
+  useEffect(() => { question.current=crypto.randomUUID(); answered.current=false; setRound(level.items.length ? newRound(level) : null); setFb(null); setPlaying(false); }, [level]);
 
   const choose = useCallback(
     (l: Item) => {
-      if (blocked || !round || fb === "ok") return;
+      if (blocked || !round || round!==currentRound.current || answered.current || fb === "ok") return;
       if (l === round.target) {
+        if(!mountain.record(question.current,'success'))return;
+        answered.current=true;
         setFb("ok");
         setScore((s) => s + 1);
-        celebrate();
         if (speed.active) speed.record();
         const next = newRound(level);
+        currentRound.current=next;
+        question.current=crypto.randomUUID(); answered.current=false;
         setRound(next);
         setFb(null);
         speak(next.target.say);
       } else {
+        mountain.record(question.current,'mistake');
         setFb("bad");
         speak(round.target.say);
       }
     },
-    [round, fb, level, speed, celebrate, blocked],
+    [round, fb, level, speed, mountain, blocked],
   );
 
   useEffect(() => {
@@ -83,11 +92,11 @@ function Listen() {
   }, [round, choose]);
 
   return (
-    <Shell title="שְׁמַע וּבְחַר" score={score}>
-      <Celebration trigger={cel} count={score} />
+    <Shell title="שְׁמַע וּבְחַר" score={score} wide>
       {!playing ? <GameSetup level={level} onLevel={setLevel} timed={timed} onTimed={setTimed} onStart={start} /> : <>
       <Button variant="ghost" size="icon" onClick={settings} title="בחירת משחק" aria-label="בחירת משחק"><Settings2 /></Button>
       <div className="mt-4"><SpeedBar speed={speed} unit={level.unit} /></div>
+      <div className="mountain-activity-layout"><MountainTrail mountain={mountain}/><div className="mountain-exercise">
       {round && (
         <>
           <div className="mt-6 text-center">
@@ -105,7 +114,7 @@ function Listen() {
           </div>
         </>
       )}
-      <div className="mt-6"><Feedback state={fb === "bad" ? "bad" : null} /></div>
+      </div></div>
       </>}
       <SpeedResult speed={speed} unit={level.unit} onRestart={start} />
     </Shell>

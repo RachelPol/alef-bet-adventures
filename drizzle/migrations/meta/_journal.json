@@ -50,6 +50,13 @@
       "when": 1794214950788,
       "tag": "0006_add_profile_practice_settings",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1794986009586,
+      "tag": "0007_activity_mountain_challenges",
+      "breakpoints": true
     }
   ]
 }

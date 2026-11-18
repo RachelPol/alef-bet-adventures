@@ -1,4 +1,5 @@
 # Roadmap
+- [ ] Add independent saved 90-success mountain challenges to listening and reading, milestone animations, reset, sound controls and authenticated verification.
 - [x] Account practice settings: choose letters/vowels, save per child, filter all activities; authenticated save/reload, six activity screens, restrictive/empty selections and mobile layout verified; 24 rule tests passed
 - [x] Remove book shop; seven building entrances and complete street scenes verified on desktop/mobile
 - [x] Save room-object rotation, flipping and resizing; purchase, adjustments and reload readback verified

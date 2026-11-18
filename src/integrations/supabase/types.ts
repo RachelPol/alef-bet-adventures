@@ -96,6 +96,57 @@ export type Database = {
           },
         ]
       }
+      mountain_events: {
+        Row: {
+          activity: string
+          created_at: string
+          event_id: string
+          kind: string
+          user_id: string
+        }
+        Insert: {
+          activity: string
+          created_at?: string
+          event_id: string
+          kind: string
+          user_id: string
+        }
+        Update: {
+          activity?: string
+          created_at?: string
+          event_id?: string
+          kind?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      mountain_progress: {
+        Row: {
+          activity: string
+          completions: number
+          streak: number
+          updated_at: string
+          user_id: string
+          version: number
+        }
+        Insert: {
+          activity: string
+          completions?: number
+          streak?: number
+          updated_at?: string
+          user_id: string
+          version?: number
+        }
+        Update: {
+          activity?: string
+          completions?: number
+          streak?: number
+          updated_at?: string
+          user_id?: string
+          version?: number
+        }
+        Relationships: []
+      }
       parent_point_credits: {
         Row: {
           created_at: string
@@ -189,6 +240,23 @@ export type Database = {
       credit_child_points: {
         Args: { p_points: number; p_user_id: string }
         Returns: number
+      }
+      record_mountain_event: {
+        Args: { p_activity: string; p_event_id: string; p_kind: string }
+        Returns: {
+          activity: string
+          completions: number
+          streak: number
+          updated_at: string
+          user_id: string
+          version: number
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "mountain_progress"
+          isOneToOne: false
+          isSetofReturn: true
+        }
       }
     }
     Enums: {
