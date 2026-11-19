@@ -79,7 +79,7 @@ function Listen() {
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (!round || blocked) return;
+      if (!round || blocked || e.repeat || (e.target instanceof Element && e.target.closest('input, select, textarea, [role="slider"], [contenteditable]'))) return;
       if (e.key === "ArrowRight" && round.pair[0]) { e.preventDefault(); choose(round.pair[0]); }
       else if (e.key === "ArrowLeft" && round.pair[1]) { e.preventDefault(); choose(round.pair[1]); }
       else {

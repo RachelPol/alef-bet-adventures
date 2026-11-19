@@ -9,7 +9,7 @@
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
 
-- Mountain challenges share browser-safe progression/geometry rules and durable per-user, per-activity idempotent RPC events; accepted writes retain the caller bearer and survive route unmounts so navigation or account changes cannot duplicate or misassign progress.
+- Mountain challenges share browser-safe progression/geometry rules and durable per-user, per-activity idempotent RPC events; accepted writes retain the caller bearer and survive route unmounts so navigation or account changes cannot duplicate or misassign progress. Anchor each ten-step leg to the illustrated landmarks and interpolate by distance so the climber follows the painted trail.
 
 - Keep word-path movement, answer threshold and card-refresh rules in a pure browser-safe module with unit tests so board geometry and progression stay independently verifiable.
 - Share a start/finish completion clock across games and freeze the duration on the final correct answer so exit animations do not inflate reading time.

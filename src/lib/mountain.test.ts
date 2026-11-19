@@ -24,6 +24,12 @@ describe('90-success mountain rules', () => {
   it('has 91 distinct positions including base and peak', () => {
     const positions=Array.from({length:91},(_,i)=>mountainPosition(i));
     expect(new Set(positions.map(p=>`${p.x},${p.y}`)).size).toBe(91);
-    expect(positions[0]).toEqual({x:50,y:96}); expect(positions[90]).toEqual({x:50,y:6});
+    expect(positions[0]).toEqual({x:53,y:99}); expect(positions[90]).toEqual({x:50,y:8});
+  });
+  it('anchors the nine milestones to their landmarks along the illustrated trail', () => {
+    expect(Array.from({length:9},(_,i)=>mountainPosition((i+1)*10))).toEqual([
+      {x:45,y:83},{x:24,y:78},{x:25,y:64},{x:79,y:60},{x:67,y:39},
+      {x:39,y:33},{x:43,y:26},{x:47,y:18},{x:50,y:8},
+    ]);
   });
 });

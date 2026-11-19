@@ -38,7 +38,7 @@ function Read() {
   useEffect(() => () => { if (pending.current) clearTimeout(pending.current); }, []);
   const [playing, setPlaying] = useState(false);
   const [timed, setTimed] = useState(false);
-  const start = () => { if (!level.items.length) return; if (pending.current) clearTimeout(pending.current); setPlaying(true); setFb(null); speed.close(); if (timed) speed.start(); else speed.stop(); };
+  const start = () => { if (!level.items.length) return; if (pending.current) clearTimeout(pending.current); if (answered.current) next(); setPlaying(true); setFb(null); speed.close(); if (timed) speed.start(); else speed.stop(); };
   const settings = () => { if (pending.current) clearTimeout(pending.current); setPlaying(false); speed.stop(); speed.close(); };
   const blocked = !playing || !mountain.loaded || mountain.error || speed.result !== null || (timed && !speed.active);
 

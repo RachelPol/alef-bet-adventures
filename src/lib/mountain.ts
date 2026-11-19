@@ -13,18 +13,37 @@ export const STATIONS = [
   { name: 'מחנה הפסגה', icon: '⛺', reward: 'אוהל פסגה' },
   { name: 'פסגת ההר', icon: '🏆', reward: 'מדליית זהב' },
 ] as const;
-// Each ten-step leg follows the painted trail through its bend.
-export const TRAIL = [
-  [50,96],[59,86],[73,79],[50,76],[28,72],[47,66],[69,63],
-  [52,58],[33,55],[48,50],[68,47],[51,43],[37,39],
-  [48,35],[62,32],[48,28],[40,24],[51,20],[57,17],[53,11],[50,6],
-] as const;
+// Each leg traces the bitmap path and ends at its illustrated landmark.
+type Point = readonly [number, number];
+const TRAIL: readonly (readonly Point[])[] = [
+  [[53,99],[50,96],[51,93],[55,89],[54,86],[45,83]], // Trailhead
+  [[45,83],[36,80],[31,77],[27,77],[24,78]], // Bridge
+  [[24,78],[29,76],[31,73],[27,69],[24,66],[25,64]], // Waterfall overlook
+  [[25,64],[29,68],[32,72],[41,70],[51,68],[63,66],[71,63],[73,61],[79,60]], // Cave
+  [[79,60],[73,61],[71,60],[67,58],[53,56],[42,55],[34,53],[32,52],[36,49],[47,45],[60,42],[67,39]], // Lookout junction
+  [[67,39],[63,37],[53,35],[46,34],[39,33]], // Forest
+  [[39,33],[34,32],[34,30],[40,27],[43,26]], // Rocky switchback
+  [[43,26],[50,24],[55,22],[55,21],[51,19],[47,18]], // Summit camp junction
+  [[47,18],[45,17],[48,15],[51,14],[50,13],[48,12],[50,10],[50,8]], // Summit
+];
 export function mountainPosition(streak: number) {
-  const distance = Math.max(0, Math.min(90, streak)) / 90 * (TRAIL.length - 1);
-  const index = Math.min(TRAIL.length - 2, Math.floor(distance));
-  const from = TRAIL[index] ?? TRAIL[0]; const to = TRAIL[index + 1] ?? from;
-  const t = distance - index;
-  return { x: from[0] + (to[0] - from[0]) * t, y: from[1] + (to[1] - from[1]) * t };
+  const steps = Math.max(0, Math.min(90, streak));
+  const legIndex = Math.min(8, Math.floor(steps / 10));
+  const leg = TRAIL[legIndex] ?? [];
+  const segments = leg.slice(1).map((to, i) => {
+    const from = leg[i] ?? to;
+    return { from, to, length: Math.hypot((to[0] - from[0]) * 1.5, to[1] - from[1]) };
+  });
+  let distance = segments.reduce((sum, segment) => sum + segment.length, 0) * (steps - legIndex * 10) / 10;
+  for (const {from, to, length} of segments) {
+    if (distance <= length) {
+      const t = distance / length;
+      return { x: from[0] + (to[0] - from[0]) * t, y: from[1] + (to[1] - from[1]) * t };
+    }
+    distance -= length;
+  }
+  const [x, y] = leg.at(-1) ?? [50, 8];
+  return { x, y };
 }
 export function advanceMountain(state: MountainState, kind: MountainEvent): MountainState {
   if (kind === 'restart') return { ...state, streak: 0, version: state.version + 1 };
